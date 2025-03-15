@@ -18,7 +18,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
 ]
 requires-python = ">=3.10"
-dependencies = ["numpy>=2", "moviepy>=2"]
+dependencies = ["numpy>=2", "moviepy>=2", "pillow>=10"]
 
 [project.urls]
 Documentation = "https://github.com/daizutabi/fdray"
@@ -34,7 +34,7 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-addopts = ["--cov=fdray", "--cov-report=lcov:lcov.info"]
+addopts = ["--cov=fdray", "--cov-report=lcov:lcov.info", "--doctest-modules"]
 
 [tool.coverage.report]
 exclude_lines = ["no cov", "raise NotImplementedError", "if TYPE_CHECKING:"]
@@ -55,11 +55,14 @@ ignore = [
   "ARG002",
   "ARG003",
   "B904",
+  "D",
   "D105",
   "D203",
   "D213",
   "EM101",
+  "FBT001",
   "PGH003",
+  "S603",
   "TRY003",
 ]
 
