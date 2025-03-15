@@ -28,7 +28,7 @@ jobs:
       - name: Install POV-Ray
         run: |
           sudo apt-get update
-          sudo apt-get install -y povray povray-includes
+          sudo apt-get install -y povray
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:

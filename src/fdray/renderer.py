@@ -12,6 +12,8 @@ import numpy as np
 from PIL import Image
 
 if TYPE_CHECKING:
+    from typing import Any
+
     from numpy.typing import NDArray
 
 
@@ -74,13 +76,13 @@ class Renderer:
 
     def render(
         self,
-        scene: str,
+        scene: Any,
         output_file: str | Path | None = None,
     ) -> NDArray[np.uint8] | CompletedProcess:
         """Render POV-Ray scene.
 
         Args:
-            scene (str): POV-Ray scene description
+            scene (Any): POV-Ray scene description
             output_file (str | Path | None): Output image file path.
                 If None, returns numpy array
 
@@ -90,7 +92,7 @@ class Renderer:
 
         """
         if output_file:
-            command = self.get_command(scene, output_file)
+            command = self.get_command(str(scene), output_file)
             return subprocess.run(command, check=False, capture_output=True)
 
         with NamedTemporaryFile(suffix=".png") as file:

@@ -11,13 +11,18 @@ class Color:
     green: float
     blue: float
     alpha: float | None
+    pigment: bool = True
 
     def __init__(
         self,
         color: str | Sequence[float],
         alpha: float | None = None,
+        *,
+        pigment: bool | None = None,
     ) -> None:
         self.alpha = alpha
+        if pigment is not None:
+            self.pigment = pigment
 
         if isinstance(color, str):
             if color.startswith("#") and len(color) == 9:
@@ -32,7 +37,8 @@ class Color:
             self.red, self.green, self.blue, self.alpha = color
 
         else:
-            raise ValueError("Invalid color format.")
+            msg = "Invalid color format."
+            raise ValueError(msg)
 
     def __str__(self) -> str:
         red = f"{self.red:.3g}"
@@ -40,10 +46,22 @@ class Color:
         blue = f"{self.blue:.3g}"
 
         if self.alpha is None:
-            return f"rgb <{red}, {green}, {blue}>"
+            color = f"rgb <{red}, {green}, {blue}>"
+        else:
+            trans = f"{1 - self.alpha:.3g}"
+            color = f"rgbt <{red}, {green}, {blue}, {trans}>"
 
-        trans = f"{1 - self.alpha:.3g}"
-        return f"rgbt <{red}, {green}, {blue}, {trans}>"
+        if self.pigment:
+            return f"pigment {{ {color} }}"
+
+        return color
+
+
+class Background(Color):
+    pigment: bool = False
+
+    def __str__(self) -> str:
+        return f"background {{ {super().__str__()} }}"
 
 
 def rgb(color: str) -> tuple[float, float, float]:

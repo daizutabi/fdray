@@ -9,24 +9,14 @@ import pytest
 def scene() -> str:
     scene = """\
     #version 3.7;
-    #include "colors.inc"
-
-    global_settings {
-      assumed_gamma 1.0
-    }
-
-    background { color Cyan }
-    camera {
-        location <0, 2, -3>
-        look_at  <0, 1,  2>
-    }
+    global_settings { assumed_gamma 1 }
+    background { rgb <0, 1, 1> }
+    camera { location <0, 2, -3> look_at <0, 1, 2> }
+    light_source { <2, 4, -3> color rgb <1, 1, 1> }
     sphere {
-        <0, 1, 2>, 2
-        texture {
-          pigment { color Yellow }
-        }
+      <0, 1, 2>, 2
+      pigment { rgb <1, 1, 0> }
     }
-    light_source { <2, 4, -3> color White}
     """
 
     return textwrap.dedent(scene)
