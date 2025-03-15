@@ -13,7 +13,7 @@ def test_attribute_missing():
 
 
 def test_attribute_bool():
-    from fdray.scene import LightSource
+    from fdray.scene import Spotlight
 
-    x = LightSource((1, 2, 3), shadowless=True)
-    assert str(x) == "light_source { <1, 2, 3> shadowless }"
+    x = Spotlight((1, 2, 3), shadowless=True)
+    assert str(x) == "light_source { <1, 2, 3> shadowless spotlight }"
