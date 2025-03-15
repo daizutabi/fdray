@@ -34,16 +34,21 @@ class Renderer:
         height: int | None = None,
         output_alpha: bool | None = None,
         quality: int | None = None,
+        threads: int | None = None,
         display: bool | None = None,
     ) -> None:
         if width is not None:
             self.width = width
         if height is not None:
             self.height = height
+        else:
+            self.height = self.width * 3 // 4
         if output_alpha is not None:
             self.output_alpha = output_alpha
         if quality is not None:
             self.quality = quality
+        if threads is not None:
+            self.threads = threads
         if display is not None:
             self.display = display
 
