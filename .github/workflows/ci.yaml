@@ -20,11 +20,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest]
         python-version: ["3.10", "3.11", "3.12", "3.13"]
 
     steps:
       - uses: actions/checkout@v4
+      - name: Install POV-Ray
+        run: |
+          apt-get update
+          apt-get install -y povray povray-includes
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
