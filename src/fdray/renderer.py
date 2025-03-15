@@ -11,6 +11,8 @@ from typing import TYPE_CHECKING, overload
 import numpy as np
 from PIL import Image
 
+from .scene import Scene
+
 if TYPE_CHECKING:
     from typing import Any
 
@@ -69,10 +71,10 @@ class Renderer:
         return args
 
     @overload
-    def render(self, scene: str) -> NDArray[np.uint8]: ...
+    def render(self, scene: Any) -> NDArray[np.uint8]: ...
 
     @overload
-    def render(self, scene: str, output_file: str | Path) -> CompletedProcess: ...
+    def render(self, scene: Any, output_file: str | Path) -> CompletedProcess: ...
 
     def render(
         self,
@@ -91,6 +93,9 @@ class Renderer:
             CompletedProcess: Process information if output_file is specified
 
         """
+        if isinstance(scene, Scene):
+            scene.set_aspect_ratio(self.width, self.height)
+
         if output_file:
             command = self.get_command(str(scene), output_file)
             return subprocess.run(command, check=False, capture_output=True)

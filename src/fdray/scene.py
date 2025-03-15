@@ -18,6 +18,14 @@ class Camera(Attribute):
     location: Point = (0, 0, 0)
     look_at: Point = (0, 0, 0)
     angle: float | None = None
+    up: Sequence[float] | None = None
+    right: Sequence[float] | None = None
+
+    def set_aspect_ratio(self, width: int, height: int) -> None:
+        if self.up is None and self.right is None:
+            aspect_ratio = float(f"{width / height:.4g}")
+            self.up = (0, 1, 0)
+            self.right = (aspect_ratio, 0, 0)
 
 
 @dataclass
@@ -83,3 +91,8 @@ class Scene:
         version = f"#version {self.version};"
         attrs = [version, self.global_settings, *self.attrs]
         return "\n".join(str(attr) for attr in attrs if attr is not None)
+
+    def set_aspect_ratio(self, width: int, height: int) -> None:
+        for attr in self.attrs:
+            if isinstance(attr, Camera):
+                attr.set_aspect_ratio(width, height)
