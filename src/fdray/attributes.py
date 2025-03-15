@@ -2,15 +2,14 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import MISSING, dataclass, fields
-from typing import TYPE_CHECKING, TypeAlias
+from typing import TYPE_CHECKING
 
 from .utils import convert
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-
-Point: TypeAlias = Sequence[float]
+    from .typing import Point, Scale, Vector
 
 
 @dataclass
@@ -37,9 +36,9 @@ class Attribute:
 class Transform(Attribute):
     """POV-Ray transformation attributes."""
 
-    scale: Sequence[float] | float | None = None
-    rotate: Sequence[float] | None = None
-    translate: Sequence[float] | None = None
+    scale: Scale | None = None
+    rotate: Vector | None = None
+    translate: Vector | None = None
 
 
 @dataclass

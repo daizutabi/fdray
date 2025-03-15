@@ -8,7 +8,7 @@ from .utils import convert
 if TYPE_CHECKING:
     from typing import Any
 
-    from .attributes import Point
+    from .typing import Point
 
 
 class Shape(ABC):

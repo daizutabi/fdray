@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from .typing import RGB, RGBA
 
 
 class Color:
@@ -15,7 +15,7 @@ class Color:
 
     def __init__(
         self,
-        color: str | Sequence[float],
+        color: str | RGB | RGBA,
         alpha: float | None = None,
         *,
         pigment: bool | None = None,
@@ -64,7 +64,7 @@ class Background(Color):
         return f"background {{ {super().__str__()} }}"
 
 
-def rgb(color: str) -> tuple[float, float, float]:
+def rgb(color: str) -> RGB:
     """Return the RGB color as a tuple of floats.
 
     Args:

@@ -7,10 +7,9 @@ from .attributes import Attribute
 from .colors import Color
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
     from typing import Any
 
-    from .attributes import Point
+    from .typing import RGB, RGBA, Point, Vector
 
 
 @dataclass
@@ -18,8 +17,8 @@ class Camera(Attribute):
     location: Point = (0, 0, 0)
     look_at: Point = (0, 0, 0)
     angle: float | None = None
-    up: Sequence[float] | None = None
-    right: Sequence[float] | None = None
+    up: Vector | None = None
+    right: Vector | None = None
 
     def set_aspect_ratio(self, width: int, height: int) -> None:
         if self.up is None and self.right is None:
@@ -31,7 +30,7 @@ class Camera(Attribute):
 @dataclass
 class LightSource(Attribute):
     location: Point
-    color: Color | str | Sequence[float] | None = None
+    color: Color | str | RGB | RGBA | None = None
     shadowless: bool = False
     fade_distance: float | None = None
     fade_power: float | None = None
@@ -39,7 +38,7 @@ class LightSource(Attribute):
     def __post_init__(self) -> None:
         if isinstance(self.color, Color):
             c = self.color
-            self.color = Color([c.red, c.green, c.blue], alpha=c.alpha, pigment=False)
+            self.color = Color((c.red, c.green, c.blue), alpha=c.alpha, pigment=False)
         elif self.color is not None:
             self.color = Color(self.color, pigment=False)
 
@@ -96,3 +95,4 @@ class Scene:
         for attr in self.attrs:
             if isinstance(attr, Camera):
                 attr.set_aspect_ratio(width, height)
+                break
