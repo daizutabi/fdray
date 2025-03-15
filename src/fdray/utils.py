@@ -7,12 +7,9 @@ if TYPE_CHECKING:
 
 
 def convert(arg: Any) -> str:
-    if isinstance(arg, dict):
-        return " ".join(f"{k} {convert(v)}" for k, v in arg.items())
-
-    if isinstance(arg, list | tuple):
+    if isinstance(arg, tuple):
         if len(arg) == 2:
-            return f"{arg[0]}, {arg[1]}"
+            return f"{arg[0]} {arg[1]}"
 
         arg = ", ".join(str(x) for x in arg)
         return f"<{arg}>"
