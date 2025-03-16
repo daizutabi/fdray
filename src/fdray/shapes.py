@@ -197,17 +197,70 @@ class Plane(Shape):
         super().__init__(normal, distance, *attrs, **kwargs)
 
 
-def Cuboid(
-    center: Point,
-    size: tuple[float, float, float],
-    *attrs: Any,
-    **kwargs: Any,
-) -> Box:
-    half_x, half_y, half_z = size[0] / 2, size[1] / 2, size[2] / 2
-    corner1 = (center[0] - half_x, center[1] - half_y, center[2] - half_z)
-    corner2 = (center[0] + half_x, center[1] + half_y, center[2] + half_z)
-    return Box(corner1, corner2, *attrs, **kwargs)
+class Cuboid(Shape):
+    nargs: ClassVar[int] = 2
+
+    def __init__(
+        self,
+        center: Point,
+        size: tuple[float, float, float],
+        *attrs: Any,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(center, size, *attrs, **kwargs)
+
+    def __str__(self) -> str:
+        center, size = self.args
+        half_x, half_y, half_z = size[0] / 2, size[1] / 2, size[2] / 2
+        corner1 = (center[0] - half_x, center[1] - half_y, center[2] - half_z)
+        corner2 = (center[0] + half_x, center[1] + half_y, center[2] + half_z)
+        return str(Box(corner1, corner2, *self.attrs))
 
 
-def Cube(center: Point, size: float, *attrs: Any, **kwargs: Any) -> Box:
-    return Cuboid(center, (size, size, size), *attrs, **kwargs)
+class Cube(Shape):
+    nargs: ClassVar[int] = 2
+
+    def __init__(self, center: Point, size: float, *attrs: Any, **kwargs: Any) -> None:
+        super().__init__(center, size, *attrs, **kwargs)
+
+    def __str__(self) -> str:
+        center, size = self.args
+        half = size / 2
+        corner1 = (center[0] - half, center[1] - half, center[2] - half)
+        corner2 = (center[0] + half, center[1] + half, center[2] + half)
+        return str(Box(corner1, corner2, *self.attrs))
+
+
+class ShapeGroup:
+    union: Union
+
+    def __init__(self, *shapes: Shape) -> None:
+        self.union = Union(*shapes)
+
+    def __str__(self) -> str:
+        return str(self.union)
+
+    def __add__(self, other: Any) -> Self:
+        group = self.__class__.__new__(self.__class__)
+        group.union = self.union + other
+        return group
+
+    def add(self, *others: Any) -> Self:
+        group = self.__class__.__new__(self.__class__)
+        group.union = self.union.add(*others)
+        return group
+
+    def scale(self, x: float, y: float | None = None, z: float | None = None) -> Self:
+        group = self.__class__.__new__(self.__class__)
+        group.union = self.union.scale(x, y, z)
+        return group
+
+    def rotate(self, x: float, y: float, z: float) -> Self:
+        group = self.__class__.__new__(self.__class__)
+        group.union = self.union.rotate(x, y, z)
+        return group
+
+    def translate(self, x: float, y: float, z: float) -> Self:
+        group = self.__class__.__new__(self.__class__)
+        group.union = self.union.translate(x, y, z)
+        return group
