@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from abc import ABC
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, overload
 
 from .colors import Color
 from .utils import convert
 
 if TYPE_CHECKING:
-    from typing import Any
+    from typing import Any, Self
 
     from .typing import Point
 
@@ -26,13 +26,40 @@ class Shape(ABC):
         return self.__class__.__name__.lower()
 
     def __str__(self) -> str:
-        args = ", ".join(convert(arg) for arg in self.args)
+        if self.args:
+            args = ", ".join(convert(arg) for arg in self.args)
+            if self.attrs:
+                args = f"  {args}\n"
+        else:
+            args = ""
 
         if self.attrs:
             attrs = "\n".join(f"  {attr}" for attr in self.attrs)
-            return f"{self.name} {{\n  {args}\n{attrs}\n}}"
+            return f"{self.name} {{\n{args}{attrs}\n}}"
 
         return f"{self.name} {{ {args} }}"
+
+    @overload
+    def __add__(self, other: Shape) -> Union: ...
+
+    @overload
+    def __add__(self, other: Any) -> Self: ...
+
+    def __add__(self, other: Shape | Any) -> Union | Self:
+        if isinstance(other, Shape):
+            return Union(self, other)
+
+        attrs = [*self.attrs, other] if self.attrs else [other]
+        return self.__class__(*self.args, *attrs)
+
+    def __sub__(self, other: Shape) -> Difference:
+        return Difference(self, other)
+
+    def __mul__(self, other: Shape) -> Intersection:
+        return Intersection(self, other)
+
+    def __or__(self, other: Shape) -> Merge:
+        return Merge(self, other)
 
 
 def convert_attribute(attr: Any) -> Any:
@@ -47,3 +74,33 @@ def convert_attribute(attr: Any) -> Any:
 class Sphere(Shape):
     def __init__(self, center: Point, radius: float, *attrs: Any) -> None:
         super().__init__([center, radius], *attrs)
+
+
+class Csg(Shape):
+    attrs: list[Any]
+
+    def __init__(self, *attrs: Any) -> None:
+        super().__init__([], *attrs)
+
+    def __add__(self, other: Any) -> Self:
+        attrs = [*self.attrs, other]
+        return self.__class__(*attrs)
+
+
+class Union(Csg):
+    pass
+
+
+class Intersection(Csg):
+    def __mul__(self, other: Shape) -> Self:
+        return super().__add__(other)
+
+
+class Difference(Csg):
+    def __sub__(self, other: Shape) -> Self:
+        return super().__add__(other)
+
+
+class Merge(Csg):
+    def __or__(self, other: Shape) -> Self:
+        return super().__add__(other)
