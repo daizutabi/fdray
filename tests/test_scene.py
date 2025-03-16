@@ -74,3 +74,15 @@ def test_scene_set_aspect_ratio():
     x = Scene(Camera((1, 2, 3)))
     x.set_aspect_ratio(16, 9)
     assert "up <0, 1, 0> right <1.7778, 0, 0>" in str(x)
+
+
+def test_camera_aspect_ratio_multiple():
+    from fdray.scene import Camera, Scene
+
+    camera1 = Camera((1, 0, 0))
+    camera2 = Camera((2, 0, 0))
+    scene = Scene(camera1, camera2)
+
+    scene.set_aspect_ratio(1920, 1080)
+    assert camera1.right == (1.7778, 0, 0)
+    assert camera2.right is None
