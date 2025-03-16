@@ -146,6 +146,13 @@ def test_add():
     assert str(x) == "sphere {\n  <0, 0, 0>, 1\n  abc\n}"
 
 
+def test_add_list():
+    from fdray.shapes import Sphere
+
+    x = Sphere((0, 0, 0), 1).add(["abc", "def"])
+    assert str(x) == "sphere {\n  <0, 0, 0>, 1\n  abc\n  def\n}"
+
+
 def test_scale():
     from fdray.shapes import Sphere
 
@@ -188,3 +195,59 @@ def test_csg_transform():
       translate <1, 2, 3>
     }""")
     assert str(x) == y
+
+
+def test_box():
+    from fdray.shapes import Box
+
+    x = Box((0, 0, 0), (1, 1, 1))
+    assert str(x) == "box { <0, 0, 0>, <1, 1, 1> }"
+
+
+def test_cone():
+    from fdray.shapes import Cone
+
+    x = Cone((0, 0, 0), 1, (1, 0, 0), 2)
+    assert str(x) == "cone { <0, 0, 0>, 1, <1, 0, 0>, 2 }"
+
+
+def test_cone_open_kwarg():
+    from fdray.shapes import Cone
+
+    x = Cone((0, 0, 0), 1, (1, 0, 0), 2, open=True)
+    assert str(x) == "cone {\n  <0, 0, 0>, 1, <1, 0, 0>, 2\n  open\n}"
+
+
+def test_cone_open_arg():
+    from fdray.shapes import Cone
+
+    x = Cone((0, 0, 0), 1, (1, 0, 0), 2, "open")
+    assert str(x) == "cone {\n  <0, 0, 0>, 1, <1, 0, 0>, 2\n  open\n}"
+
+
+def test_cylinder():
+    from fdray.shapes import Cylinder
+
+    x = Cylinder((0, 0, 0), (1, 0, 0), 1)
+    assert str(x) == "cylinder { <0, 0, 0>, <1, 0, 0>, 1 }"
+
+
+def test_plane():
+    from fdray.shapes import Plane
+
+    x = Plane((0, 0, 1), 1)
+    assert str(x) == "plane { <0, 0, 1>, 1 }"
+
+
+def test_cuboid():
+    from fdray.shapes import Cuboid
+
+    x = Cuboid((1, 2, 3), (1, 2, 3))
+    assert str(x) == "box { <0.5, 1.0, 1.5>, <1.5, 3.0, 4.5> }"
+
+
+def test_cube():
+    from fdray.shapes import Cube
+
+    x = Cube((1, 2, 3), 1)
+    assert str(x) == "box { <0.5, 1.5, 2.5>, <1.5, 2.5, 3.5> }"
