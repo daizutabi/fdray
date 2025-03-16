@@ -153,6 +153,13 @@ def test_add_list():
     assert str(x) == "sphere {\n  <0, 0, 0>, 1\n  abc\n  def\n}"
 
 
+def test_add_varargs():
+    from fdray.shapes import Sphere
+
+    x = Sphere((0, 0, 0), 1).add("abc", ["def", "ghi"])
+    assert str(x) == "sphere {\n  <0, 0, 0>, 1\n  abc\n  def\n  ghi\n}"
+
+
 def test_scale():
     from fdray.shapes import Sphere
 
