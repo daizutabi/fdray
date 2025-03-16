@@ -253,8 +253,84 @@ def test_cuboid():
     assert str(x) == "box { <0.5, 1.0, 1.5>, <1.5, 3.0, 4.5> }"
 
 
+def test_cuboid_add_str():
+    from fdray.shapes import Cuboid
+
+    x = Cuboid((1, 2, 3), (1, 2, 3)) + "abc"
+    assert str(x) == "box {\n  <0.5, 1.0, 1.5>, <1.5, 3.0, 4.5>\n  abc\n}"
+
+
 def test_cube():
     from fdray.shapes import Cube
 
     x = Cube((1, 2, 3), 1)
     assert str(x) == "box { <0.5, 1.5, 2.5>, <1.5, 2.5, 3.5> }"
+
+
+def test_cube_add_str():
+    from fdray.shapes import Cube
+
+    x = Cube((1, 2, 3), 1) + "abc"
+    assert str(x) == "box {\n  <0.5, 1.5, 2.5>, <1.5, 2.5, 3.5>\n  abc\n}"
+
+
+def test_shape_group():
+    from fdray.shapes import ShapeGroup, Sphere
+
+    x = ShapeGroup(Sphere((1, 2, 3), 1), Sphere((1, 2, 3), 1))
+    assert str(x) == "union {\n  sphere { <1, 2, 3>, 1 }\n  sphere { <1, 2, 3>, 1 }\n}"
+
+
+def test_shape_group_add_shape():
+    from fdray.shapes import ShapeGroup, Sphere
+
+    x = ShapeGroup(Sphere((1, 2, 3), 1), Sphere((1, 2, 3), 2))
+    x = x + Sphere((1, 2, 3), 3)
+    s = "union {\n  sphere { <1, 2, 3>, 1 }\n  sphere { <1, 2, 3>, 2 }\n"
+    s += "  sphere { <1, 2, 3>, 3 }\n}"
+    assert str(x) == s
+
+
+def test_shape_group_add_str():
+    from fdray.shapes import ShapeGroup, Sphere
+
+    x = ShapeGroup(Sphere((1, 2, 3), 1), Sphere((1, 2, 3), 2))
+    x = x + "abc"
+    s = "union {\n  sphere { <1, 2, 3>, 1 }\n  sphere { <1, 2, 3>, 2 }\n  abc\n}"
+    assert str(x) == s
+
+
+def test_shape_group_add_method():
+    from fdray.shapes import ShapeGroup, Sphere
+
+    x = ShapeGroup(Sphere((1, 2, 3), 1), Sphere((1, 2, 3), 2))
+    x = x.add("abc", "def")
+    s = "union {\n  sphere { <1, 2, 3>, 1 }\n  sphere { <1, 2, 3>, 2 }\n  abc\n  def\n}"
+    assert str(x) == s
+
+
+def test_shape_group_scale():
+    from fdray.shapes import ShapeGroup, Sphere
+
+    x = ShapeGroup(Sphere((1, 2, 3), 1))
+    x = x.scale(2, 3, 4)
+    s = "union {\n  sphere { <1, 2, 3>, 1 }\n  scale <2, 3, 4>\n}"
+    assert str(x) == s
+
+
+def test_shape_group_rotate():
+    from fdray.shapes import ShapeGroup, Sphere
+
+    x = ShapeGroup(Sphere((1, 2, 3), 1))
+    x = x.rotate(1, 2, 3)
+    s = "union {\n  sphere { <1, 2, 3>, 1 }\n  rotate <1, 2, 3>\n}"
+    assert str(x) == s
+
+
+def test_shape_group_translate():
+    from fdray.shapes import ShapeGroup, Sphere
+
+    x = ShapeGroup(Sphere((1, 2, 3), 1))
+    x = x.translate(1, 2, 3)
+    s = "union {\n  sphere { <1, 2, 3>, 1 }\n  translate <1, 2, 3>\n}"
+    assert str(x) == s
