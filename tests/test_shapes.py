@@ -1,3 +1,6 @@
+import textwrap
+
+
 def test_sphere():
     from fdray.shapes import Sphere
 
@@ -134,3 +137,54 @@ def test_merge_or_shape():
     s += "  sphere {\n    <1, 0, 0>, 2\n    pigment { rgb <1, 0, 0> }\n  }\n"
     s += "  sphere { <0, 1, 0>, 3 }\n}"
     assert str(x) == s
+
+
+def test_add():
+    from fdray.shapes import Sphere
+
+    x = Sphere((0, 0, 0), 1).add("abc")
+    assert str(x) == "sphere {\n  <0, 0, 0>, 1\n  abc\n}"
+
+
+def test_scale():
+    from fdray.shapes import Sphere
+
+    x = Sphere((0, 0, 0), 1).scale(2)
+    assert str(x) == "sphere {\n  <0, 0, 0>, 1\n  scale 2\n}"
+
+
+def test_scale_vector():
+    from fdray.shapes import Sphere
+
+    x = Sphere((0, 0, 0), 1).scale(2, 3, 4)
+    assert str(x) == "sphere {\n  <0, 0, 0>, 1\n  scale <2, 3, 4>\n}"
+
+
+def test_rotate():
+    from fdray.shapes import Sphere
+
+    x = Sphere((0, 0, 0), 1).rotate(1, 2, 3)
+    assert str(x) == "sphere {\n  <0, 0, 0>, 1\n  rotate <1, 2, 3>\n}"
+
+
+def test_translate():
+    from fdray.shapes import Sphere
+
+    x = Sphere((0, 0, 0), 1).translate(1, 2, 3)
+    assert str(x) == "sphere {\n  <0, 0, 0>, 1\n  translate <1, 2, 3>\n}"
+
+
+def test_csg_transform():
+    from fdray.shapes import Sphere
+
+    x = Sphere((0, 0, 0), 1) + Sphere((1, 0, 0), 2)
+    x = x.scale(1, 2, 3).rotate(2, 3, 4).translate(1, 2, 3)
+    y = textwrap.dedent("""\
+    union {
+      sphere { <0, 0, 0>, 1 }
+      sphere { <1, 0, 0>, 2 }
+      scale <1, 2, 3>
+      rotate <2, 3, 4>
+      translate <1, 2, 3>
+    }""")
+    assert str(x) == y

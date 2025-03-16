@@ -4,6 +4,7 @@ import textwrap
 from abc import ABC
 from typing import TYPE_CHECKING, ClassVar, overload
 
+from .attributes import Transform
 from .colors import Color
 from .utils import convert
 
@@ -19,10 +20,6 @@ class Shape(ABC):
     attrs: list[Any]
 
     def __init__(self, *args: Any) -> None:
-        if len(args) < self.nargs:
-            msg = f"{self.__class__.__name__} requires {self.nargs} arguments"
-            raise ValueError(msg)
-
         self.args = list(args[: self.nargs])
         self.attrs = [convert_attribute(attr) for attr in args[self.nargs :]]
 
@@ -49,8 +46,7 @@ class Shape(ABC):
         if isinstance(other, Shape):
             return Union(self, other)
 
-        attrs = [*self.attrs, other] if self.attrs else [other]
-        return self.__class__(*self.args, *attrs)
+        return self.__class__(*self.args, *self.attrs, other)
 
     def __sub__(self, other: Shape) -> Difference:
         return Difference(self, other)
@@ -60,6 +56,21 @@ class Shape(ABC):
 
     def __or__(self, other: Shape) -> Merge:
         return Merge(self, other)
+
+    def add(self, other: Any) -> Self:
+        return self.__class__(*self.args, *self.attrs, other)
+
+    def scale(self, x: float, y: float | None = None, z: float | None = None) -> Self:
+        if y is None or z is None:
+            return self.__class__(*self.args, *self.attrs, Transform(scale=x))
+
+        return self.__class__(*self.args, *self.attrs, Transform(scale=(x, y, z)))
+
+    def rotate(self, x: float, y: float, z: float) -> Self:
+        return self.__class__(*self.args, *self.attrs, Transform(rotate=(x, y, z)))
+
+    def translate(self, x: float, y: float, z: float) -> Self:
+        return self.__class__(*self.args, *self.attrs, Transform(translate=(x, y, z)))
 
 
 def convert_attribute(attr: Any) -> Any:
