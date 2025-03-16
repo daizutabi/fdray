@@ -40,6 +40,19 @@ class Color:
             msg = "Invalid color format."
             raise ValueError(msg)
 
+        self._validate()
+
+    def _validate(self) -> None:
+        for x in self.red, self.green, self.blue:
+            if not isinstance(x, float | int) or not 0 <= x <= 1:
+                msg = "Invalid color format."
+                raise ValueError(msg)
+
+        if self.alpha is not None:
+            if not isinstance(self.alpha, float | int) or not 0 <= self.alpha <= 1:
+                msg = "Invalid color format."
+                raise ValueError(msg)
+
     def __str__(self) -> str:
         red = f"{self.red:.3g}"
         green = f"{self.green:.3g}"

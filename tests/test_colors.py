@@ -51,3 +51,17 @@ def test_color_float_error():
 def test_background_str():
     background = Background("blue")
     assert str(background) == "background { rgb <0, 0, 1> }"
+
+
+@pytest.mark.parametrize(
+    "color",
+    [
+        (1.1, 0, 0),
+        (0, 0, 0, 1.1),
+        (0, 0, 0, 1.1, 1.1),
+        (0, 0, 0, 1.1, 1.1, 1.1),
+    ],
+)
+def test_color_validate(color):
+    with pytest.raises(ValueError):
+        Color(color)
