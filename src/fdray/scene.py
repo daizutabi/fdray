@@ -22,7 +22,7 @@ class Camera(Attribute):
 
     def set_aspect_ratio(self, width: int, height: int) -> None:
         if self.up is None and self.right is None:
-            aspect_ratio = float(f"{width / height:.4g}")
+            aspect_ratio = float(f"{width / height:.5g}")
             self.up = (0, 1, 0)
             self.right = (aspect_ratio, 0, 0)
 
