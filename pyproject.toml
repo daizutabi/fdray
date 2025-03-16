@@ -49,9 +49,11 @@ target-version = "py311"
 select = ["ALL"]
 unfixable = ["F401"]
 ignore = [
+  "A002",
   "ANN401",
   "D",
   "FBT001",
+  "N802",
   "PGH003",
   "PLR0913",
   "PLR2004",
