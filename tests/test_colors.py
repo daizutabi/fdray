@@ -39,12 +39,12 @@ def test_color_float_rgba():
 
 
 def test_color_str_error():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Invalid color format."):
         Color("invalid")
 
 
 def test_color_float_error():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Invalid color format."):
         Color((0.2, 0.3, 0.4, 0.6, 0.8), pigment=True)  # type: ignore
 
 
@@ -63,5 +63,5 @@ def test_background_str():
     ],
 )
 def test_color_validate(color):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Invalid color format."):
         Color(color)
