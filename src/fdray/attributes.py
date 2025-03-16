@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections.abc import Sequence
 from dataclasses import MISSING, dataclass, fields
 from typing import TYPE_CHECKING
 
@@ -9,7 +8,7 @@ from .utils import convert
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from .typing import Point, Scale, Vector
+    from .typing import Scale, Vector
 
 
 @dataclass
