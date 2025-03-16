@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import textwrap
 from abc import ABC
-from typing import TYPE_CHECKING, overload
+from typing import TYPE_CHECKING, ClassVar, overload
 
 from .colors import Color
 from .utils import convert
@@ -14,13 +14,17 @@ if TYPE_CHECKING:
 
 
 class Shape(ABC):
+    nargs: ClassVar[int] = 0
     args: list[Any]
-    attrs: list[Any] | None = None
+    attrs: list[Any]
 
-    def __init__(self, args: list[Any], *attrs: Any) -> None:
-        self.args = args
-        if attrs:
-            self.attrs = [convert_attribute(attr) for attr in attrs]
+    def __init__(self, *args: Any) -> None:
+        if len(args) < self.nargs:
+            msg = f"{self.__class__.__name__} requires {self.nargs} arguments"
+            raise ValueError(msg)
+
+        self.args = list(args[: self.nargs])
+        self.attrs = [convert_attribute(attr) for attr in args[self.nargs :]]
 
     @property
     def name(self) -> str:
@@ -70,9 +74,6 @@ def convert_attribute(attr: Any) -> Any:
 class Csg(Shape):
     attrs: list[Any]
 
-    def __init__(self, *attrs: Any) -> None:
-        super().__init__([], *attrs)
-
     def __add__(self, other: Any) -> Self:
         attrs = [*self.attrs, other]
         return self.__class__(*attrs)
@@ -103,5 +104,7 @@ class Merge(Csg):
 
 
 class Sphere(Shape):
+    nargs: ClassVar[int] = 2
+
     def __init__(self, center: Point, radius: float, *attrs: Any) -> None:
-        super().__init__([center, radius], *attrs)
+        super().__init__(center, radius, *attrs)
