@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 
 from .colors import COLOR_PALETTE
-from .shapes import Cube, ShapeGroup, Union
+from .shapes import Cube, ShapeGroup
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
