@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 
 from .colors import COLOR_PALETTE
-from .shapes import Cube, Union
+from .shapes import Cube, ShapeGroup, Union
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -17,9 +17,7 @@ if TYPE_CHECKING:
     from .shapes import Shape
 
 
-class Region:
-    union: Union
-
+class Region(ShapeGroup):
     def __init__(
         self,
         region: NDArray[np.integer[Any]],
@@ -50,28 +48,7 @@ class Region:
             cell = shapes[index].translate(*position)
             cells.append(cell)
 
-        self.union = Union(*cells)
-
-    def __str__(self) -> str:
-        return str(self.union)
-
-    def __add__(self, other: Any) -> Union:
-        return self.union + other
-
-    def translate(self, x: float, y: float, z: float) -> Region:
-        region = Region.__new__(Region)
-        region.union = self.union.translate(x, y, z)
-        return region
-
-    def scale(self, x: float, y: float | None = None, z: float | None = None) -> Region:
-        region = Region.__new__(Region)
-        region.union = self.union.scale(x, y, z)
-        return region
-
-    def rotate(self, x: float, y: float, z: float) -> Region:
-        region = Region.__new__(Region)
-        region.union = self.union.rotate(x, y, z)
-        return region
+        super().__init__(*cells)
 
 
 def get_default_shape(size: float = 0.8) -> Shape:
