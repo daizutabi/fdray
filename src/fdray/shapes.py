@@ -19,9 +19,11 @@ class Shape(ABC):
     args: list[Any]
     attrs: list[Any]
 
-    def __init__(self, *args: Any) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.args = list(args[: self.nargs])
-        self.attrs = [convert_attribute(attr) for attr in args[self.nargs :]]
+        attrs = [convert_attribute(attr) for attr in args[self.nargs :]]
+        kw_attrs = [k for k, v in kwargs.items() if v]
+        self.attrs = [*kw_attrs, *attrs]
 
     @property
     def name(self) -> str:
@@ -57,8 +59,15 @@ class Shape(ABC):
     def __or__(self, other: Shape) -> Merge:
         return Merge(self, other)
 
-    def add(self, other: Any) -> Self:
-        return self.__class__(*self.args, *self.attrs, other)
+    def add(self, *others: Any) -> Self:
+        attrs = []
+        for other in others:
+            if isinstance(other, list | tuple):
+                attrs.extend(other)
+            else:
+                attrs.append(other)
+
+        return self.__class__(*self.args, *self.attrs, *attrs)
 
     def scale(self, x: float, y: float | None = None, z: float | None = None) -> Self:
         if y is None or z is None:
@@ -73,12 +82,19 @@ class Shape(ABC):
         return self.__class__(*self.args, *self.attrs, Transform(translate=(x, y, z)))
 
 
+SHAPE_KEYWORDS = ["open"]
+
+
 def convert_attribute(attr: Any) -> Any:
+    if attr in SHAPE_KEYWORDS:
+        return attr
+
     if isinstance(attr, str | tuple):
         try:
             return Color(attr)
         except ValueError:
             return attr
+
     return attr
 
 
@@ -116,5 +132,82 @@ class Merge(Csg):
 class Sphere(Shape):
     nargs: ClassVar[int] = 2
 
-    def __init__(self, center: Point, radius: float, *attrs: Any) -> None:
-        super().__init__(center, radius, *attrs)
+    def __init__(
+        self,
+        center: Point,
+        radius: float,
+        *attrs: Any,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(center, radius, *attrs, **kwargs)
+
+
+class Box(Shape):
+    nargs: ClassVar[int] = 2
+
+    def __init__(
+        self,
+        corner1: Point,
+        corner2: Point,
+        *attrs: Any,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(corner1, corner2, *attrs, **kwargs)
+
+
+class Cone(Shape):
+    nargs: ClassVar[int] = 4
+
+    def __init__(
+        self,
+        center1: Point,
+        radius1: float,
+        center2: Point,
+        radius2: float,
+        *attrs: Any,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(center1, radius1, center2, radius2, *attrs, **kwargs)
+
+
+class Cylinder(Shape):
+    nargs: ClassVar[int] = 3
+
+    def __init__(
+        self,
+        center1: Point,
+        center2: Point,
+        radius: float,
+        *attrs: Any,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(center1, center2, radius, *attrs, **kwargs)
+
+
+class Plane(Shape):
+    nargs: ClassVar[int] = 2
+
+    def __init__(
+        self,
+        normal: Point,
+        distance: float,
+        *attrs: Any,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(normal, distance, *attrs, **kwargs)
+
+
+def Cuboid(
+    center: Point,
+    size: tuple[float, float, float],
+    *attrs: Any,
+    **kwargs: Any,
+) -> Box:
+    half_x, half_y, half_z = size[0] / 2, size[1] / 2, size[2] / 2
+    corner1 = (center[0] - half_x, center[1] - half_y, center[2] - half_z)
+    corner2 = (center[0] + half_x, center[1] + half_y, center[2] + half_z)
+    return Box(corner1, corner2, *attrs, **kwargs)
+
+
+def Cube(center: Point, size: float, *attrs: Any, **kwargs: Any) -> Box:
+    return Cuboid(center, (size, size, size), *attrs, **kwargs)
