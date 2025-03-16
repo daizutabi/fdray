@@ -86,8 +86,7 @@ class Csg(Shape):
     attrs: list[Any]
 
     def __add__(self, other: Any) -> Self:
-        attrs = [*self.attrs, other]
-        return self.__class__(*attrs)
+        return self.__class__(*self.attrs, other)
 
     def __str__(self) -> str:
         attrs = "\n".join(str(attr) for attr in self.attrs)
