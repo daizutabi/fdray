@@ -8,7 +8,7 @@ from .utils import convert
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from .typing import Scale, Vector
+    from .typing import Vector
 
 
 @dataclass
@@ -32,15 +32,6 @@ class Attribute:
 
 
 @dataclass
-class Transform(Attribute):
-    """POV-Ray transformation attributes."""
-
-    scale: Scale | None = None
-    rotate: Vector | None = None
-    translate: Vector | None = None
-
-
-@dataclass
 class Finish(Attribute):
     """POV-Ray finish attributes."""
 
@@ -61,3 +52,24 @@ class Interior(Attribute):
     caustics: float | None = None
     fade_distance: float | None = None
     fade_power: float | None = None
+
+
+@dataclass
+class Transform(Attribute):
+    """POV-Ray transformation attributes."""
+
+    scale: Vector | float | None = None
+    rotate: Vector | None = None
+    translate: Vector | None = None
+
+    def __str__(self) -> str:
+        if self.scale is not None and self.rotate is None and self.translate is None:
+            return f"scale {convert(self.scale)}"
+
+        if self.scale is None and self.rotate is not None and self.translate is None:
+            return f"rotate {convert(self.rotate)}"
+
+        if self.scale is None and self.rotate is None and self.translate is not None:
+            return f"translate {convert(self.translate)}"
+
+        return super().__str__()

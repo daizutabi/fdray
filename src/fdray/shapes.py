@@ -67,11 +67,6 @@ def convert_attribute(attr: Any) -> Any:
     return attr
 
 
-class Sphere(Shape):
-    def __init__(self, center: Point, radius: float, *attrs: Any) -> None:
-        super().__init__([center, radius], *attrs)
-
-
 class Csg(Shape):
     attrs: list[Any]
 
@@ -105,3 +100,8 @@ class Difference(Csg):
 class Merge(Csg):
     def __or__(self, other: Shape) -> Self:
         return super().__add__(other)
+
+
+class Sphere(Shape):
+    def __init__(self, center: Point, radius: float, *attrs: Any) -> None:
+        super().__init__([center, radius], *attrs)
