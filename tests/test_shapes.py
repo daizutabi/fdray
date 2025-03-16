@@ -128,8 +128,9 @@ def test_difference_sub_shape():
 def test_merge_or_shape():
     from fdray.shapes import Merge, Sphere
 
-    x = Sphere((0, 0, 0), 1) | Sphere((1, 0, 0), 2) | Sphere((0, 1, 0), 3)
+    x = Sphere((0, 0, 0), 1) | Sphere((1, 0, 0), 2, "red") | Sphere((0, 1, 0), 3)
     assert isinstance(x, Merge)
-    s = "merge {\n  sphere { <0, 0, 0>, 1 }\n  sphere { <1, 0, 0>, 2 }\n"
+    s = "merge {\n  sphere { <0, 0, 0>, 1 }\n"
+    s += "  sphere {\n    <1, 0, 0>, 2\n    pigment { rgb <1, 0, 0> }\n  }\n"
     s += "  sphere { <0, 1, 0>, 3 }\n}"
     assert str(x) == s

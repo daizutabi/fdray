@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import textwrap
 from abc import ABC
 from typing import TYPE_CHECKING, overload
 
@@ -26,16 +27,11 @@ class Shape(ABC):
         return self.__class__.__name__.lower()
 
     def __str__(self) -> str:
-        if self.args:
-            args = ", ".join(convert(arg) for arg in self.args)
-            if self.attrs:
-                args = f"  {args}\n"
-        else:
-            args = ""
+        args = ", ".join(convert(arg) for arg in self.args)
 
         if self.attrs:
             attrs = "\n".join(f"  {attr}" for attr in self.attrs)
-            return f"{self.name} {{\n{args}{attrs}\n}}"
+            return f"{self.name} {{\n  {args}\n{attrs}\n}}"
 
         return f"{self.name} {{ {args} }}"
 
@@ -85,6 +81,11 @@ class Csg(Shape):
     def __add__(self, other: Any) -> Self:
         attrs = [*self.attrs, other]
         return self.__class__(*attrs)
+
+    def __str__(self) -> str:
+        attrs = "\n".join(str(attr) for attr in self.attrs)
+        attrs = textwrap.indent(attrs, "  ")
+        return f"{self.name} {{\n{attrs}\n}}"
 
 
 class Union(Csg):
