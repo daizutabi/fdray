@@ -3,6 +3,7 @@ from __future__ import annotations
 from abc import ABC
 from typing import TYPE_CHECKING
 
+from .colors import Color
 from .utils import convert
 
 if TYPE_CHECKING:
@@ -14,6 +15,11 @@ if TYPE_CHECKING:
 class Shape(ABC):
     args: list[Any]
     attrs: list[Any] | None = None
+
+    def __init__(self, args: list[Any], *attrs: Any) -> None:
+        self.args = args
+        if attrs:
+            self.attrs = [convert_attribute(attr) for attr in attrs]
 
     @property
     def name(self) -> str:
@@ -29,8 +35,15 @@ class Shape(ABC):
         return f"{self.name} {{ {args} }}"
 
 
+def convert_attribute(attr: Any) -> Any:
+    if isinstance(attr, str | tuple):
+        try:
+            return Color(attr)
+        except ValueError:
+            return attr
+    return attr
+
+
 class Sphere(Shape):
     def __init__(self, center: Point, radius: float, *attrs: Any) -> None:
-        self.args = [center, radius]
-        if attrs:
-            self.attrs = list(attrs)
+        super().__init__([center, radius], *attrs)
