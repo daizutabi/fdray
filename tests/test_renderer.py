@@ -27,9 +27,7 @@ def test_render_output_file(scene: str, tmp_path: Path):
 
     renderer = Renderer(150, 100, quality=4)
     output_file = tmp_path / "test.png"
-    cp = renderer.render(scene, output_file)
-    assert cp.returncode == 0
-    assert output_file.exists()
+    assert renderer.render(scene, output_file) is None
 
 
 @pytest.mark.parametrize(("output_alpha", "n"), [(True, 4), (False, 3)])

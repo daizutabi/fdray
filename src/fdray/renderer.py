@@ -4,7 +4,6 @@ import atexit
 import shutil
 import subprocess
 from pathlib import Path
-from subprocess import CompletedProcess
 from tempfile import NamedTemporaryFile, mkdtemp
 from typing import TYPE_CHECKING, overload
 
@@ -17,6 +16,15 @@ if TYPE_CHECKING:
     from typing import Any
 
     from numpy.typing import NDArray
+
+
+class RenderError(Exception):
+    """Rendering error"""
+
+    def __init__(self, stderr: str) -> None:
+        message = "POV-Ray rendering failed:\n"
+        message += "\n".join(f"  {line}" for line in stderr.splitlines())
+        super().__init__(message)
 
 
 class Renderer:
@@ -79,40 +87,39 @@ class Renderer:
     def render(self, scene: Any) -> NDArray[np.uint8]: ...
 
     @overload
-    def render(self, scene: Any, output_file: str | Path) -> CompletedProcess[str]: ...
+    def render(self, scene: Any, output_file: str | Path) -> None: ...
 
     def render(
         self,
         scene: Any,
         output_file: str | Path | None = None,
-    ) -> NDArray[np.uint8] | CompletedProcess[str]:
-        """Render POV-Ray scene.
+    ) -> NDArray[np.uint8] | None:
+        """Render a POV-Ray scene.
 
         Args:
-            scene (Any): POV-Ray scene description
-            output_file (str | Path | None): Output image file path.
-                If None, returns numpy array
+            scene: POV-Ray scene description
+            output_file: Output image file path.
+                If None, returns a numpy array instead of saving to file.
 
         Returns:
-            np.ndarray: RGB(A) image array if output_file is None
-            CompletedProcess: Process information if output_file is specified
-
+            NDArray[np.uint8] | None: RGB(A) image array if output_file is None
         """
         if isinstance(scene, Scene):
             scene.set_aspect_ratio(self.width, self.height)
 
-        if output_file:
-            command = self.build(str(scene), output_file)
-            return subprocess.run(command, check=False, capture_output=True, text=True)
+        command = self.build(str(scene), output_file)
+        cp = subprocess.run(command, check=False, capture_output=True, text=True)
 
-        with NamedTemporaryFile(suffix=".png") as file:
-            output_file = Path(file.name)
-            cp = self.render(scene, output_file)
+        if cp.returncode != 0:
+            raise RenderError(cp.stderr)
 
-            if cp.returncode != 0:
-                raise RuntimeError(cp.stderr)
+        if output_file is None:
+            with NamedTemporaryFile(suffix=".png") as file:
+                output_file = Path(file.name)
+                self.render(scene, output_file)
+                return np.array(Image.open(output_file))
 
-            return np.array(Image.open(output_file))
+        return None
 
 
 def to_switch(value: bool) -> str:
