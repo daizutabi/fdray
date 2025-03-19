@@ -52,7 +52,7 @@ class Renderer:
         if display is not None:
             self.display = display
 
-    def get_command(
+    def build(
         self,
         scene: str,
         output_file: str | Path | None = None,
@@ -79,13 +79,13 @@ class Renderer:
     def render(self, scene: Any) -> NDArray[np.uint8]: ...
 
     @overload
-    def render(self, scene: Any, output_file: str | Path) -> CompletedProcess: ...
+    def render(self, scene: Any, output_file: str | Path) -> CompletedProcess[str]: ...
 
     def render(
         self,
         scene: Any,
         output_file: str | Path | None = None,
-    ) -> NDArray[np.uint8] | CompletedProcess:
+    ) -> NDArray[np.uint8] | CompletedProcess[str]:
         """Render POV-Ray scene.
 
         Args:
@@ -102,8 +102,8 @@ class Renderer:
             scene.set_aspect_ratio(self.width, self.height)
 
         if output_file:
-            command = self.get_command(str(scene), output_file)
-            return subprocess.run(command, check=False, capture_output=True)
+            command = self.build(str(scene), output_file)
+            return subprocess.run(command, check=False, capture_output=True, text=True)
 
         with NamedTemporaryFile(suffix=".png") as file:
             output_file = Path(file.name)

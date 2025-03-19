@@ -42,15 +42,6 @@ def test_render_array(scene: str, output_alpha: bool, n: int):
     assert array.dtype == np.uint8
 
 
-def test_render_options():
-    from fdray.renderer import Renderer
-
-    renderer = Renderer(display=True, threads=2)
-    x = renderer.get_command("test")
-    assert "Display=on" in x
-    assert "Work_Threads=2" in x
-
-
 def test_render_error():
     from fdray.renderer import Renderer
 
@@ -81,3 +72,12 @@ def test_render_scene():
 
     assert camera.up == (0, 1, 0)
     assert camera.right == (0.5, 0, 0)
+
+
+def test_build_options():
+    from fdray.renderer import Renderer
+
+    renderer = Renderer(display=True, threads=2)
+    x = renderer.build("test")
+    assert "Display=on" in x
+    assert "Work_Threads=2" in x

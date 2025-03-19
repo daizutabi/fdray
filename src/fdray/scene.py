@@ -19,6 +19,7 @@ class Camera(Attribute):
     angle: float | None = None
     up: Vector | None = None
     right: Vector | None = None
+    orthographic: bool = True
 
     def set_aspect_ratio(self, width: int, height: int) -> None:
         if self.up is None and self.right is None:
