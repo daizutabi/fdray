@@ -20,11 +20,14 @@ if TYPE_CHECKING:
 class Region(ShapeGroup):
     def __init__(
         self,
-        region: NDArray[np.integer[Any]],
+        region: list[int] | NDArray[np.integer[Any]],
         shape: Shape | None = None,
         spacing: float | tuple[float, ...] = 1,
         attrs: Mapping[int, Any] | None = None,
     ) -> None:
+        if isinstance(region, list):
+            region = np.array(region)
+
         shape = shape or get_default_shape()
         attrs = attrs or get_default_attrs(region)
         shapes = {k: shape.add(v) for k, v in attrs.items()}
