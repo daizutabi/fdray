@@ -2,7 +2,8 @@ def test_camera():
     from fdray.scene import Camera
 
     camera = Camera((1, 2, 3))
-    assert str(camera) == "camera { location <1, 2, 3> look_at <0, 0, 0> }"
+    assert str(camera).startswith("camera { orthographic location <1, 2, 3>")
+    assert str(camera).endswith("3> look_at <0, 0, 0> angle 45 }")
 
 
 def test_camera_aspect_ratio():
@@ -10,8 +11,8 @@ def test_camera_aspect_ratio():
 
     camera = Camera((1, 2, 3))
     camera.set_aspect_ratio(16, 9)
-    assert camera.up == (0, 1, 0)
-    assert camera.right == (1.7778, 0, 0)
+    assert camera.up == (0, 3.4075, 0)
+    assert camera.right == (6.0578, 0, 0)
 
 
 def test_light_source_color_color():
@@ -73,7 +74,7 @@ def test_scene_set_aspect_ratio():
 
     x = Scene(Camera((1, 2, 3)))
     x.set_aspect_ratio(16, 9)
-    assert "up <0, 1, 0> right <1.7778, 0, 0>" in str(x)
+    assert "up <0, 3.4075, 0> right <6.0578, 0, 0>" in str(x)
 
 
 def test_camera_aspect_ratio_multiple():
@@ -84,5 +85,5 @@ def test_camera_aspect_ratio_multiple():
     scene = Scene(camera1, camera2)
 
     scene.set_aspect_ratio(1920, 1080)
-    assert camera1.right == (1.7778, 0, 0)
+    assert camera1.right == (1.619, 0, 0)
     assert camera2.right is None

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextlib import contextmanager
 from dataclasses import MISSING, dataclass, fields
 from typing import TYPE_CHECKING
 
@@ -7,6 +8,7 @@ from .utils import convert
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
+    from typing import Any
 
     from .typing import Vector
 
@@ -29,6 +31,18 @@ class Attribute:
 
     def __str__(self) -> str:
         return f"{self.name} {{ {' '.join(self)} }}"
+
+    @contextmanager
+    def none(self, *names: Any) -> Iterator[None]:
+        names = tuple(name for name in names if isinstance(name, str))
+        values = [getattr(self, name) for name in names]
+        for name in names:
+            setattr(self, name, None)
+        try:
+            yield
+        finally:
+            for name, value in zip(names, values, strict=True):
+                setattr(self, name, value)
 
 
 @dataclass

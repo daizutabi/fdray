@@ -22,9 +22,14 @@ class RenderError(Exception):
     """Rendering error"""
 
     def __init__(self, stderr: str) -> None:
-        message = "POV-Ray rendering failed:\n"
-        message += "\n".join(f"  {line}" for line in stderr.splitlines())
-        super().__init__(message)
+        lines = []
+        for line in stderr.splitlines():
+            if "[Parsing" in line:
+                lines.clear()
+            lines.append(line)
+
+        message = "POV-Ray rendering failed:"
+        super().__init__("\n".join([message, *lines]))
 
 
 class Renderer:

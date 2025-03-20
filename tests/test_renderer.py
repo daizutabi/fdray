@@ -41,10 +41,10 @@ def test_render_array(scene: str, output_alpha: bool, n: int):
 
 
 def test_render_error():
-    from fdray.renderer import Renderer
+    from fdray.renderer import Renderer, RenderError
 
     renderer = Renderer(100, 200)
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RenderError):
         renderer.render("test")
 
 
@@ -68,8 +68,8 @@ def test_render_scene():
     renderer = Renderer(120, 240)
     renderer.render(scene)
 
-    assert camera.up == (0, 1, 0)
-    assert camera.right == (0.5, 0, 0)
+    assert camera.up == (0, 3.4075, 0)
+    assert camera.right == (1.7038, 0, 0)
 
 
 def test_build_options():
@@ -79,3 +79,10 @@ def test_build_options():
     x = renderer.build("test")
     assert "Display=on" in x
     assert "Work_Threads=2" in x
+
+
+def test_render_error_message():
+    from fdray.renderer import RenderError
+
+    error = RenderError("a\n= [Parsing...] =\nb")
+    assert str(error) == "POV-Ray rendering failed:\n= [Parsing...] =\nb"

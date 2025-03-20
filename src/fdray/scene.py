@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -7,6 +8,7 @@ from .attributes import Attribute
 from .colors import Color
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from typing import Any
 
     from .typing import RGB, RGBA, Point, Vector
@@ -16,16 +18,32 @@ if TYPE_CHECKING:
 class Camera(Attribute):
     location: Point = (0, 0, 0)
     look_at: Point = (0, 0, 0)
-    angle: float | None = None
+    angle: float = 45
     up: Vector | None = None
     right: Vector | None = None
     orthographic: bool = True
 
-    def set_aspect_ratio(self, width: int, height: int) -> None:
+    def set_aspect_ratio(self, width: float, height: float) -> None:
         if self.up is None and self.right is None:
-            aspect_ratio = float(f"{width / height:.5g}")
-            self.up = (0, 1, 0)
-            self.right = (aspect_ratio, 0, 0)
+            aspect_ratio = width / height
+            up = self.get_view_height()
+            right = up * aspect_ratio
+            self.up = (0, float(f"{up:.5g}"), 0)
+            self.right = (float(f"{right:.5g}"), 0, 0)
+
+    def get_view_height(self) -> float:
+        it = zip(self.location, self.look_at, strict=True)
+        distance = sum((a - b) ** 2 for a, b in it) ** 0.5
+        scale = 0.7071 / math.tan(math.radians(65.5 / 2))
+        return 2 * distance * scale * math.tan(math.radians(self.angle / 2))
+
+    def __iter__(self) -> Iterator[str]:
+        if self.orthographic:
+            yield "orthographic"
+
+        # with self.none("orthographic", self.orthographic and "angle"):
+        with self.none("orthographic"):
+            yield from super().__iter__()
 
 
 @dataclass

@@ -5,7 +5,7 @@ def test_attribute_str():
     assert str(x) == "transform { scale 0.5 rotate <1, 2, 3> }"
 
 
-def test_attribute_missing():
+def test_attribute_none():
     from fdray.scene import LightSource
 
     x = LightSource((1, 2, 3))
