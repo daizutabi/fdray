@@ -20,6 +20,13 @@ def test_light_source_color_rgba():
     assert "rgbt <0.1, 0.2, 0.3, 0.6>" in str(x)
 
 
+def test_spotlight():
+    from fdray.scene import Spotlight
+
+    x = Spotlight((1, 2, 3), "red")
+    assert str(x) == "light_source { <1, 2, 3> color rgb <1, 0, 0> spotlight }"
+
+
 def test_global_settings():
     from fdray.scene import GlobalSettings
 
