@@ -250,14 +250,14 @@ def test_cuboid():
     from fdray.shapes import Cuboid
 
     x = Cuboid((1, 2, 3), (1, 2, 3))
-    assert str(x) == "box { <0.5, 1.0, 1.5>, <1.5, 3.0, 4.5> }"
+    assert str(x) == "box { <0.5, 1, 1.5>, <1.5, 3, 4.5> }"
 
 
 def test_cuboid_add_str():
     from fdray.shapes import Cuboid
 
     x = Cuboid((1, 2, 3), (1, 2, 3)) + "abc"
-    assert str(x) == "box {\n  <0.5, 1.0, 1.5>, <1.5, 3.0, 4.5>\n  abc\n}"
+    assert str(x) == "box {\n  <0.5, 1, 1.5>, <1.5, 3, 4.5>\n  abc\n}"
 
 
 def test_cube():
