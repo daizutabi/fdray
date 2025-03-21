@@ -249,23 +249,31 @@ class SphereSweep(Shape):
         *attrs: Any,
         **kwargs: Any,
     ) -> None:
-        if kind in ["b_spline", "cubic_spline"] and len(centers) < 4:
-            msg = f"At least 4 points are required for {kind}"
-            raise ValueError(msg)
-
-        if kind == "linear_spline" and len(centers) < 2:
-            msg = "At least 2 points are required for linear spline"
-            raise ValueError(msg)
-
         super().__init__(kind, centers, radius, *attrs, **kwargs)
 
     def __iter__(self) -> Iterator[str]:
         kind, centers, radius = self.args
+
         yield f"{kind}, {len(centers)}"
         radii = radius if isinstance(radius, Sequence) else repeat(radius)
         it = zip(centers, radii, strict=False)
         yield ", ".join(f"{convert(c)}, {convert(r)}" for c, r in it)
         yield from (str(attr) for attr in self.attrs)
+
+    def __str__(self) -> str:
+        kind, centers, radius = self.args
+
+        if len(centers) == 0:
+            return ""
+
+        if len(centers) == 1:
+            radius = radius[0] if isinstance(radius, Sequence) else radius
+            return str(Sphere(centers[0], radius, *self.attrs))
+
+        if kind in ["b_spline", "cubic_spline"] and len(centers) < 4:
+            return str(SphereSweep("linear_spline", centers, radius, *self.attrs))
+
+        return super().__str__()
 
 
 class Polyline(Shape):
@@ -273,6 +281,15 @@ class Polyline(Shape):
 
     This is a convenience class that creates a sphere sweep with linear_spline
     interpolation, providing a simpler interface for creating polylines.
+
+    Args:
+        centers (Sequence[Point] | NDArray[np.number]): Sequence of 3D
+            points or NumPy array with shape (n, 3) where n is the number
+            of points.
+        radius (float | Sequence[float]): Constant radius or sequence
+            of radii for each point.
+        *attrs: Additional attributes.
+        **kwargs: Additional keyword attributes.
     """
 
     nargs: ClassVar[int] = 2
@@ -285,17 +302,6 @@ class Polyline(Shape):
         *attrs: Any,
         **kwargs: Any,
     ) -> None:
-        """Initialize a polyline.
-
-        Args:
-            centers (Sequence[Point] | NDArray[np.number]): Sequence of 3D
-                points or NumPy array with shape (n, 3) where n is the number
-                of points.
-            radius (float | Sequence[float]): Constant radius or sequence
-                of radii for each point.
-            *attrs: Additional attributes.
-            **kwargs: Additional keyword attributes.
-        """
         super().__init__(centers, radius, *attrs, **kwargs)
 
     def __str__(self) -> str:
@@ -324,21 +330,25 @@ class Curve(Polyline):
 
     Unlike standard cubic splines which may not pass through the endpoints,
     this implementation ensures the curve follows all specified points exactly.
+
+    Args:
+        centers (Sequence[Point] | NDArray[np.number]): Sequence of 3D
+            points or NumPy array with shape (n, 3) where n is the number
+            of points.
+        radius (float | Sequence[float]): Constant radius or sequence
+            of radii for each point.
+        *attrs: Additional attributes.
+        **kwargs: Additional keyword attributes.
     """
 
     nargs: ClassVar[int] = 2
     kind: ClassVar[Literal["cubic_spline"]] = "cubic_spline"
 
-    def __init__(
-        self,
-        centers: Sequence[Point] | NDArray[np.number],
-        radius: float | Sequence[float],
-        *attrs: Any,
-        **kwargs: Any,
-    ) -> None:
+    def __str__(self) -> str:
+        centers, radius = self.args
+
         if len(centers) < 2:
-            msg = "At least 2 points are required"
-            raise ValueError(msg)
+            return str(SphereSweep("linear_spline", centers, radius, *self.attrs))
 
         first, second = centers[0], centers[1]
         ghost_first = (
@@ -359,7 +369,7 @@ class Curve(Polyline):
         if isinstance(radius, Sequence):
             radius = [radius[0], *radius, radius[-1]]
 
-        super().__init__(centers, radius, *attrs, **kwargs)
+        return str(SphereSweep(self.kind, centers, radius, *self.attrs))
 
 
 class Cuboid(Shape):
