@@ -15,7 +15,7 @@ class Color:
 
     def __init__(
         self,
-        color: str | RGB | RGBA,
+        color: str | RGB | RGBA | tuple[RGB, float] | tuple[str, float],
         alpha: float | None = None,
         *,
         pigment: bool | None = None,
@@ -29,6 +29,13 @@ class Color:
                 self.alpha = int(color[7:9], 16) / 255
                 color = color[:7]
             self.red, self.green, self.blue = rgb(color)
+
+        elif len(color) == 2:
+            if isinstance(color[0], str):
+                self.red, self.green, self.blue = rgb(color[0])
+            else:
+                self.red, self.green, self.blue = color[0]
+            self.alpha = color[1]
 
         elif len(color) == 3:
             self.red, self.green, self.blue = color

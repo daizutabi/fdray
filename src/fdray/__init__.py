@@ -4,7 +4,17 @@ from .colors import Background, Color
 from .region import Region
 from .renderer import Renderer
 from .scene import LightSource, Scene, Spotlight
-from .shapes import Box, Cone, Cube, Cuboid, Cylinder, Sphere
+from .shapes import (
+    Box,
+    Cone,
+    Cube,
+    Cuboid,
+    Curve,
+    Cylinder,
+    Polyline,
+    Sphere,
+    SphereSweep,
+)
 
 __all__ = [
     "Background",
@@ -14,14 +24,17 @@ __all__ = [
     "Cone",
     "Cube",
     "Cuboid",
+    "Curve",
     "Cylinder",
     "Finish",
     "Interior",
     "LightSource",
+    "Polyline",
     "Region",
     "Renderer",
     "Scene",
     "Sphere",
+    "SphereSweep",
     "Spotlight",
     "Transform",
 ]
