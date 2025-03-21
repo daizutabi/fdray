@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import atexit
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -37,6 +38,7 @@ class Renderer:
     height: int = 600
     output_alpha: bool = True
     quality: int = 9
+    antialias: bool = True
     threads: int | None = None
     display: bool = False
     executable: str = "povray"
@@ -49,6 +51,7 @@ class Renderer:
         height: int | None = None,
         output_alpha: bool | None = None,
         quality: int | None = None,
+        antialias: bool | None = None,
         threads: int | None = None,
         display: bool | None = None,
     ) -> None:
@@ -62,6 +65,8 @@ class Renderer:
             self.output_alpha = output_alpha
         if quality is not None:
             self.quality = quality
+        if antialias is not None:
+            self.antialias = antialias
         if threads is not None:
             self.threads = threads
         if display is not None:
@@ -79,6 +84,7 @@ class Renderer:
             f"Height={self.height}",
             f"Output_Alpha={to_switch(self.output_alpha)}",
             f"Quality={self.quality}",
+            f"Antialias={to_switch(self.antialias)}",
             f"Display={to_switch(self.display)}",
             f"Input_File_Name={input_file}",
         ]
@@ -125,10 +131,10 @@ class Renderer:
         command = self.build(scene, output_file)
         cp = subprocess.run(command, check=False, capture_output=True, text=True)
         self.stdout = cp.stdout
-        self.stderr = cp.stderr
+        self.stderr = remove_progress(cp.stderr)
 
         if cp.returncode != 0:
-            raise RenderError(cp.stderr)
+            raise RenderError(self.stderr)
 
         return None
 
@@ -156,3 +162,7 @@ def create_input_file(scene: str) -> Path:
     file.write_text(scene)
     atexit.register(lambda: shutil.rmtree(tmp_dir))
     return file
+
+
+def remove_progress(stderr: str) -> str:
+    return re.sub(r"^=+ \[Rendering.*?---$", "", stderr, flags=re.MULTILINE | re.DOTALL)

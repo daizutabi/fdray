@@ -9,7 +9,7 @@ from .colors import COLOR_PALETTE
 from .shapes import Cube, ShapeGroup
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Iterator, Mapping
     from typing import Any
 
     from numpy.typing import NDArray
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 class Region(ShapeGroup):
     def __init__(
         self,
-        region: list[int] | NDArray[np.integer[Any]],
+        region: list[int] | NDArray[np.integer],
         shape: Shape | None = None,
         spacing: float | tuple[float, ...] = 1,
         attrs: Mapping[int, Any] | None = None,
@@ -38,25 +38,23 @@ class Region(ShapeGroup):
             msg = f"Spacing must have {region.ndim} components"
             raise ValueError(msg)
 
-        cells = []
+        def iter_shapes() -> Iterator[Shape]:
+            for idx in np.ndindex(region.shape):
+                index = region[idx]
+                if index not in shapes:
+                    continue
 
-        for idx in np.ndindex(region.shape):
-            index = region[idx]
-            if index not in shapes:
-                continue
+                position = (i * s for i, s in zip(idx, spacing, strict=True))
+                position = (*position, 0, 0)[:3]  # for 1D or 2D regions
 
-            position = (i * s for i, s in zip(idx, spacing, strict=True))
-            position = (*position, 0, 0)[:3]
+                yield shapes[index].translate(*position)
 
-            cell = shapes[index].translate(*position)
-            cells.append(cell)
-
-        super().__init__(*cells)
+        super().__init__(*iter_shapes())
 
 
-def get_default_shape(size: float = 0.8) -> Shape:
+def get_default_shape(size: float = 0.85) -> Shape:
     return Cube((0, 0, 0), size)
 
 
-def get_default_attrs(region: NDArray[np.integer[Any]]) -> dict[int, Any]:
+def get_default_attrs(region: NDArray[np.integer]) -> dict[int, Any]:
     return dict(zip(np.unique(region), cycle(COLOR_PALETTE), strict=False))
