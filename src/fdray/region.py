@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from .colors import COLOR_PALETTE
+from .color import COLOR_PALETTE, Color
 from .shapes import Cube, ShapeGroup
 
 if TYPE_CHECKING:
@@ -57,4 +57,5 @@ def get_default_shape(size: float = 0.85) -> Shape:
 
 
 def get_default_attrs(region: NDArray[np.integer]) -> dict[int, Any]:
-    return dict(zip(np.unique(region), cycle(COLOR_PALETTE), strict=False))
+    colors = [Color(c) for c in COLOR_PALETTE]
+    return dict(zip(np.unique(region), cycle(colors), strict=False))

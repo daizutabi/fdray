@@ -5,28 +5,25 @@ from typing import TYPE_CHECKING
 
 from .attributes import Attribute
 from .camera import Camera
-from .colors import Color
+from .color import Color
 
 if TYPE_CHECKING:
     from typing import Any
 
-    from .typing import RGB, RGBA, Point
+    from .typing import ColorLike, Point
 
 
 @dataclass
 class LightSource(Attribute):
     location: Point
-    color: Color | str | RGB | RGBA | None = None
+    color: ColorLike
     shadowless: bool = False
     fade_distance: float | None = None
     fade_power: float | None = None
 
     def __post_init__(self) -> None:
-        if isinstance(self.color, Color):
-            c = self.color
-            self.color = Color((c.red, c.green, c.blue), alpha=c.alpha, pigment=False)
-        elif self.color is not None:
-            self.color = Color(self.color, pigment=False)
+        if not isinstance(self.color, Color):
+            self.color = Color(self.color)
 
     @property
     def name(self) -> str:
@@ -45,6 +42,16 @@ class Spotlight(LightSource):
 @dataclass
 class GlobalSettings(Attribute):
     assumed_gamma: float = 1
+
+
+class Include:
+    filenames: list[str]
+
+    def __init__(self, *filenames: str) -> None:
+        self.filenames = list(filenames)
+
+    def __str__(self) -> str:
+        return "\n".join(f'#include "{filename}"' for filename in self.filenames)
 
 
 class Scene:

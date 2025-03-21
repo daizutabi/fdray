@@ -4,13 +4,14 @@ from contextlib import contextmanager
 from dataclasses import MISSING, dataclass, fields
 from typing import TYPE_CHECKING
 
+from .color import Color
 from .utils import convert, to_snake_case
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
     from typing import Any
 
-    from .typing import Vector
+    from .typing import ColorLike, Vector
 
 
 @dataclass
@@ -48,6 +49,17 @@ class Attribute:
         finally:
             for name, value in zip(kwargs, values, strict=True):
                 setattr(self, name, value)
+
+
+@dataclass
+class Pigment(Attribute):
+    """POV-Ray pigment attributes."""
+
+    color: ColorLike | None = None
+
+    def __post_init__(self) -> None:
+        if self.color is not None:
+            self.color = Color(self.color, include_color=False)
 
 
 @dataclass

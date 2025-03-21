@@ -1,5 +1,5 @@
 def test_light_source_color_color():
-    from fdray.colors import Color
+    from fdray.color import Color
     from fdray.scene import LightSource
 
     x = LightSource((1, 2, 3), Color("red"))
@@ -13,11 +13,11 @@ def test_light_source_color_str():
     assert str(x) == "light_source { <1, 2, 3> color rgb <0, 0, 1> }"
 
 
-def test_light_source_color_rgba():
+def test_light_source_color_tuple():
     from fdray.scene import LightSource
 
-    x = LightSource((1, 2, 3), (0.1, 0.2, 0.3, 0.4))
-    assert "rgbt <0.1, 0.2, 0.3, 0.6>" in str(x)
+    x = LightSource((1, 2, 3), (0.1, 0.2, 0.3))
+    assert "rgb <0.1, 0.2, 0.3>" in str(x)
 
 
 def test_spotlight():

@@ -8,15 +8,15 @@ def test_attribute_str():
 def test_attribute_none():
     from fdray.scene import LightSource
 
-    x = LightSource((1, 2, 3))
-    assert str(x) == "light_source { <1, 2, 3> }"
+    x = LightSource((1, 2, 3), "White")
+    assert str(x) == "light_source { <1, 2, 3> color White }"
 
 
 def test_attribute_bool():
     from fdray.scene import Spotlight
 
-    x = Spotlight((1, 2, 3), shadowless=True)
-    assert str(x) == "light_source { <1, 2, 3> shadowless spotlight }"
+    x = Spotlight((1, 2, 3), "Red", shadowless=True)
+    assert str(x) == "light_source { <1, 2, 3> color Red shadowless spotlight }"
 
 
 def test_transform_scale():
