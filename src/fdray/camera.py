@@ -28,7 +28,7 @@ from PIL import Image
 
 from fdray import Background, Camera, Color, Cylinder, LightSource, Renderer, Scene
 
-camera = Camera(longitude=30, latitude=30)
+camera = Camera(30, 30, view_scale=1)
 scene = Scene(
     camera,
     Background("white"),
@@ -89,14 +89,15 @@ class Camera(Attribute):
     Determine the coordinate range that will be rendered, from -view_scale to
     +view_scale. Larger values show more of the scene (zoom out), smaller
     values show less (zoom in). This directly affects the apparent size of
-    objects in the rendered image."""
+    objects in the rendered image.
+    """
 
-    distance: float = 10
+    distance: float = 0
     """The distance of the camera from the look_at point.
 
     Affect the perspective effect (depth perception) of the scene.
-    Larger values reduce perspective distortion. The apparent size of objects
-    is controlled by view_scale, not distance."""
+    If set to 0, a value of 10 * view_scale will be used automatically.
+    """
 
     tilt: float = 0
     """The tilt angle of the camera in degrees (-180 to 180).
@@ -139,6 +140,8 @@ class Camera(Attribute):
         """
         self.phi = radians(longitude)
         self.theta = radians(latitude)
+        if self.distance == 0:
+            self.distance = 10 * self.view_scale
 
     @property
     def z(self) -> Vector:
