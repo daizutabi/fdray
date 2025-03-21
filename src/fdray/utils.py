@@ -6,6 +6,24 @@ if TYPE_CHECKING:
     from typing import Any
 
 
+def to_snake_case(name: str) -> str:
+    result = ""
+
+    for i, char in enumerate(name):
+        if i > 0 and char.isupper():
+            result += "_"
+        result += char.lower()
+
+    return result
+
+
+def to_str(arg: Any) -> str:
+    if isinstance(arg, float):
+        return f"{arg:.5g}"
+
+    return str(arg)
+
+
 def convert(arg: Any) -> str:
     if isinstance(arg, tuple):
         if len(arg) == 2:
@@ -13,12 +31,5 @@ def convert(arg: Any) -> str:
 
         arg = ", ".join(to_str(x) for x in arg)
         return f"<{arg}>"
-
-    return str(arg)
-
-
-def to_str(arg: Any) -> str:
-    if isinstance(arg, float):
-        return f"{arg:.5g}"
 
     return str(arg)
