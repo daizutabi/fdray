@@ -14,6 +14,9 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
     from typing import Any, Self
 
+    import numpy as np
+    from numpy.typing import NDArray
+
     from .typing import Point
 
 
@@ -273,21 +276,46 @@ class Polyline(Shape):
     """
 
     nargs: ClassVar[int] = 2
+    kind: ClassVar[Literal["linear_spline"]] = "linear_spline"
 
     def __init__(
         self,
-        centers: Sequence[Point],
+        centers: Sequence[Point] | NDArray[np.number],
         radius: float | Sequence[float],
         *attrs: Any,
         **kwargs: Any,
     ) -> None:
+        """Initialize a polyline.
+
+        Args:
+            centers (Sequence[Point] | NDArray[np.number]): Sequence of 3D
+                points or NumPy array with shape (n, 3) where n is the number
+                of points.
+            radius (float | Sequence[float]): Constant radius or sequence
+                of radii for each point.
+            *attrs: Additional attributes.
+            **kwargs: Additional keyword attributes.
+        """
         super().__init__(centers, radius, *attrs, **kwargs)
 
     def __str__(self) -> str:
-        return str(SphereSweep("linear_spline", *self.args, *self.attrs))
+        return str(SphereSweep(self.kind, *self.args, *self.attrs))
+
+    @classmethod
+    def from_coordinates(
+        cls,
+        x: Sequence[float],
+        y: Sequence[float],
+        z: Sequence[float],
+        radius: float | Sequence[float],
+        *attrs: Any,
+        **kwargs: Any,
+    ) -> Self:
+        """Create a polyline from separate x, y, z coordinate sequences."""
+        return cls(list(zip(x, y, z, strict=True)), radius, *attrs, **kwargs)
 
 
-class Curve(Shape):
+class Curve(Polyline):
     """A smooth curve that passes through all specified points.
 
     Create a cubic spline sphere sweep that is guaranteed to pass
@@ -299,10 +327,11 @@ class Curve(Shape):
     """
 
     nargs: ClassVar[int] = 2
+    kind: ClassVar[Literal["cubic_spline"]] = "cubic_spline"
 
     def __init__(
         self,
-        centers: Sequence[Point],
+        centers: Sequence[Point] | NDArray[np.number],
         radius: float | Sequence[float],
         *attrs: Any,
         **kwargs: Any,
@@ -331,9 +360,6 @@ class Curve(Shape):
             radius = [radius[0], *radius, radius[-1]]
 
         super().__init__(centers, radius, *attrs, **kwargs)
-
-    def __str__(self) -> str:
-        return str(SphereSweep("cubic_spline", *self.args, *self.attrs))
 
 
 class Cuboid(Shape):
