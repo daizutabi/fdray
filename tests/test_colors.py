@@ -33,6 +33,11 @@ def test_color_float_alpha():
     assert str(color) == "rgbt <0.2, 0.3, 0.4, 0.8>"
 
 
+def test_color_tuple_str_alpha():
+    color = Color(("red", 0.2), pigment=False)
+    assert str(color) == "rgbt <1, 0, 0, 0.8>"
+
+
 def test_color_float_rgba():
     color = Color((0.2, 0.3, 0.4, 0.6), pigment=True)
     assert str(color) == "pigment { rgbt <0.2, 0.3, 0.4, 0.4> }"
