@@ -20,10 +20,10 @@ class Color:
     def __init__(
         self,
         color: ColorLike,
-        filter: float | None = None,
-        transmit: float | None = None,
         alpha: float | None = None,
         *,
+        filter: float | None = None,
+        transmit: float | None = None,
         include_color: bool = True,
     ) -> None:
         if isinstance(color, Color):
@@ -34,6 +34,10 @@ class Color:
             transmit = transmit or color.transmit
 
         elif isinstance(color, str):
+            if color.startswith("#") and len(color) == 9:
+                alpha = int(color[7:9], 16) / 255
+                color = color[:7]
+
             color = rgb(color)
 
             if isinstance(color, str):
@@ -45,7 +49,10 @@ class Color:
 
         else:
             self.name = None
-            self.red, self.green, self.blue = color
+            if len(color) == 3:
+                self.red, self.green, self.blue = color
+            elif len(color) == 4:
+                self.red, self.green, self.blue, alpha = color
 
         if alpha is not None:
             transmit = 1 - alpha
@@ -58,18 +65,18 @@ class Color:
         if self.name is not None:
             yield self.name
             if self.filter is not None:
-                yield f"filter {self.filter}"
+                yield f"filter {self.filter:.3g}"
             if self.transmit is not None:
-                yield f"transmit {self.transmit}"
+                yield f"transmit {self.transmit:.3g}"
             return
 
         rgb = f"{self.red:.3g}, {self.green:.3g}, {self.blue:.3g}"
         if self.filter is not None and self.transmit is not None:
-            yield f"rgbft <{rgb}, {self.filter}, {self.transmit}>"
+            yield f"rgbft <{rgb}, {self.filter:.3g}, {self.transmit:.3g}>"
         elif self.filter is not None:
-            yield f"rgbf <{rgb}, {self.filter}>"
+            yield f"rgbf <{rgb}, {self.filter:.3g}>"
         elif self.transmit is not None:
-            yield f"rgbt <{rgb}, {self.transmit}>"
+            yield f"rgbt <{rgb}, {self.transmit:.3g}>"
         else:
             yield f"rgb <{rgb}>"
 
