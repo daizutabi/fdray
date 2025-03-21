@@ -56,9 +56,6 @@ class Vector:
     def __matmul__(self, other: Vector) -> float:
         return self.dot(other)
 
-    def __rmatmul__(self, other: Vector) -> float:
-        return self.dot(other)
-
     def cross(self, other: Vector) -> Self:
         return self.__class__(
             self.y * other.z - self.z * other.y,

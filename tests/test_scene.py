@@ -50,3 +50,10 @@ def test_scene_str():
     assert x.startswith("#version 3.7;\n")
     assert "global_settings { assumed_gamma 1 }" in x
     assert x.endswith("\na\nb\nc")
+
+
+def test_scene_render_without_camera():
+    from fdray.scene import Scene
+
+    x = Scene("a", ["b", "c"])
+    assert "a\nb\nc" in x.render(100, 100)
