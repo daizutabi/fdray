@@ -9,6 +9,7 @@ from .colors import Color
 from .utils import convert, to_snake_case
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from typing import Any, Self
 
     from .typing import Point
@@ -29,14 +30,17 @@ class Shape(ABC):
     def name(self) -> str:
         return to_snake_case(self.__class__.__name__)
 
+    def __iter__(self) -> Iterator[str]:
+        yield ", ".join(convert(arg) for arg in self.args)
+        yield from (str(attr) for attr in self.attrs)
+
     def __str__(self) -> str:
-        args = ", ".join(convert(arg) for arg in self.args)
+        args = list(self)
+        if len(args) == 1:
+            return f"{self.name} {{ {args[0]} }}"
 
-        if self.attrs:
-            attrs = "\n".join(f"  {attr}" for attr in self.attrs)
-            return f"{self.name} {{\n  {args}\n{attrs}\n}}"
-
-        return f"{self.name} {{ {args} }}"
+        arg = textwrap.indent("\n".join(args), "  ")
+        return f"{self.name} {{\n{arg}\n}}"
 
     @overload
     def __add__(self, other: Shape) -> Union: ...
@@ -164,19 +168,6 @@ class ShapeGroup:
         return group
 
 
-class Sphere(Shape):
-    nargs: ClassVar[int] = 2
-
-    def __init__(
-        self,
-        center: Point,
-        radius: float,
-        *attrs: Any,
-        **kwargs: Any,
-    ) -> None:
-        super().__init__(center, radius, *attrs, **kwargs)
-
-
 class Box(Shape):
     nargs: ClassVar[int] = 2
 
@@ -230,6 +221,19 @@ class Plane(Shape):
         **kwargs: Any,
     ) -> None:
         super().__init__(normal, distance, *attrs, **kwargs)
+
+
+class Sphere(Shape):
+    nargs: ClassVar[int] = 2
+
+    def __init__(
+        self,
+        center: Point,
+        radius: float,
+        *attrs: Any,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(center, radius, *attrs, **kwargs)
 
 
 class Cuboid(Shape):
