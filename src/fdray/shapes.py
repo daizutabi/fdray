@@ -735,7 +735,7 @@ class Curve(Polyline):
         centers, radius = self.args
 
         if len(centers) < 2:
-            return str(SphereSweep("linear_spline", centers, radius, *self.attrs))
+            return str(Polyline(centers, radius, *self.attrs))
 
         ghost_first = reflect_point(centers[1], centers[0])
         ghost_last = reflect_point(centers[-2], centers[-1])
