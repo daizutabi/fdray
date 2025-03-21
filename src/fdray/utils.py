@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import numpy as np
+
 if TYPE_CHECKING:
     from typing import Any
 
@@ -25,7 +27,7 @@ def to_str(arg: Any) -> str:
 
 
 def convert(arg: Any) -> str:
-    if isinstance(arg, tuple):
+    if isinstance(arg, list | tuple | np.ndarray):
         if len(arg) == 2:
             return f"{to_str(arg[0])} {to_str(arg[1])}"
 

@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import textwrap
 from abc import ABC
-from typing import TYPE_CHECKING, ClassVar, overload
+from collections.abc import Sequence
+from itertools import repeat
+from typing import TYPE_CHECKING, ClassVar, Literal, overload
 
 from .attributes import Transform
 from .colors import Color
@@ -231,6 +233,107 @@ class Sphere(Shape):
         **kwargs: Any,
     ) -> None:
         super().__init__(center, radius, *attrs, **kwargs)
+
+
+class SphereSweep(Shape):
+    nargs: ClassVar[int] = 3
+
+    def __init__(
+        self,
+        kind: Literal["linear_spline", "b_spline", "cubic_spline"],
+        centers: Sequence[Point],
+        radius: float | Sequence[float],
+        *attrs: Any,
+        **kwargs: Any,
+    ) -> None:
+        if kind in ["b_spline", "cubic_spline"] and len(centers) < 4:
+            msg = f"At least 4 points are required for {kind}"
+            raise ValueError(msg)
+
+        if kind == "linear_spline" and len(centers) < 2:
+            msg = "At least 2 points are required for linear spline"
+            raise ValueError(msg)
+
+        super().__init__(kind, centers, radius, *attrs, **kwargs)
+
+    def __iter__(self) -> Iterator[str]:
+        kind, centers, radius = self.args
+        yield f"{kind}, {len(centers)}"
+        radii = radius if isinstance(radius, Sequence) else repeat(radius)
+        it = zip(centers, radii, strict=False)
+        yield ", ".join(f"{convert(c)}, {convert(r)}" for c, r in it)
+        yield from (str(attr) for attr in self.attrs)
+
+
+class Polyline(Shape):
+    """A polyline (broken line) represented as a linear sphere sweep.
+
+    This is a convenience class that creates a sphere sweep with linear_spline
+    interpolation, providing a simpler interface for creating polylines.
+    """
+
+    nargs: ClassVar[int] = 2
+
+    def __init__(
+        self,
+        centers: Sequence[Point],
+        radius: float | Sequence[float],
+        *attrs: Any,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(centers, radius, *attrs, **kwargs)
+
+    def __str__(self) -> str:
+        return str(SphereSweep("linear_spline", *self.args, *self.attrs))
+
+
+class Curve(Shape):
+    """A smooth curve that passes through all specified points.
+
+    Create a cubic spline sphere sweep that is guaranteed to pass
+    through all given points, including the start and end points. It uses ghost
+    points to ensure proper curve behavior at the endpoints.
+
+    Unlike standard cubic splines which may not pass through the endpoints,
+    this implementation ensures the curve follows all specified points exactly.
+    """
+
+    nargs: ClassVar[int] = 2
+
+    def __init__(
+        self,
+        centers: Sequence[Point],
+        radius: float | Sequence[float],
+        *attrs: Any,
+        **kwargs: Any,
+    ) -> None:
+        if len(centers) < 2:
+            msg = "At least 2 points are required"
+            raise ValueError(msg)
+
+        first, second = centers[0], centers[1]
+        ghost_first = (
+            2 * first[0] - second[0],
+            2 * first[1] - second[1],
+            2 * first[2] - second[2],
+        )
+
+        last, second_last = centers[-1], centers[-2]
+        ghost_last = (
+            2 * last[0] - second_last[0],
+            2 * last[1] - second_last[1],
+            2 * last[2] - second_last[2],
+        )
+
+        centers = [ghost_first, *centers, ghost_last]
+
+        if isinstance(radius, Sequence):
+            radius = [radius[0], *radius, radius[-1]]
+
+        super().__init__(centers, radius, *attrs, **kwargs)
+
+    def __str__(self) -> str:
+        return str(SphereSweep("cubic_spline", *self.args, *self.attrs))
 
 
 class Cuboid(Shape):
