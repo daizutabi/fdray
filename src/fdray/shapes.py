@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, ClassVar, Literal, overload
 
 from .attributes import Transform
 from .colors import Color
-from .utils import convert, to_snake_case
+from .utils import convert, reflect_point, to_snake_case
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -384,20 +384,8 @@ class Curve(Polyline):
         if len(centers) < 2:
             return str(SphereSweep("linear_spline", centers, radius, *self.attrs))
 
-        first, second = centers[0], centers[1]
-        ghost_first = (
-            2 * first[0] - second[0],
-            2 * first[1] - second[1],
-            2 * first[2] - second[2],
-        )
-
-        last, second_last = centers[-1], centers[-2]
-        ghost_last = (
-            2 * last[0] - second_last[0],
-            2 * last[1] - second_last[1],
-            2 * last[2] - second_last[2],
-        )
-
+        ghost_first = reflect_point(centers[1], centers[0])
+        ghost_last = reflect_point(centers[-2], centers[-1])
         centers = [ghost_first, *centers, ghost_last]
 
         if isinstance(radius, Sequence):
