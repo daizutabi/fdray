@@ -1,5 +1,7 @@
 import textwrap
 
+from fdray.color import Color
+
 
 def test_sphere():
     from fdray.shapes import Sphere
@@ -8,26 +10,12 @@ def test_sphere():
     assert str(x) == "sphere { <0, 0, 0>, 1 }"
 
 
-def test_sphere_color_color():
-    from fdray.colors import Color
+def test_sphere_color():
+    from fdray.color import Color
     from fdray.shapes import Sphere
 
     x = Sphere((0, 0, 0), 1, Color("red"))
-    assert str(x) == "sphere {\n  <0, 0, 0>, 1\n  pigment { rgb <1, 0, 0> }\n}"
-
-
-def test_sphere_color_str():
-    from fdray.shapes import Sphere
-
-    x = Sphere((0, 0, 0), 1, "blue")
-    assert str(x) == "sphere {\n  <0, 0, 0>, 1\n  pigment { rgb <0, 0, 1> }\n}"
-
-
-def test_sphere_color_rgba():
-    from fdray.shapes import Sphere
-
-    x = Sphere((0, 0, 0), 1, (0.1, 0.2, 0.3, 0.4))
-    assert "rgbt <0.1, 0.2, 0.3, 0.6>" in str(x)
+    assert str(x) == "sphere {\n  <0, 0, 0>, 1\n  pigment { color rgb <1, 0, 0> }\n}"
 
 
 def test_sphere_attr_str():
@@ -131,10 +119,10 @@ def test_difference_sub_shape():
 def test_merge_or_shape():
     from fdray.shapes import Merge, Sphere
 
-    x = Sphere((0, 0, 0), 1) | Sphere((1, 0, 0), 2, "red") | Sphere((0, 1, 0), 3)
+    x = Sphere((0, 0, 0), 1) | Sphere((1, 0, 0), 2, Color("red")) | Sphere((0, 1, 0), 3)
     assert isinstance(x, Merge)
     s = "merge {\n  sphere { <0, 0, 0>, 1 }\n"
-    s += "  sphere {\n    <1, 0, 0>, 2\n    pigment { rgb <1, 0, 0> }\n  }\n"
+    s += "  sphere {\n    <1, 0, 0>, 2\n    pigment { color rgb <1, 0, 0> }\n  }\n"
     s += "  sphere { <0, 1, 0>, 3 }\n}"
     assert str(x) == s
 

@@ -21,8 +21,8 @@ from collections.abc import Sequence
 from itertools import repeat
 from typing import TYPE_CHECKING, ClassVar, Literal, overload
 
-from .attributes import Transform
-from .colors import Color
+from .attributes import Pigment, Transform
+from .color import Color
 from .utils import convert, reflect_point, to_snake_case
 
 if TYPE_CHECKING:
@@ -221,11 +221,8 @@ def convert_attribute(attr: Any) -> Any:
     if attr in SHAPE_KEYWORDS:
         return attr
 
-    if isinstance(attr, str | tuple):
-        try:
-            return Color(attr)
-        except ValueError:
-            return attr
+    if isinstance(attr, Color):
+        return Pigment(color=attr)
 
     return attr
 

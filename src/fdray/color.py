@@ -3,95 +3,94 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .typing import RGB, RGBA
+    from collections.abc import Iterator
+
+    from .typing import RGB, ColorLike
 
 
 class Color:
     red: float
     green: float
     blue: float
-    alpha: float | None
-    pigment: bool = True
+    name: str | None
+    filter: float | None
+    transmit: float | None
+    include_color: bool = True
 
     def __init__(
         self,
-        color: str | RGB | RGBA | tuple[RGB, float] | tuple[str, float],
+        color: ColorLike,
+        filter: float | None = None,
+        transmit: float | None = None,
         alpha: float | None = None,
         *,
-        pigment: bool | None = None,
+        include_color: bool = True,
     ) -> None:
-        self.alpha = alpha
-        if pigment is not None:
-            self.pigment = pigment
+        if isinstance(color, Color):
+            self.name = color.name
+            self.red, self.green, self.blue = color.red, color.green, color.blue
+            self.include_color = color.include_color
+            filter = filter or color.filter  # noqa: A001
+            transmit = transmit or color.transmit
 
-        if isinstance(color, str):
-            if color.startswith("#") and len(color) == 9:
-                self.alpha = int(color[7:9], 16) / 255
-                color = color[:7]
-            self.red, self.green, self.blue = rgb(color)
+        elif isinstance(color, str):
+            color = rgb(color)
 
-        elif len(color) == 2:
-            if isinstance(color[0], str):
-                self.red, self.green, self.blue = rgb(color[0])
+            if isinstance(color, str):
+                self.name = color
+                self.red, self.green, self.blue = 0, 0, 0
             else:
-                self.red, self.green, self.blue = color[0]
-            self.alpha = color[1]
+                self.name = None
+                self.red, self.green, self.blue = color
 
-        elif len(color) == 3:
+        else:
+            self.name = None
             self.red, self.green, self.blue = color
 
-        elif len(color) == 4:
-            self.red, self.green, self.blue, self.alpha = color
+        if alpha is not None:
+            transmit = 1 - alpha
 
+        self.filter = filter
+        self.transmit = transmit
+        self.include_color = include_color
+
+    def __iter__(self) -> Iterator[str]:
+        if self.name is not None:
+            yield self.name
+            if self.filter is not None:
+                yield f"filter {self.filter}"
+            if self.transmit is not None:
+                yield f"transmit {self.transmit}"
+            return
+
+        rgb = f"{self.red:.3g}, {self.green:.3g}, {self.blue:.3g}"
+        if self.filter is not None and self.transmit is not None:
+            yield f"rgbft <{rgb}, {self.filter}, {self.transmit}>"
+        elif self.filter is not None:
+            yield f"rgbf <{rgb}, {self.filter}>"
+        elif self.transmit is not None:
+            yield f"rgbt <{rgb}, {self.transmit}>"
         else:
-            msg = "Invalid color format."
-            raise ValueError(msg)
-
-        self._validate()
-
-    def _validate(self) -> None:
-        for x in self.red, self.green, self.blue:
-            if not isinstance(x, float | int) or not 0 <= x <= 1:
-                msg = "Invalid color format."
-                raise ValueError(msg)
-
-        if self.alpha is not None:
-            if not isinstance(self.alpha, float | int) or not 0 <= self.alpha <= 1:
-                msg = "Invalid color format."
-                raise ValueError(msg)
+            yield f"rgb <{rgb}>"
 
     def __str__(self) -> str:
-        red = f"{self.red:.3g}"
-        green = f"{self.green:.3g}"
-        blue = f"{self.blue:.3g}"
-
-        if self.alpha is None:
-            color = f"rgb <{red}, {green}, {blue}>"
-        else:
-            trans = f"{1 - self.alpha:.3g}"
-            color = f"rgbt <{red}, {green}, {blue}, {trans}>"
-
-        if self.pigment:
-            return f"pigment {{ {color} }}"
-
-        return color
+        color = " ".join(self)
+        return f"color {color}" if self.include_color else color
 
 
 class Background(Color):
-    pigment: bool = False
-
     def __str__(self) -> str:
         return f"background {{ {super().__str__()} }}"
 
 
-def rgb(color: str) -> RGB:
+def rgb(color: str) -> RGB | str:
     """Return the RGB color as a tuple of floats.
 
     Args:
         color (str): The color name or hex code.
 
     Returns:
-        tuple[float, float, float]: The RGB color as a tuple of floats.
+        tuple[float, float, float] | str: The RGB color as a tuple of floats.
 
     Examples:
         >>> rgb("red")
@@ -104,8 +103,7 @@ def rgb(color: str) -> RGB:
     color = cnames.get(color, color)
 
     if not isinstance(color, str) or not color.startswith("#") or len(color) != 7:
-        msg = "Invalid color format."
-        raise ValueError(msg)
+        return color
 
     r, g, b = color[1:3], color[3:5], color[5:7]
     return int(r, 16) / 255, int(g, 16) / 255, int(b, 16) / 255
