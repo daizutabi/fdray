@@ -15,11 +15,15 @@ if TYPE_CHECKING:
 
 @dataclass
 class Attribute:
+    """A base class for all attributes."""
+
     @property
     def name(self) -> str:
+        """The name of the attribute."""
         return self.__class__.__name__.lower()
 
     def __iter__(self) -> Iterator[str]:
+        """Iterate over the attribute."""
         for field in fields(self):
             value = getattr(self, field.name)
             if value is True:
@@ -30,18 +34,19 @@ class Attribute:
                 yield convert(value)
 
     def __str__(self) -> str:
+        """Convert the attribute to a string."""
         return f"{self.name} {{ {' '.join(self)} }}"
 
     @contextmanager
-    def none(self, *names: Any) -> Iterator[None]:
-        names = tuple(name for name in names if isinstance(name, str))
-        values = [getattr(self, name) for name in names]
-        for name in names:
-            setattr(self, name, None)
+    def set(self, **kwargs: Any) -> Iterator[None]:
+        """A context manager to set attributes."""
+        values = [getattr(self, name) for name in kwargs]
+        for name, value in kwargs.items():
+            setattr(self, name, value)
         try:
             yield
         finally:
-            for name, value in zip(names, values, strict=True):
+            for name, value in zip(kwargs, values, strict=True):
                 setattr(self, name, value)
 
 

@@ -1,8 +1,9 @@
 from .attributes import Finish, Interior, Transform
+from .camera import Camera
 from .colors import Background, Color
 from .region import Region
 from .renderer import Renderer
-from .scene import Camera, LightSource, Scene, Spotlight
+from .scene import LightSource, Scene, Spotlight
 from .shapes import Box, Cone, Cube, Cuboid, Cylinder, Sphere
 
 __all__ = [

@@ -40,6 +40,8 @@ class Renderer:
     threads: int | None = None
     display: bool = False
     executable: str = "povray"
+    stdout: str = ""
+    stderr: str = ""
 
     def __init__(
         self,
@@ -109,20 +111,24 @@ class Renderer:
         Returns:
             NDArray[np.uint8] | None: RGB(A) image array if output_file is None
         """
-        if isinstance(scene, Scene):
-            scene.set_aspect_ratio(self.width, self.height)
-
-        command = self.build(str(scene), output_file)
-        cp = subprocess.run(command, check=False, capture_output=True, text=True)
-
-        if cp.returncode != 0:
-            raise RenderError(cp.stderr)
-
         if output_file is None:
             with NamedTemporaryFile(suffix=".png") as file:
                 output_file = Path(file.name)
                 self.render(scene, output_file)
                 return np.array(Image.open(output_file))
+
+        if isinstance(scene, Scene):
+            scene = scene.render(self.width, self.height)
+        else:
+            scene = str(scene)
+
+        command = self.build(scene, output_file)
+        cp = subprocess.run(command, check=False, capture_output=True, text=True)
+        self.stdout = cp.stdout
+        self.stderr = cp.stderr
+
+        if cp.returncode != 0:
+            raise RenderError(cp.stderr)
 
         return None
 

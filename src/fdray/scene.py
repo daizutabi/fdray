@@ -1,49 +1,16 @@
 from __future__ import annotations
 
-import math
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from .attributes import Attribute
+from .camera import Camera
 from .colors import Color
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
     from typing import Any
 
-    from .typing import RGB, RGBA, Point, Vector
-
-
-@dataclass
-class Camera(Attribute):
-    location: Point = (0, 0, 0)
-    look_at: Point = (0, 0, 0)
-    angle: float = 45
-    up: Vector | None = None
-    right: Vector | None = None
-    orthographic: bool = True
-
-    def set_aspect_ratio(self, width: float, height: float) -> None:
-        if self.up is None and self.right is None:
-            aspect_ratio = width / height
-            up = self.get_view_height()
-            right = up * aspect_ratio
-            self.up = (0, float(f"{up:.5g}"), 0)
-            self.right = (float(f"{right:.5g}"), 0, 0)
-
-    def get_view_height(self) -> float:
-        it = zip(self.location, self.look_at, strict=True)
-        distance = sum((a - b) ** 2 for a, b in it) ** 0.5
-        scale = 0.7071 / math.tan(math.radians(65.5 / 2))
-        return 2 * distance * scale * math.tan(math.radians(self.angle / 2))
-
-    def __iter__(self) -> Iterator[str]:
-        if self.orthographic:
-            yield "orthographic"
-
-        # with self.none("orthographic", self.orthographic and "angle"):
-        with self.none("orthographic"):
-            yield from super().__iter__()
+    from .typing import RGB, RGBA, Point
 
 
 @dataclass
@@ -110,8 +77,19 @@ class Scene:
         attrs = [version, self.global_settings, *self.attrs]
         return "\n".join(str(attr) for attr in attrs if attr is not None)
 
-    def set_aspect_ratio(self, width: int, height: int) -> None:
+    @property
+    def camera(self) -> Camera | None:
+        """Get the camera from the scene."""
         for attr in self.attrs:
             if isinstance(attr, Camera):
-                attr.set_aspect_ratio(width, height)
-                break
+                return attr
+
+        return None
+
+    def render(self, width: int, height: int) -> str:
+        """Render the scene with the given image dimensions."""
+        if (camera := self.camera) is None:
+            return str(self)
+
+        with camera.set(aspect_ratio=width / height):
+            return str(self)

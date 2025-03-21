@@ -58,18 +58,17 @@ def test_render_scene():
         Sphere,
     )
 
-    camera = Camera((1, 2, 3))
-
+    camera = Camera(30, 30)
     scene = Scene(
         camera,
-        LightSource((1, 2, -3), "white", shadowless=True),
+        LightSource(camera.location, "white", shadowless=True),
         Sphere((0, 0, 0), 1, Color("white")),
     )
     renderer = Renderer(120, 240)
-    renderer.render(scene)
-
-    assert camera.up == (0, 3.4075, 0)
-    assert camera.right == (1.7038, 0, 0)
+    array = renderer.render(scene)
+    assert isinstance(array, np.ndarray)
+    assert array.shape == (240, 120, 4)
+    assert array.dtype == np.uint8
 
 
 def test_build_options():
