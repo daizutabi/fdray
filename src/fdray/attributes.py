@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from dataclasses import MISSING, dataclass, fields
 from typing import TYPE_CHECKING
 
-from .utils import convert
+from .utils import convert, to_snake_case
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -20,7 +20,7 @@ class Attribute:
     @property
     def name(self) -> str:
         """The name of the attribute."""
-        return self.__class__.__name__.lower()
+        return to_snake_case(self.__class__.__name__)
 
     def __iter__(self) -> Iterator[str]:
         """Iterate over the attribute."""

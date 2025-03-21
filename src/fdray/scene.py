@@ -46,10 +46,6 @@ class Spotlight(LightSource):
 class GlobalSettings(Attribute):
     assumed_gamma: float = 1
 
-    @property
-    def name(self) -> str:
-        return "global_settings"
-
 
 class Scene:
     """A scene is a collection of elements."""
