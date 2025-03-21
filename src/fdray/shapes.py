@@ -31,7 +31,9 @@ class Shape(ABC):
         return to_snake_case(self.__class__.__name__)
 
     def __iter__(self) -> Iterator[str]:
-        yield ", ".join(convert(arg) for arg in self.args)
+        if self.args:
+            yield ", ".join(convert(arg) for arg in self.args)
+
         yield from (str(attr) for attr in self.attrs)
 
     def __str__(self) -> str:
@@ -107,11 +109,6 @@ class Csg(Shape):
 
     def __add__(self, other: Any) -> Self:
         return self.__class__(*self.attrs, other)
-
-    def __str__(self) -> str:
-        attrs = "\n".join(str(attr) for attr in self.attrs)
-        attrs = textwrap.indent(attrs, "  ")
-        return f"{self.name} {{\n{attrs}\n}}"
 
 
 class Union(Csg):
