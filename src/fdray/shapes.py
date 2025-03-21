@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, ClassVar, overload
 
 from .attributes import Transform
 from .colors import Color
-from .utils import convert
+from .utils import convert, to_snake_case
 
 if TYPE_CHECKING:
     from typing import Any, Self
@@ -27,7 +27,7 @@ class Shape(ABC):
 
     @property
     def name(self) -> str:
-        return self.__class__.__name__.lower()
+        return to_snake_case(self.__class__.__name__)
 
     def __str__(self) -> str:
         args = ", ".join(convert(arg) for arg in self.args)
@@ -127,6 +127,41 @@ class Difference(Csg):
 class Merge(Csg):
     def __or__(self, other: Shape) -> Self:
         return super().__add__(other)
+
+
+class ShapeGroup:
+    union: Union
+
+    def __init__(self, *shapes: Shape) -> None:
+        self.union = Union(*shapes)
+
+    def __str__(self) -> str:
+        return str(self.union)
+
+    def __add__(self, other: Any) -> Self:
+        group = self.__class__.__new__(self.__class__)
+        group.union = self.union + other
+        return group
+
+    def add(self, *others: Any) -> Self:
+        group = self.__class__.__new__(self.__class__)
+        group.union = self.union.add(*others)
+        return group
+
+    def scale(self, x: float, y: float | None = None, z: float | None = None) -> Self:
+        group = self.__class__.__new__(self.__class__)
+        group.union = self.union.scale(x, y, z)
+        return group
+
+    def rotate(self, x: float, y: float, z: float) -> Self:
+        group = self.__class__.__new__(self.__class__)
+        group.union = self.union.rotate(x, y, z)
+        return group
+
+    def translate(self, x: float, y: float, z: float) -> Self:
+        group = self.__class__.__new__(self.__class__)
+        group.union = self.union.translate(x, y, z)
+        return group
 
 
 class Sphere(Shape):
@@ -229,38 +264,3 @@ class Cube(Shape):
         corner1 = (center[0] - half, center[1] - half, center[2] - half)
         corner2 = (center[0] + half, center[1] + half, center[2] + half)
         return str(Box(corner1, corner2, *self.attrs))
-
-
-class ShapeGroup:
-    union: Union
-
-    def __init__(self, *shapes: Shape) -> None:
-        self.union = Union(*shapes)
-
-    def __str__(self) -> str:
-        return str(self.union)
-
-    def __add__(self, other: Any) -> Self:
-        group = self.__class__.__new__(self.__class__)
-        group.union = self.union + other
-        return group
-
-    def add(self, *others: Any) -> Self:
-        group = self.__class__.__new__(self.__class__)
-        group.union = self.union.add(*others)
-        return group
-
-    def scale(self, x: float, y: float | None = None, z: float | None = None) -> Self:
-        group = self.__class__.__new__(self.__class__)
-        group.union = self.union.scale(x, y, z)
-        return group
-
-    def rotate(self, x: float, y: float, z: float) -> Self:
-        group = self.__class__.__new__(self.__class__)
-        group.union = self.union.rotate(x, y, z)
-        return group
-
-    def translate(self, x: float, y: float, z: float) -> Self:
-        group = self.__class__.__new__(self.__class__)
-        group.union = self.union.translate(x, y, z)
-        return group
