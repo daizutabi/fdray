@@ -183,6 +183,40 @@ class Box(Shape):
         super().__init__(corner1, corner2, *attrs, **kwargs)
 
 
+class Cuboid(Shape):
+    nargs: ClassVar[int] = 2
+
+    def __init__(
+        self,
+        center: Point,
+        size: tuple[float, float, float],
+        *attrs: Any,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(center, size, *attrs, **kwargs)
+
+    def __str__(self) -> str:
+        center, size = self.args
+        half_x, half_y, half_z = size[0] / 2, size[1] / 2, size[2] / 2
+        corner1 = (center[0] - half_x, center[1] - half_y, center[2] - half_z)
+        corner2 = (center[0] + half_x, center[1] + half_y, center[2] + half_z)
+        return str(Box(corner1, corner2, *self.attrs))
+
+
+class Cube(Shape):
+    nargs: ClassVar[int] = 2
+
+    def __init__(self, center: Point, size: float, *attrs: Any, **kwargs: Any) -> None:
+        super().__init__(center, size, *attrs, **kwargs)
+
+    def __str__(self) -> str:
+        center, size = self.args
+        half = size / 2
+        corner1 = (center[0] - half, center[1] - half, center[2] - half)
+        corner2 = (center[0] + half, center[1] + half, center[2] + half)
+        return str(Box(corner1, corner2, *self.attrs))
+
+
 class Cone(Shape):
     nargs: ClassVar[int] = 4
 
@@ -370,37 +404,3 @@ class Curve(Polyline):
             radius = [radius[0], *radius, radius[-1]]
 
         return str(SphereSweep(self.kind, centers, radius, *self.attrs))
-
-
-class Cuboid(Shape):
-    nargs: ClassVar[int] = 2
-
-    def __init__(
-        self,
-        center: Point,
-        size: tuple[float, float, float],
-        *attrs: Any,
-        **kwargs: Any,
-    ) -> None:
-        super().__init__(center, size, *attrs, **kwargs)
-
-    def __str__(self) -> str:
-        center, size = self.args
-        half_x, half_y, half_z = size[0] / 2, size[1] / 2, size[2] / 2
-        corner1 = (center[0] - half_x, center[1] - half_y, center[2] - half_z)
-        corner2 = (center[0] + half_x, center[1] + half_y, center[2] + half_z)
-        return str(Box(corner1, corner2, *self.attrs))
-
-
-class Cube(Shape):
-    nargs: ClassVar[int] = 2
-
-    def __init__(self, center: Point, size: float, *attrs: Any, **kwargs: Any) -> None:
-        super().__init__(center, size, *attrs, **kwargs)
-
-    def __str__(self) -> str:
-        center, size = self.args
-        half = size / 2
-        corner1 = (center[0] - half, center[1] - half, center[2] - half)
-        corner2 = (center[0] + half, center[1] + half, center[2] + half)
-        return str(Box(corner1, corner2, *self.attrs))
