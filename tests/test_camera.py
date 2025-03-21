@@ -9,8 +9,8 @@ def camera():
     return Camera(
         longitude=20,
         latitude=40,
-        zoom=2,
-        perspective=0.3,
+        view_scale=0.5,
+        distance=1.6666667,
         tilt=10,
         look_at=(0.1, 0.2, 0.3),
         aspect_ratio=16 / 9,
