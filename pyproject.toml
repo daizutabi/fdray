@@ -21,7 +21,7 @@ requires-python = ">=3.10"
 dependencies = ["moviepy>=2", "numpy>=2", "pillow>=10"]
 
 [project.urls]
-Documentation = "https://github.com/daizutabi/fdray"
+Documentation = "https://daizutabi.github.io/fdray/"
 Source = "https://github.com/daizutabi/fdray"
 Issues = "https://github.com/daizutabi/fdray/issues"
 
