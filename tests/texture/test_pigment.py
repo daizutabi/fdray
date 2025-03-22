@@ -9,7 +9,7 @@ def test_pigment():
 
 def test_pigment_pattern():
     pigment = Pigment("checker", Color("red"), Color("blue"))
-    x = "pigment {\n  checker\n  rgb <1, 0, 0>\n  rgb <0, 0, 1>\n}"
+    x = "pigment { checker rgb <1, 0, 0> rgb <0, 0, 1> }"
     assert str(pigment) == x
 
 

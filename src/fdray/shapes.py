@@ -15,7 +15,6 @@ The module structure follows these principles:
 
 from __future__ import annotations
 
-from abc import ABC
 from collections.abc import Sequence
 from itertools import repeat
 from typing import TYPE_CHECKING, ClassVar, Literal, overload
@@ -35,7 +34,7 @@ if TYPE_CHECKING:
     from .typing import Point
 
 
-class Shape(Transformable, ABC):
+class Shape(Transformable):
     """Abstract base class for all 3D shapes.
 
     This class defines common behavior for all shapes including:
