@@ -13,7 +13,7 @@ def test_attrs():
     assert x.attrs == ["a", "b"]
 
 
-def test_shape_add_shape():
+def test_object_add_object():
     a, b = Sphere((0, 0, 0), 1), Sphere((1, 0, 0), 2)
     x = a + b
     assert isinstance(x, Union)
@@ -23,7 +23,7 @@ def test_shape_add_shape():
     assert x.attrs[1] is b
 
 
-def test_shape_sub():
+def test_object_sub():
     a, b = Sphere((0, 0, 0), 1), Sphere((1, 0, 0), 2)
     x = a - b
     assert isinstance(x, Difference)
@@ -33,7 +33,7 @@ def test_shape_sub():
     assert x.attrs[1] is b
 
 
-def test_shape_mul():
+def test_object_mul():
     a, b = Sphere((0, 0, 0), 1), Sphere((1, 0, 0), 2)
     x = a * b
     assert isinstance(x, Intersection)
@@ -43,7 +43,7 @@ def test_shape_mul():
     assert x.attrs[1] is b
 
 
-def test_shape_or():
+def test_object_or():
     a, b = Sphere((0, 0, 0), 1), Sphere((1, 0, 0), 2)
     x = a | b
     assert isinstance(x, Merge)
@@ -64,7 +64,7 @@ def test_union_add_str():
     assert x.attrs[2] == "abc"
 
 
-def test_union_add_shape():
+def test_union_add_object():
     a, b, c = Sphere((0, 0, 0), 1), Sphere((1, 0, 0), 2), Sphere((0, 1, 0), 3)
     x = a + b + c
     assert isinstance(x, Union)
@@ -75,7 +75,7 @@ def test_union_add_shape():
     assert x.attrs[2] is c
 
 
-def test_intersection_mul_shape():
+def test_intersection_mul_object():
     a, b, c = Sphere((0, 0, 0), 1), Sphere((1, 0, 0), 2), Sphere((0, 1, 0), 3)
     x = a * b * c
     assert isinstance(x, Intersection)
@@ -86,7 +86,7 @@ def test_intersection_mul_shape():
     assert x.attrs[2] is c
 
 
-def test_difference_sub_shape():
+def test_difference_sub_object():
     a, b, c = Sphere((0, 0, 0), 1), Sphere((1, 0, 0), 2), Sphere((0, 1, 0), 3)
     x = a - b - c
     assert isinstance(x, Difference)
@@ -97,7 +97,7 @@ def test_difference_sub_shape():
     assert x.attrs[2] is c
 
 
-def test_merge_or_shape():
+def test_merge_or_object():
     a, b, c = Sphere((0, 0, 0), 1), Sphere((1, 0, 0), 2), Sphere((0, 1, 0), 3)
     x = a | b | c
     assert isinstance(x, Merge)

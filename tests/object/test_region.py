@@ -23,9 +23,9 @@ def test_region_1d(region_1d: Union):
 @pytest.fixture(scope="module")
 def region_2d():
     region = np.array([[0, 0], [1, 1], [1, 2], [2, 2]])
-    shape = Sphere((0, 0, 0), 1)
+    obj = Sphere((0, 0, 0), 1)
     attrs = {1: Color("red"), 2: Color("blue")}
-    return Union.from_region(region, shape, spacing=2, attrs=attrs)
+    return Union.from_region(region, obj, spacing=2, attrs=attrs)
 
 
 def test_region_2d(region_2d: Union):
@@ -41,9 +41,9 @@ def test_region_2d(region_2d: Union):
 @pytest.fixture(scope="module")
 def region_3d():
     region = np.array([[[0, 0], [1, 2]], [[1, 0], [0, 1]]])
-    shape = Sphere((0, 0, 0), 1)
+    obj = Sphere((0, 0, 0), 1)
     attrs = {1: Color("red"), 2: Color("blue")}
-    return Union.from_region(region, shape, spacing=(2, 3, 4), attrs=attrs)
+    return Union.from_region(region, obj, spacing=(2, 3, 4), attrs=attrs)
 
 
 def test_region_3d(region_3d: Union):
