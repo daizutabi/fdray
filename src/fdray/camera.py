@@ -56,8 +56,6 @@ from .vector import Vector
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from .typing import Point
-
 
 @dataclass
 class Camera(Descriptor):
@@ -107,7 +105,7 @@ class Camera(Descriptor):
     clockwise (positive) or counterclockwise (negative).
     """
 
-    look_at: Point = (0, 0, 0)
+    look_at: tuple[float, float, float] = (0, 0, 0)
     """The point the camera is looking at.
 
     Define the center of the view and the point the camera is oriented
@@ -161,9 +159,8 @@ class Camera(Descriptor):
         return self.z * self.distance
 
     @property
-    def location(self) -> Point:
-        x, y, z = self.direction
-        return x + self.look_at[0], y + self.look_at[1], z + self.look_at[2]
+    def location(self) -> Vector:
+        return self.direction + self.look_at
 
     @property
     def right(self) -> Vector:

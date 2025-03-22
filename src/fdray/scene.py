@@ -12,11 +12,12 @@ if TYPE_CHECKING:
     from typing import Any
 
     from .typing import ColorLike, Point
+    from .vector import Vector
 
 
 @dataclass
 class LightSource(Descriptor):
-    location: Point
+    location: Point | Vector | str
     color: ColorLike | Color | None = None
     shadowless: bool = False
     fade_distance: float | None = None
