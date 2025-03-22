@@ -15,15 +15,14 @@ The module structure follows these principles:
 
 from __future__ import annotations
 
-import textwrap
 from abc import ABC
 from collections.abc import Sequence
 from itertools import repeat
 from typing import TYPE_CHECKING, ClassVar, Literal, overload
 
-from .attributes import Transform
 from .color import Color, ColorList
-from .utils import convert, reflect_point, to_snake_case
+from .transformable import Pigment, Transformable
+from .utils import convert, reflect_point
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -35,7 +34,7 @@ if TYPE_CHECKING:
     from .typing import Point
 
 
-class Shape(ABC):
+class Shape(Transformable, ABC):
     """Abstract base class for all 3D shapes.
 
     This class defines common behavior for all shapes including:
@@ -51,40 +50,9 @@ class Shape(ABC):
         attrs: List of shape attributes (color, texture, etc.).
     """
 
-    nargs: ClassVar[int] = 0
-    args: list[Any]
-    attrs: list[Any]
-
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        self.args = list(args[: self.nargs])
-        attrs = [convert_attribute(attr) for attr in args[self.nargs :]]
-        kw_attrs = [k for k, v in kwargs.items() if v]
-        self.attrs = [*kw_attrs, *attrs]
-
-    @property
-    def name(self) -> str:
-        """Get the POV-Ray SDL name for this shape."""
-        return to_snake_case(self.__class__.__name__)
-
-    def __iter__(self) -> Iterator[str]:
-        """Yield string components for POV-Ray SDL representation.
-
-        Each yielded string represents a line in the SDL output.
-        First comes the args, then the attributes.
-        """
-        if self.args:
-            yield ", ".join(convert(arg) for arg in self.args)
-
-        yield from (str(attr) for attr in self.attrs)
-
-    def __str__(self) -> str:
-        """Convert the shape to POV-Ray SDL format."""
-        args = list(self)
-        if len(args) == 1:
-            return f"{self.name} {{ {args[0]} }}"
-
-        arg = textwrap.indent("\n".join(args), "  ")
-        return f"{self.name} {{\n{arg}\n}}"
+        args_ = (convert_attribute(arg) for arg in args)
+        super().__init__(*args_, **kwargs)
 
     @overload
     def __add__(self, other: Shape) -> Union: ...
@@ -139,72 +107,6 @@ class Shape(ABC):
             Merge of this shape and other.
         """
         return Merge(self, other)
-
-    def add(self, *others: Any) -> Self:
-        """Add multiple attributes to this shape.
-
-        Args:
-            *others: Attributes to add. Lists or tuples will be flattened.
-
-        Returns:
-            New shape with the added attributes.
-        """
-        attrs = []
-        for other in others:
-            if isinstance(other, list | tuple):
-                attrs.extend(other)
-            else:
-                attrs.append(other)
-
-        return self.__class__(*self.args, *self.attrs, *attrs)
-
-    def scale(self, x: float, y: float | None = None, z: float | None = None) -> Self:
-        """Scale the shape uniformly or non-uniformly.
-
-        Args:
-            x: Scale factor. If y and z are None, scales uniformly.
-            y: Scale factor for y-axis. If None, uses x for uniform scaling.
-            z: Scale factor for z-axis. If None, uses x for uniform scaling.
-
-        Returns:
-            New shape with the scaling transformation applied.
-        """
-        if y is None or z is None:
-            return self.__class__(*self.args, *self.attrs, Transform(scale=x))
-
-        return self.__class__(*self.args, *self.attrs, Transform(scale=(x, y, z)))
-
-    def rotate(self, x: float, y: float, z: float) -> Self:
-        """Rotate the shape around the x, y, and z axes.
-
-        Args:
-            x: Rotation angle in degrees around the x-axis.
-            y: Rotation angle in degrees around the y-axis.
-            z: Rotation angle in degrees around the z-axis.
-
-        Returns:
-            New shape with the rotation transformation applied.
-        """
-        return self.__class__(*self.args, *self.attrs, Transform(rotate=(x, y, z)))
-
-    def translate(self, x: float, y: float, z: float) -> Self:
-        """Translate the shape along the x, y, and z axes.
-
-        Args:
-            x: Translation distance along the x-axis.
-            y: Translation distance along the y-axis.
-            z: Translation distance along the z-axis.
-
-        Returns:
-            New shape with the translation transformation applied.
-        """
-        return self.__class__(*self.args, *self.attrs, Transform(translate=(x, y, z)))
-
-
-class Pigment(Shape):
-    def __init__(self, *args: Any) -> None:
-        self.args = []
-        self.attrs = list(args)
 
 
 def convert_attribute(attr: Any) -> Any:
