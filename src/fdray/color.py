@@ -14,7 +14,7 @@ common web color standards.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -144,29 +144,20 @@ class Color:
         return " ".join(self)
 
 
-class ColorList:
-    kind: Literal["checker", "brick", "hexagon"]
-    colors: list[Color]
-
-    def __init__(
-        self,
-        kind: Literal["checker", "brick", "hexagon"],
-        *colors: ColorLike | Color,
-    ) -> None:
-        self.kind = kind
-        self.colors = [Color(color) for color in colors]
-
-    def __iter__(self) -> Iterator[str]:
-        yield self.kind
-        yield ", ".join(str(color) for color in self.colors)
-
-    def __str__(self) -> str:
-        return " ".join(self)
-
-
 class Background(Color):
     def __str__(self) -> str:
         return f"background {{ {super().__str__()} }}"
+
+
+class ColorMap:
+    colors: list[tuple[float, Color]]
+
+    def __init__(self, *colors: tuple[float, ColorLike | Color]) -> None:
+        self.colors = [(k, Color(color)) for k, color in colors]
+
+    def __str__(self) -> str:
+        colors = " ".join(f"[{k} {color}]" for k, color in self.colors)
+        return f"color_map {{ {colors} }}"
 
 
 def rgb(color: str) -> RGB | str:
