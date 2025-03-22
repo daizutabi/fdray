@@ -1,5 +1,6 @@
 from .camera import Camera
 from .color import Background, Color, ColorMap
+from .core import Transform
 from .region import Region
 from .renderer import Renderer
 from .scene import Include, LightSource, Scene, Spotlight
@@ -23,7 +24,6 @@ from .texture import (
     PigmentMap,
     SlopeMap,
 )
-from .transformable import Transform
 
 __all__ = [
     "Background",

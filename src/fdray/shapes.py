@@ -21,8 +21,8 @@ from itertools import repeat
 from typing import TYPE_CHECKING, ClassVar, Literal, overload
 
 from .color import Color
+from .core import Transformable
 from .texture import Pigment
-from .transformable import Transformable
 from .utils import convert, reflect_point
 
 if TYPE_CHECKING:

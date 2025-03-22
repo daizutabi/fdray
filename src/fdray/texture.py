@@ -5,8 +5,7 @@ from typing import TYPE_CHECKING, ClassVar
 
 from fdray.utils import to_snake_case
 
-from .core import Descriptor
-from .transformable import Transformable
+from .core import Descriptor, Transformable
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
