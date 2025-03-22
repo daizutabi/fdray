@@ -1,15 +1,16 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 from math import cos, sin, sqrt
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING, Self, overload
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
 
 @dataclass
-class Vector:
+class Vector(Sequence[float]):
     x: float
     y: float
     z: float
@@ -20,15 +21,36 @@ class Vector:
     def __str__(self) -> str:
         return f"<{self.x:.5g}, {self.y:.5g}, {self.z:.5g}>"
 
+    def __len__(self) -> int:
+        return 3
+
+    @overload
+    def __getitem__(self, index: int) -> float: ...
+
+    @overload
+    def __getitem__(self, index: slice) -> list[float]: ...
+
+    def __getitem__(self, index: int | slice) -> float | list[float]:
+        values = [self.x, self.y, self.z]
+        if isinstance(index, slice):
+            return values[index]
+        return values[index]
+
     def __iter__(self) -> Iterator[float]:
         yield self.x
         yield self.y
         yield self.z
 
-    def __add__(self, other: Vector) -> Self:
+    def __add__(self, other: Vector | Sequence[float]) -> Self:
+        if not isinstance(other, Vector):
+            other = Vector(*other)
+
         return self.__class__(self.x + other.x, self.y + other.y, self.z + other.z)
 
-    def __sub__(self, other: Vector) -> Self:
+    def __sub__(self, other: Vector | Sequence[float]) -> Self:
+        if not isinstance(other, Vector):
+            other = Vector(*other)
+
         return self.__class__(self.x - other.x, self.y - other.y, self.z - other.z)
 
     def __mul__(self, scalar: float) -> Self:
@@ -50,20 +72,29 @@ class Vector:
         length = self.norm()
         return self.__class__(self.x / length, self.y / length, self.z / length)
 
-    def dot(self, other: Vector) -> float:
+    def dot(self, other: Vector | Sequence[float]) -> float:
+        if not isinstance(other, Vector):
+            other = Vector(*other)
+
         return self.x * other.x + self.y * other.y + self.z * other.z
 
-    def __matmul__(self, other: Vector) -> float:
+    def __matmul__(self, other: Vector | Sequence[float]) -> float:
+        if not isinstance(other, Vector):
+            other = Vector(*other)
+
         return self.dot(other)
 
-    def cross(self, other: Vector) -> Self:
+    def cross(self, other: Vector | Sequence[float]) -> Self:
+        if not isinstance(other, Vector):
+            other = Vector(*other)
+
         return self.__class__(
             self.y * other.z - self.z * other.y,
             self.z * other.x - self.x * other.z,
             self.x * other.y - self.y * other.x,
         )
 
-    def rotate(self, axis: Vector, theta: float) -> Self:
+    def rotate(self, axis: Vector | Sequence[float], theta: float) -> Self:
         """Rotate a vector around an axis by an angle (Rodrigues' rotation formula).
 
         Args:
@@ -73,6 +104,9 @@ class Vector:
         Returns:
             Vector: The rotated vector.
         """
+        if not isinstance(axis, Vector):
+            axis = Vector(*axis)
+
         cos_t = cos(theta)
         sin_t = sin(theta)
         a = axis.normalize()

@@ -9,9 +9,9 @@ def v():
     return Vector(1, 2, 3)
 
 
-@pytest.fixture(scope="module")
-def o():
-    return Vector(4, 5, 6)
+@pytest.fixture(scope="module", params=[Vector(4, 5, 6), (4, 5, 6)])
+def o(request: pytest.FixtureRequest):
+    return request.param
 
 
 def test_vector_repr(v: Vector):
@@ -26,11 +26,11 @@ def test_vector_iter(v: Vector):
     assert list(v) == [1, 2, 3]
 
 
-def test_vector_add(v: Vector, o: Vector):
+def test_vector_add(v: Vector, o):
     assert v + o == Vector(5, 7, 9)
 
 
-def test_vector_sub(v: Vector, o: Vector):
+def test_vector_sub(v: Vector, o):
     assert v - o == Vector(-3, -3, -3)
 
 
@@ -61,17 +61,18 @@ def test_vector_normalize(v: Vector):
     np.testing.assert_allclose(n.z, 0.8017837257372732)
 
 
-def test_vector_dot(v: Vector, o: Vector):
+def test_vector_dot(v: Vector, o):
+    assert v.dot(o) == 32
     assert v @ o == 32
 
 
-def test_vector_cross(v: Vector, o: Vector):
+def test_vector_cross(v: Vector, o):
     assert v.cross(o) == Vector(-3, 6, -3)
 
 
 @pytest.mark.parametrize("sign", [1, -1])
 def test_rotate_x(sign):
-    x = Vector(1, 1, 1).rotate(Vector(1, 0, 0), np.pi / 2 * sign)
+    x = Vector(1, 1, 1).rotate((1, 0, 0), np.pi / 2 * sign)
     np.testing.assert_allclose(x.x, 1)
     np.testing.assert_allclose(x.y, -sign)
     np.testing.assert_allclose(x.z, sign)
@@ -79,7 +80,7 @@ def test_rotate_x(sign):
 
 @pytest.mark.parametrize("sign", [1, -1])
 def test_rotate_y(sign):
-    x = Vector(1, 1, 1).rotate(Vector(0, 1, 0), np.pi / 2 * sign)
+    x = Vector(1, 1, 1).rotate((0, 1, 0), np.pi / 2 * sign)
     np.testing.assert_allclose(x.x, sign)
     np.testing.assert_allclose(x.y, 1)
     np.testing.assert_allclose(x.z, -sign)
@@ -87,7 +88,7 @@ def test_rotate_y(sign):
 
 @pytest.mark.parametrize("sign", [1, -1])
 def test_rotate_z(sign):
-    x = Vector(1, 1, 1).rotate(Vector(0, 0, 1), np.pi / 2 * sign)
+    x = Vector(1, 1, 1).rotate((0, 0, 1), np.pi / 2 * sign)
     np.testing.assert_allclose(x.x, -sign)
     np.testing.assert_allclose(x.y, sign)
     np.testing.assert_allclose(x.z, 1)

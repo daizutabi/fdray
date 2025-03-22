@@ -55,9 +55,9 @@ def test_camera_direction(camera: Camera):
 
 def test_camera_location(camera: Camera):
     v = camera.location
-    np.testing.assert_allclose(v[0], 1.299743850654924)
-    np.testing.assert_allclose(v[1], 0.6366710503823082)
-    np.testing.assert_allclose(v[2], 1.371312682810898)
+    np.testing.assert_allclose(v.x, 1.299743850654924)
+    np.testing.assert_allclose(v.y, 0.6366710503823082)
+    np.testing.assert_allclose(v.z, 1.371312682810898)
 
 
 def test_camera_right(camera: Camera):

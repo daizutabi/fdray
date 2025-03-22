@@ -1,28 +1,33 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
-from .attributes import Attribute
 from .camera import Camera
 from .color import Color
+from .core import Declare, Descriptor
 
 if TYPE_CHECKING:
+    from pathlib import Path
     from typing import Any
 
+    from PIL import Image
+
     from .typing import ColorLike, Point
+    from .vector import Vector
 
 
 @dataclass
-class LightSource(Attribute):
-    location: Point
-    color: ColorLike
+class LightSource(Descriptor):
+    location: Point | Vector | str
+    color: ColorLike | Color | None = None
     shadowless: bool = False
     fade_distance: float | None = None
     fade_power: float | None = None
 
     def __post_init__(self) -> None:
-        if not isinstance(self.color, Color):
+        if self.color and not isinstance(self.color, Color):
             self.color = Color(self.color)
 
     @property
@@ -40,7 +45,7 @@ class Spotlight(LightSource):
 
 
 @dataclass
-class GlobalSettings(Attribute):
+class GlobalSettings(Descriptor):
     assumed_gamma: float = 1
 
 
@@ -59,15 +64,19 @@ class Scene:
 
     attrs: list[Any]
     version: str = "3.7"
+    includes: list[Include]
     global_settings: GlobalSettings | None = None
 
     def __init__(self, *attrs: Any) -> None:
         self.attrs = []
+        self.includes = []
 
         for attr in attrs:
             if isinstance(attr, GlobalSettings):
                 self.global_settings = attr
-            elif isinstance(attr, list | tuple):
+            elif isinstance(attr, Include):
+                self.includes.append(attr)
+            elif isinstance(attr, Sequence):
                 self.attrs.extend(attr)
             else:
                 self.attrs.append(attr)
@@ -76,9 +85,12 @@ class Scene:
             self.global_settings = GlobalSettings()
 
     def __str__(self) -> str:
+        Declare.clear()
         version = f"#version {self.version};"
-        attrs = [version, self.global_settings, *self.attrs]
-        return "\n".join(str(attr) for attr in attrs if attr is not None)
+        includes = (str(include) for include in self.includes)
+        attrs = [str(attr) for attr in (self.global_settings, *self.attrs)]  # must list
+        attrs = (version, *includes, *Declare.iter_strs(), *attrs)
+        return "\n".join(attr for attr in attrs)
 
     @property
     def camera(self) -> Camera | None:
@@ -89,10 +101,20 @@ class Scene:
 
         return None
 
-    def render(self, width: int, height: int) -> str:
+    def to_str(self, width: int, height: int) -> str:
         """Render the scene with the given image dimensions."""
         if (camera := self.camera) is None:
             return str(self)
 
         with camera.set(aspect_ratio=width / height):
             return str(self)
+
+    def render(
+        self,
+        width: int | None = None,
+        height: int | None = None,
+    ) -> Image.Image:
+        """Render the scene with the given image dimensions."""
+        from .renderer import Renderer
+
+        return Renderer(width, height).render(self, return_image=True)

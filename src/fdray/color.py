@@ -79,21 +79,18 @@ class Color:
     name: str | None
     filter: float | None
     transmit: float | None
-    include_color: bool = True
 
     def __init__(
         self,
-        color: ColorLike,
+        color: ColorLike | Color,
         alpha: float | None = None,
         *,
         filter: float | None = None,
         transmit: float | None = None,
-        include_color: bool = True,
     ) -> None:
         if isinstance(color, Color):
             self.name = color.name
             self.red, self.green, self.blue = color.red, color.green, color.blue
-            self.include_color = color.include_color
             filter = filter or color.filter  # noqa: A001
             transmit = transmit or color.transmit
 
@@ -123,7 +120,6 @@ class Color:
 
         self.filter = filter
         self.transmit = transmit
-        self.include_color = include_color
 
     def __iter__(self) -> Iterator[str]:
         if self.name is not None:
@@ -145,13 +141,23 @@ class Color:
             yield f"rgb <{rgb}>"
 
     def __str__(self) -> str:
-        color = " ".join(self)
-        return f"color {color}" if self.include_color else color
+        return " ".join(self)
 
 
 class Background(Color):
     def __str__(self) -> str:
         return f"background {{ {super().__str__()} }}"
+
+
+class ColorMap:
+    colors: list[tuple[float, Color]]
+
+    def __init__(self, *colors: tuple[float, ColorLike | Color]) -> None:
+        self.colors = [(k, Color(color)) for k, color in colors]
+
+    def __str__(self) -> str:
+        colors = " ".join(f"[{k} {color}]" for k, color in self.colors)
+        return f"color_map {{ {colors} }}"
 
 
 def rgb(color: str) -> RGB | str:
