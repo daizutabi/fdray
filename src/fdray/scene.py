@@ -41,7 +41,7 @@ class Spotlight(LightSource):
 
 @dataclass
 class GlobalSettings(Descriptor):
-    assumed_gamma: float = 1
+    assumed_gamma: float = 2.2
 
 
 class Include:

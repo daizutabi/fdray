@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import MISSING, dataclass, fields
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from .utils import convert, to_snake_case
 
@@ -74,6 +75,21 @@ class Element(Base):
 
         attrs = (attr for attr in attrs if predicate(attr))
         return self.__class__(*self.args, *attrs, **kwargs)
+
+
+class Map(Base):
+    cls: ClassVar[type]
+    args: list[tuple[float, Any]]
+
+    def __init__(self, *args: tuple[float, Any]) -> None:
+        self.args = list(args)
+
+    def __iter__(self) -> Iterator[str]:
+        for k, arg in self.args:
+            if isinstance(arg, self.cls):
+                yield f"[{k} {' '.join(arg)}]"
+            else:
+                yield f"[{k} {arg}]"
 
 
 @dataclass

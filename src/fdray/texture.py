@@ -1,38 +1,18 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING
 
-from fdray.utils import to_snake_case
+from fdray.core import Map
 
 from .core import Descriptor, Transformable
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
-    from typing import Any
 
 
-class Map:
-    cls: ClassVar[type]
-    args: list[tuple[float, Any]]
-
-    def __init__(self, *args: tuple[float, Any]) -> None:
-        self.args = list(args)
-
-    @property
-    def name(self) -> str:
-        """The name of the attribute."""
-        return to_snake_case(self.__class__.__name__)
-
-    def __iter__(self) -> Iterator[str]:
-        for k, arg in self.args:
-            if isinstance(arg, self.cls):
-                yield f"[{k} {' '.join(arg)}]"
-            else:
-                yield f"[{k} {arg}]"
-
-    def __str__(self) -> str:
-        return f"{self.name} {{ {' '.join(self)} }}"
+class Texture(Transformable):
+    pass
 
 
 class Pigment(Transformable):

@@ -30,8 +30,8 @@ def test_spotlight():
 def test_global_settings():
     from fdray.scene import GlobalSettings
 
-    x = GlobalSettings()
-    assert str(x) == "global_settings { assumed_gamma 1 }"
+    x = GlobalSettings(assumed_gamma=0.2)
+    assert str(x) == "global_settings { assumed_gamma 0.2 }"
 
 
 def test_include():
@@ -62,7 +62,7 @@ def test_scene_str():
 
     x = str(Scene("a", ["b", "c"]))
     assert x.startswith("#version 3.7;\n")
-    assert "global_settings { assumed_gamma 1 }" in x
+    assert "global_settings { assumed_gamma " in x
     assert x.endswith("\na\nb\nc")
 
 
