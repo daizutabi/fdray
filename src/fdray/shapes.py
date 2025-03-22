@@ -16,19 +16,20 @@ The module structure follows these principles:
 from __future__ import annotations
 
 from collections.abc import Sequence
-from itertools import repeat
+from itertools import cycle, repeat
 from typing import TYPE_CHECKING, ClassVar, Literal, overload
 
-from .color import Color
+import numpy as np
+
+from .color import COLOR_PALETTE, Color
 from .core import Transformable
 from .texture import Pigment
 from .utils import convert, reflect_point
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterator, Mapping
     from typing import Any, Self
 
-    import numpy as np
     from numpy.typing import NDArray
 
     from .typing import Point
@@ -158,6 +159,44 @@ class Union(Csg):
     A union represents the boolean OR operation on shapes.
     """
 
+    @classmethod
+    def from_region(
+        cls,
+        region: list[int] | NDArray[np.integer],
+        shape: Shape | None = None,
+        spacing: float | tuple[float, ...] = 1,
+        attrs: Mapping[int, Any] | None = None,
+    ) -> Self:
+        if isinstance(region, list):
+            region = np.array(region)
+
+        def get_default_attrs() -> dict[int, Any]:
+            colors = [Color(c) for c in COLOR_PALETTE]
+            return dict(zip(np.unique(region), cycle(colors), strict=False))
+
+        shape = shape or Cube((0, 0, 0), 0.85)
+        attrs = attrs or get_default_attrs()
+        shapes = {k: shape.add(v) for k, v in attrs.items()}
+
+        if isinstance(spacing, (int, float)):
+            spacing = (spacing,) * region.ndim
+        elif len(spacing) != region.ndim:
+            msg = f"Spacing must have {region.ndim} components"
+            raise ValueError(msg)
+
+        def iter_shapes() -> Iterator[Shape]:
+            for idx in np.ndindex(region.shape):
+                index = region[idx]
+                if index not in shapes:
+                    continue
+
+                position = (i * s for i, s in zip(idx, spacing, strict=True))
+                position = (*position, 0, 0)[:3]  # for 1D or 2D regions
+
+                yield shapes[index].translate(*position)
+
+        return cls(*iter_shapes())
+
 
 class Intersection(Csg):
     """Intersection of shapes - points inside all shapes are inside the intersection.
@@ -211,100 +250,6 @@ class Merge(Csg):
             New merge with the added shape.
         """
         return super().__add__(other)
-
-
-class ShapeGroup:
-    """A group of shapes combined as a union with utility methods.
-
-    This is a convenience class that combines multiple shapes and provides
-    transformation methods that apply to all shapes in the group.
-
-    Attributes:
-        union: The Union object containing all shapes in the group.
-
-    Args:
-        *shapes: Shapes to include in the group.
-    """
-
-    union: Union
-
-    def __init__(self, *shapes: Shape) -> None:
-        self.union = Union(*shapes)
-
-    def __str__(self) -> str:
-        """Convert the shape group to POV-Ray SDL format."""
-        return str(self.union)
-
-    def __add__(self, other: Any) -> Self:
-        """Add a shape or attribute to all shapes in this group.
-
-        Args:
-            other: Shape or attribute to add.
-
-        Returns:
-            New shape group with the addition applied.
-        """
-        group = self.__class__.__new__(self.__class__)
-        group.union = self.union + other
-        return group
-
-    def add(self, *others: Any) -> Self:
-        """Add multiple attributes to all shapes in this group.
-
-        Args:
-            *others: Attributes to add. Lists or tuples will be flattened.
-
-        Returns:
-            New shape group with the additions applied.
-        """
-        group = self.__class__.__new__(self.__class__)
-        group.union = self.union.add(*others)
-        return group
-
-    def scale(self, x: float, y: float | None = None, z: float | None = None) -> Self:
-        """Scale all shapes in this group.
-
-        Args:
-            x: Scale factor. If y and z are None, scales uniformly.
-            y: Scale factor for y-axis. If None, uses x for uniform scaling.
-            z: Scale factor for z-axis. If None, uses x for uniform scaling.
-
-        Returns:
-            New shape group with scaling applied to all shapes.
-        """
-        group = self.__class__.__new__(self.__class__)
-        group.union = self.union.scale(x, y, z)
-        return group
-
-    def rotate(self, x: float, y: float, z: float) -> Self:
-        """Rotate all shapes in this group.
-
-        Args:
-            x: Rotation angle in degrees around the x-axis.
-            y: Rotation angle in degrees around the y-axis.
-            z: Rotation angle in degrees around the z-axis.
-
-        Returns:
-            New shape group with rotation applied to all shapes.
-        """
-        group = self.__class__.__new__(self.__class__)
-        group.union = self.union.rotate(x, y, z)
-        return group
-
-    def translate(self, x: float, y: float, z: float) -> Self:
-        """Translate all shapes in this group.
-
-        Args:
-            x: Translation distance along the x-axis.
-            y: Translation distance along the y-axis.
-            z: Translation distance along the z-axis.
-
-        Returns:
-            New shape group with translation applied to all shapes.
-        """
-        group = self.__class__.__new__(self.__class__)
-        group.union = self.union.translate(x, y, z)
-        return group
 
 
 class Box(Shape):

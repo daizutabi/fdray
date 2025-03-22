@@ -1,6 +1,3 @@
-import textwrap
-
-from fdray.color import Color
 from fdray.shapes import Difference, Intersection, Merge, Sphere, Union
 
 
@@ -190,65 +187,3 @@ def test_cube_add_str():
 
     x = Cube((1, 2, 3), 1) + "abc"
     assert str(x) == "box { <0.5, 1.5, 2.5>, <1.5, 2.5, 3.5> abc }"
-
-
-def test_shape_group():
-    from fdray.shapes import ShapeGroup, Sphere
-
-    x = ShapeGroup(Sphere((1, 2, 3), 1), Sphere((1, 2, 3), 1))
-    assert str(x) == "union { sphere { <1, 2, 3>, 1 } sphere { <1, 2, 3>, 1 } }"
-
-
-def test_shape_group_add_shape():
-    from fdray.shapes import ShapeGroup, Sphere
-
-    x = ShapeGroup(Sphere((1, 2, 3), 1), Sphere((1, 2, 3), 2))
-    x = x + Sphere((1, 2, 3), 3)
-    s = "union { sphere { <1, 2, 3>, 1 } sphere { <1, 2, 3>, 2 } "
-    s += "sphere { <1, 2, 3>, 3 } }"
-    assert str(x) == s
-
-
-def test_shape_group_add_str():
-    from fdray.shapes import ShapeGroup, Sphere
-
-    x = ShapeGroup(Sphere((1, 2, 3), 1), Sphere((1, 2, 3), 2))
-    x = x + "abc"
-    s = "union { sphere { <1, 2, 3>, 1 } sphere { <1, 2, 3>, 2 } abc }"
-    assert str(x) == s
-
-
-def test_shape_group_add_method():
-    from fdray.shapes import ShapeGroup, Sphere
-
-    x = ShapeGroup(Sphere((1, 2, 3), 1), Sphere((1, 2, 3), 2))
-    x = x.add("abc", "def")
-    s = "union { sphere { <1, 2, 3>, 1 } sphere { <1, 2, 3>, 2 } abc def }"
-    assert str(x) == s
-
-
-def test_shape_group_scale():
-    from fdray.shapes import ShapeGroup, Sphere
-
-    x = ShapeGroup(Sphere((1, 2, 3), 1))
-    x = x.scale(2, 3, 4)
-    s = "union { sphere { <1, 2, 3>, 1 } scale <2, 3, 4> }"
-    assert str(x) == s
-
-
-def test_shape_group_rotate():
-    from fdray.shapes import ShapeGroup, Sphere
-
-    x = ShapeGroup(Sphere((1, 2, 3), 1))
-    x = x.rotate(1, 2, 3)
-    s = "union { sphere { <1, 2, 3>, 1 } rotate <1, 2, 3> }"
-    assert str(x) == s
-
-
-def test_shape_group_translate():
-    from fdray.shapes import ShapeGroup, Sphere
-
-    x = ShapeGroup(Sphere((1, 2, 3), 1))
-    x = x.translate(1, 2, 3)
-    s = "union { sphere { <1, 2, 3>, 1 } translate <1, 2, 3> }"
-    assert str(x) == s
