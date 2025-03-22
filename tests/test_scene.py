@@ -34,6 +34,13 @@ def test_global_settings():
     assert str(x) == "global_settings { assumed_gamma 1 }"
 
 
+def test_include():
+    from fdray.scene import Include
+
+    x = Include("a", "b", "c")
+    assert str(x) == '#include "a"\n#include "b"\n#include "c"'
+
+
 def test_scene_attrs():
     from fdray.scene import Scene
 
