@@ -1,3 +1,17 @@
+"""Color definitions and utilities for ray tracing.
+
+This module provides classes and functions for creating and manipulating
+colors in POV-Ray scenes. It supports:
+
+1. Named colors (e.g., "red", "blue") and hex color codes (including #RRGGBBAA format)
+2. RGB and RGBA color specifications with optional filter and transmit properties
+3. Alpha transparency conversion to POV-Ray's transmit property
+4. String serialization to POV-Ray SDL format
+
+The module offers a rich set of predefined color names compatible with
+common web color standards.
+"""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -9,6 +23,56 @@ if TYPE_CHECKING:
 
 
 class Color:
+    """A color representation with support for POV-Ray color properties.
+
+    This class handles various color formats and provides conversion to
+    POV-Ray SDL syntax. Colors can be specified by name, hex code
+    (including #RRGGBBAA format), RGB or RGBA tuple, or by copying another
+    Color object. Optional properties include alpha transparency, filter,
+    and transmit values.
+
+    Args:
+        color: Color specification. Can be:
+            - A Color object
+            - String name (e.g., "red")
+            - Hex code (e.g., "#00FF00" or "#00FF00FF" with alpha)
+            - RGB tuple (e.g., (1.0, 0.0, 0.0))
+            - RGBA tuple (e.g., (1.0, 0.0, 0.0, 0.5))
+        alpha: Alpha transparency (0.0 = fully transparent, 1.0 = fully opaque).
+            If provided, converts to transmit value (transmit = 1 - alpha).
+            Takes precedence over alpha in RGBA tuple or hex code.
+        filter: Filter property for POV-Ray (how much color filters through).
+            Only used when specified as a keyword argument.
+        transmit: Transmit property for POV-Ray (how much light passes through).
+            Only used when specified as a keyword argument.
+        include_color: Whether to include the "color" keyword in string output.
+            Defaults to True.
+
+    Note:
+        Alpha can be specified in multiple ways, with the following precedence:
+        1. Explicit `alpha` parameter
+        2. Alpha component in an RGBA tuple
+        3. Alpha component in a hex color code (#RRGGBBAA)
+
+    Attributes:
+        red (float): Red component (0.0 to 1.0)
+        green (float): Green component (0.0 to 1.0)
+        blue (float): Blue component (0.0 to 1.0)
+        name (str | None): Color name if created from a named color
+        filter (float | None): Filter property (how much color filters through)
+        transmit (float | None): Transmit property (how much light passes through)
+        include_color (bool): Whether to include "color" keyword in output
+
+    Examples:
+        >>> Color("red") # doctest: +SKIP
+        >>> Color((1.0, 0.0, 0.0)) # doctest: +SKIP
+        >>> Color((1.0, 0.0, 0.0, 0.5))  # RGBA with alpha=0.5 # doctest: +SKIP
+        >>> Color("blue", alpha=0.5) # doctest: +SKIP
+        >>> Color("#00FF00", filter=0.3) # doctest: +SKIP
+        >>> Color("#00FF00FF")  # Hex color with alpha # doctest: +SKIP
+        >>> Color(existing_color, transmit=0.7) # doctest: +SKIP
+    """
+
     red: float
     green: float
     blue: float
@@ -20,10 +84,10 @@ class Color:
     def __init__(
         self,
         color: ColorLike,
-        filter: float | None = None,
-        transmit: float | None = None,
         alpha: float | None = None,
         *,
+        filter: float | None = None,
+        transmit: float | None = None,
         include_color: bool = True,
     ) -> None:
         if isinstance(color, Color):
@@ -34,6 +98,10 @@ class Color:
             transmit = transmit or color.transmit
 
         elif isinstance(color, str):
+            if color.startswith("#") and len(color) == 9:
+                alpha = int(color[7:9], 16) / 255
+                color = color[:7]
+
             color = rgb(color)
 
             if isinstance(color, str):
@@ -45,7 +113,10 @@ class Color:
 
         else:
             self.name = None
-            self.red, self.green, self.blue = color
+            if len(color) == 3:
+                self.red, self.green, self.blue = color
+            elif len(color) == 4:
+                self.red, self.green, self.blue, alpha = color
 
         if alpha is not None:
             transmit = 1 - alpha
@@ -58,18 +129,18 @@ class Color:
         if self.name is not None:
             yield self.name
             if self.filter is not None:
-                yield f"filter {self.filter}"
+                yield f"filter {self.filter:.3g}"
             if self.transmit is not None:
-                yield f"transmit {self.transmit}"
+                yield f"transmit {self.transmit:.3g}"
             return
 
         rgb = f"{self.red:.3g}, {self.green:.3g}, {self.blue:.3g}"
         if self.filter is not None and self.transmit is not None:
-            yield f"rgbft <{rgb}, {self.filter}, {self.transmit}>"
+            yield f"rgbft <{rgb}, {self.filter:.3g}, {self.transmit:.3g}>"
         elif self.filter is not None:
-            yield f"rgbf <{rgb}, {self.filter}>"
+            yield f"rgbf <{rgb}, {self.filter:.3g}>"
         elif self.transmit is not None:
-            yield f"rgbt <{rgb}, {self.transmit}>"
+            yield f"rgbt <{rgb}, {self.transmit:.3g}>"
         else:
             yield f"rgb <{rgb}>"
 
@@ -86,11 +157,19 @@ class Background(Color):
 def rgb(color: str) -> RGB | str:
     """Return the RGB color as a tuple of floats.
 
+    Converts a color name or hex code to an RGB tuple with values
+    ranging from 0.0 to 1.0. If the input is a hex code with alpha
+    (#RRGGBBAA), the alpha component is ignored for this function.
+    If the input is not recognized as a valid color name or hex code,
+    returns the input string unchanged.
+
     Args:
-        color (str): The color name or hex code.
+        color: The color name (e.g., "red") or hex code
+            (e.g., "#00FF00" or "#00FF00FF")
 
     Returns:
-        tuple[float, float, float] | str: The RGB color as a tuple of floats.
+        A tuple of three floats (red, green, blue) or the original string
+        if not recognized as a valid color.
 
     Examples:
         >>> rgb("red")
@@ -99,10 +178,12 @@ def rgb(color: str) -> RGB | str:
         >>> rgb("#00FF00")
         (0.0, 1.0, 0.0)
 
+        >>> rgb("#00FF00FF")  # Alpha component is ignored
+        (0.0, 1.0, 0.0)
     """
     color = cnames.get(color, color)
 
-    if not isinstance(color, str) or not color.startswith("#") or len(color) != 7:
+    if not isinstance(color, str) or not color.startswith("#") or len(color) < 7:
         return color
 
     r, g, b = color[1:3], color[3:5], color[5:7]

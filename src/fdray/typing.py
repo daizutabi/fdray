@@ -8,4 +8,5 @@ if TYPE_CHECKING:
 Point: TypeAlias = tuple[float, float, float]
 Vector: TypeAlias = tuple[float, float, float]
 RGB: TypeAlias = tuple[float, float, float]
-ColorLike: TypeAlias = "str | RGB | Color"
+RGBA: TypeAlias = tuple[float, float, float, float]
+ColorLike: TypeAlias = "str | RGB | RGBA | Color"
