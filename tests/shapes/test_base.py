@@ -15,7 +15,7 @@ def test_sphere_color():
     from fdray.shapes import Sphere
 
     x = Sphere((0, 0, 0), 1, Color("red"))
-    assert str(x) == "sphere {\n  <0, 0, 0>, 1\n  pigment { color rgb <1, 0, 0> }\n}"
+    assert str(x) == "sphere {\n  <0, 0, 0>, 1\n  pigment { rgb <1, 0, 0> }\n}"
 
 
 def test_sphere_attr_str():
@@ -122,7 +122,7 @@ def test_merge_or_shape():
     x = Sphere((0, 0, 0), 1) | Sphere((1, 0, 0), 2, Color("red")) | Sphere((0, 1, 0), 3)
     assert isinstance(x, Merge)
     s = "merge {\n  sphere { <0, 0, 0>, 1 }\n"
-    s += "  sphere {\n    <1, 0, 0>, 2\n    pigment { color rgb <1, 0, 0> }\n  }\n"
+    s += "  sphere {\n    <1, 0, 0>, 2\n    pigment { rgb <1, 0, 0> }\n  }\n"
     s += "  sphere { <0, 1, 0>, 3 }\n}"
     assert str(x) == s
 

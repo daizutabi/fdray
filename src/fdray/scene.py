@@ -16,13 +16,13 @@ if TYPE_CHECKING:
 @dataclass
 class LightSource(Attribute):
     location: Point
-    color: ColorLike
+    color: ColorLike | Color | None = None
     shadowless: bool = False
     fade_distance: float | None = None
     fade_power: float | None = None
 
     def __post_init__(self) -> None:
-        if not isinstance(self.color, Color):
+        if self.color and not isinstance(self.color, Color):
             self.color = Color(self.color)
 
     @property
