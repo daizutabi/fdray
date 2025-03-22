@@ -14,7 +14,7 @@ common web color standards.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -79,21 +79,18 @@ class Color:
     name: str | None
     filter: float | None
     transmit: float | None
-    include_color: bool = True
 
     def __init__(
         self,
-        color: ColorLike,
+        color: ColorLike | Color,
         alpha: float | None = None,
         *,
         filter: float | None = None,
         transmit: float | None = None,
-        include_color: bool = True,
     ) -> None:
         if isinstance(color, Color):
             self.name = color.name
             self.red, self.green, self.blue = color.red, color.green, color.blue
-            self.include_color = color.include_color
             filter = filter or color.filter  # noqa: A001
             transmit = transmit or color.transmit
 
@@ -123,7 +120,6 @@ class Color:
 
         self.filter = filter
         self.transmit = transmit
-        self.include_color = include_color
 
     def __iter__(self) -> Iterator[str]:
         if self.name is not None:
@@ -145,8 +141,27 @@ class Color:
             yield f"rgb <{rgb}>"
 
     def __str__(self) -> str:
-        color = " ".join(self)
-        return f"color {color}" if self.include_color else color
+        return " ".join(self)
+
+
+class ColorList:
+    kind: Literal["checker", "brick", "hexagon"]
+    colors: list[Color]
+
+    def __init__(
+        self,
+        kind: Literal["checker", "brick", "hexagon"],
+        *colors: ColorLike | Color,
+    ) -> None:
+        self.kind = kind
+        self.colors = [Color(color) for color in colors]
+
+    def __iter__(self) -> Iterator[str]:
+        yield self.kind
+        yield ", ".join(str(color) for color in self.colors)
+
+    def __str__(self) -> str:
+        return " ".join(self)
 
 
 class Background(Color):

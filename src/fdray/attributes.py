@@ -4,14 +4,13 @@ from contextlib import contextmanager
 from dataclasses import MISSING, dataclass, fields
 from typing import TYPE_CHECKING
 
-from .color import Color
 from .utils import convert, to_snake_case
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
     from typing import Any
 
-    from .typing import ColorLike, Vector
+    from .typing import Vector
 
 
 @dataclass
@@ -52,14 +51,24 @@ class Attribute:
 
 
 @dataclass
-class Pigment(Attribute):
-    """POV-Ray pigment attributes."""
+class Transform(Attribute):
+    """POV-Ray transformation attributes."""
 
-    color: ColorLike | None = None
+    scale: Vector | float | None = None
+    rotate: Vector | None = None
+    translate: Vector | None = None
 
-    def __post_init__(self) -> None:
-        if self.color is not None:
-            self.color = Color(self.color, include_color=False)
+    def __str__(self) -> str:
+        if self.scale is not None and self.rotate is None and self.translate is None:
+            return f"scale {convert(self.scale)}"
+
+        if self.scale is None and self.rotate is not None and self.translate is None:
+            return f"rotate {convert(self.rotate)}"
+
+        if self.scale is None and self.rotate is None and self.translate is not None:
+            return f"translate {convert(self.translate)}"
+
+        return super().__str__()
 
 
 @dataclass
@@ -83,24 +92,3 @@ class Interior(Attribute):
     caustics: float | None = None
     fade_distance: float | None = None
     fade_power: float | None = None
-
-
-@dataclass
-class Transform(Attribute):
-    """POV-Ray transformation attributes."""
-
-    scale: Vector | float | None = None
-    rotate: Vector | None = None
-    translate: Vector | None = None
-
-    def __str__(self) -> str:
-        if self.scale is not None and self.rotate is None and self.translate is None:
-            return f"scale {convert(self.scale)}"
-
-        if self.scale is None and self.rotate is not None and self.translate is None:
-            return f"rotate {convert(self.rotate)}"
-
-        if self.scale is None and self.rotate is None and self.translate is not None:
-            return f"translate {convert(self.translate)}"
-
-        return super().__str__()

@@ -14,7 +14,7 @@ def test_iter(kind):
     it = iter(s)
     assert next(it) == f"{kind}, 2"
     assert next(it) == "<0, 0, 0>, 1, <1, 0, 0>, 1"
-    assert next(it) == "pigment { color rgb <1, 0, 0> }"
+    assert next(it) == "pigment { rgb <1, 0, 0> }"
 
 
 def test_str(kind):
