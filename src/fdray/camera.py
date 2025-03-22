@@ -49,7 +49,7 @@ from dataclasses import InitVar, dataclass, field
 from math import cos, radians, sin, sqrt
 from typing import TYPE_CHECKING
 
-from .attribute import Attribute
+from .core import Descriptor
 from .utils import convert
 from .vector import Vector
 
@@ -60,7 +60,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class Camera(Attribute):
+class Camera(Descriptor):
     """A camera for viewing 3D scenes.
 
     Define the viewpoint and projection for a 3D scene.

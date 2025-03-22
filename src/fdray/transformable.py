@@ -1,23 +1,19 @@
 from __future__ import annotations
 
-import textwrap
-from abc import ABC
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING
 
-from fdray.attribute import Attribute
-
-from .utils import convert, to_snake_case
+from .core import Descriptor, Element
+from .utils import convert
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
-    from typing import Any, Self
+    from typing import Self
 
     from fdray.typing import Vector
 
 
 @dataclass
-class Transform(Attribute):
+class Transform(Descriptor):
     """POV-Ray transformation attributes."""
 
     scale: Vector | float | None = None
@@ -37,44 +33,7 @@ class Transform(Attribute):
         return super().__str__()
 
 
-class Transformable(ABC):
-    nargs: ClassVar[int] = 0
-    args: list[Any]
-    attrs: list[Any]
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        self.args = list(args[: self.nargs])
-        attrs = (k for k, v in kwargs.items() if v)
-        self.attrs = [*attrs, *args[self.nargs :]]
-
-    @property
-    def name(self) -> str:
-        return to_snake_case(self.__class__.__name__)
-
-    def __iter__(self) -> Iterator[str]:
-        if self.args:
-            yield ", ".join(convert(arg) for arg in self.args)
-
-        yield from (str(attr) for attr in self.attrs)
-
-    def __str__(self) -> str:
-        args = list(self)
-        if len(args) == 1:
-            return f"{self.name} {{ {args[0]} }}"
-
-        arg = textwrap.indent("\n".join(args), "  ")
-        return f"{self.name} {{\n{arg}\n}}"
-
-    def add(self, *others: Any) -> Self:
-        attrs = []
-        for other in others:
-            if isinstance(other, list | tuple):
-                attrs.extend(other)
-            else:
-                attrs.append(other)
-
-        return self.__class__(*self.args, *self.attrs, *attrs)
-
+class Transformable(Element):
     def scale(self, x: float, y: float | None = None, z: float | None = None) -> Self:
         """Scale the object uniformly or non-uniformly.
 

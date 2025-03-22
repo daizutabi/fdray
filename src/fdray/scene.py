@@ -3,9 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from .attribute import Attribute
 from .camera import Camera
 from .color import Color
+from .core import Descriptor
 
 if TYPE_CHECKING:
     from typing import Any
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class LightSource(Attribute):
+class LightSource(Descriptor):
     location: Point
     color: ColorLike | Color | None = None
     shadowless: bool = False
@@ -40,7 +40,7 @@ class Spotlight(LightSource):
 
 
 @dataclass
-class GlobalSettings(Attribute):
+class GlobalSettings(Descriptor):
     assumed_gamma: float = 1
 
 

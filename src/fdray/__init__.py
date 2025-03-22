@@ -14,7 +14,15 @@ from .shapes import (
     Sphere,
     SphereSweep,
 )
-from .texture import Finish, Interior, Pigment, PigmentMap
+from .texture import (
+    Finish,
+    Interior,
+    Normal,
+    NormalMap,
+    Pigment,
+    PigmentMap,
+    SlopeMap,
+)
 from .transformable import Transform
 
 __all__ = [
@@ -32,12 +40,15 @@ __all__ = [
     "Include",
     "Interior",
     "LightSource",
+    "Normal",
+    "NormalMap",
     "Pigment",
     "PigmentMap",
     "Polyline",
     "Region",
     "Renderer",
     "Scene",
+    "SlopeMap",
     "Sphere",
     "SphereSweep",
     "Spotlight",
