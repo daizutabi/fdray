@@ -94,6 +94,4 @@ class Transformable(ABC):
 
 
 class Pigment(Transformable):
-    def __init__(self, *args: Any) -> None:
-        self.args = []
-        self.attrs = list(args)
+    pass
