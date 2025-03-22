@@ -91,7 +91,3 @@ class Transformable(ABC):
             New object with the translation transformation applied.
         """
         return self.__class__(*self.args, *self.attrs, Transform(translate=(x, y, z)))
-
-
-class Pigment(Transformable):
-    pass
