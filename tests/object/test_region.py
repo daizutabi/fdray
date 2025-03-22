@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from fdray.color import Color
-from fdray.shapes import Sphere, Union
+from fdray.object import Sphere, Union
 
 
 @pytest.fixture(scope="module")

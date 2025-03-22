@@ -1,9 +1,7 @@
 from .camera import Camera
 from .color import Background, Color, ColorMap
 from .core import Transform
-from .renderer import Renderer
-from .scene import Include, LightSource, Scene, Spotlight
-from .shapes import (
+from .object import (
     Box,
     Cone,
     Cube,
@@ -15,6 +13,8 @@ from .shapes import (
     SphereSweep,
     Union,
 )
+from .renderer import Renderer
+from .scene import Include, LightSource, Scene, Spotlight
 from .texture import (
     Finish,
     Interior,
