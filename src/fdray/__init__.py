@@ -1,6 +1,7 @@
 from .attributes import Finish, Interior, Transform
 from .camera import Camera
-from .color import Background, Color, ColorList
+from .color import Background, Color, ColorMap
+from .pigment import Pigment, PigmentMap
 from .region import Region
 from .renderer import Renderer
 from .scene import Include, LightSource, Scene, Spotlight
@@ -11,7 +12,6 @@ from .shapes import (
     Cuboid,
     Curve,
     Cylinder,
-    Pigment,
     Polyline,
     Sphere,
     SphereSweep,
@@ -22,7 +22,7 @@ __all__ = [
     "Box",
     "Camera",
     "Color",
-    "ColorList",
+    "ColorMap",
     "Cone",
     "Cube",
     "Cuboid",
@@ -33,6 +33,7 @@ __all__ = [
     "Interior",
     "LightSource",
     "Pigment",
+    "PigmentMap",
     "Polyline",
     "Region",
     "Renderer",
