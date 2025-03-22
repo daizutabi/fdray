@@ -1,7 +1,7 @@
 import pytest
 
 from fdray.color import Color
-from fdray.shapes import Curve, Polyline, SphereSweep
+from fdray.object import Curve, Polyline, SphereSweep
 
 
 @pytest.fixture(scope="module", params=["linear_spline", "b_spline", "cubic_spline"])
@@ -19,7 +19,7 @@ def test_iter(kind):
 
 def test_str(kind):
     s = SphereSweep(kind, [(0, 0, 0), (1, 0, 0), (1, 1, 0), (1, 1, 1)], 1)
-    assert str(s).startswith(f"sphere_sweep {{\n  {kind}, 4")
+    assert str(s).startswith(f"sphere_sweep {{ {kind}, 4")
 
 
 def test_str_none():
@@ -34,26 +34,26 @@ def test_str_one():
 
 def test_str_two(kind):
     s = SphereSweep(kind, [(0, 0, 0), (1, 0, 0)], 1)
-    assert str(s).startswith("sphere_sweep {\n  linear_spline, 2")
+    assert str(s).startswith("sphere_sweep { linear_spline, 2")
 
 
 def test_polyline():
     s = Polyline([(0, 0, 0), (1, 0, 0)], 1)
-    assert str(s).startswith("sphere_sweep {\n  linear_spline, 2")
+    assert str(s).startswith("sphere_sweep { linear_spline, 2")
 
 
 def test_polyline_from_coordinates():
     s = Polyline.from_coordinates([0, 1], [0, 2], [0, 3], [1, 2])
     s = str(s)
-    assert s.startswith("sphere_sweep {\n  linear_spline, 2")
-    assert s.endswith("  <0, 0, 0>, 1, <1, 2, 3>, 2\n}")
+    assert s.startswith("sphere_sweep { linear_spline, 2")
+    assert s.endswith(" <0, 0, 0>, 1, <1, 2, 3>, 2 }")
 
 
 def test_curve():
     s = Curve.from_coordinates([0, 1, 2, 3], [0, 2, 0, 2], [5, 4, 3, 2], [1, 2, 3, 4])
     s = str(s)
-    assert s.startswith("sphere_sweep {\n  cubic_spline, 6")
-    assert s.endswith(" <3, 2, 2>, 4, <4, 4, 1>, 4\n}")
+    assert s.startswith("sphere_sweep { cubic_spline, 6")
+    assert s.endswith(" <3, 2, 2>, 4, <4, 4, 1>, 4 }")
 
 
 def test_curve_one():
@@ -64,4 +64,4 @@ def test_curve_one():
 def test_curve_rotate():
     s = Curve.from_coordinates([0, 1], [0, 2], [0, 3], 1)
     s = str(s.rotate(10, 20, 30))
-    assert s.endswith("<2, 4, 6>, 1\n  rotate <10, 20, 30>\n}")
+    assert s.endswith("<2, 4, 6>, 1 rotate <10, 20, 30> }")

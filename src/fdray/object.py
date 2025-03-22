@@ -1,44 +1,44 @@
-"""3D shape primitives and operations for ray tracing.
+"""3D objects and operations for ray tracing.
 
-This module provides a collection of 3D shape classes for ray tracing with POV-Ray.
-Shapes can be combined using CSG operations (union, intersection, difference)
-and can be transformed (scale, rotate, translate). Each shape can also have
+This module provides a collection of 3D object classes for ray tracing with POV-Ray.
+Objects can be combined using CSG operations (union, intersection, difference)
+and can be transformed (scale, rotate, translate). Each object can also have
 attributes like color, texture, or other POV-Ray specific properties.
 
 The module structure follows these principles:
 
-1. All shapes inherit from the abstract base class Shape
-2. CSG operations are implemented as special shape classes
+1. All objects inherit from the base class Object
+2. CSG operations are implemented as special object classes
 3. Convenience methods are provided for common transformations
-4. String representation of shapes matches POV-Ray SDL syntax
+4. String representation of objects matches POV-Ray SDL syntax
 """
 
 from __future__ import annotations
 
-from abc import ABC
 from collections.abc import Sequence
-from itertools import repeat
+from itertools import cycle, repeat
 from typing import TYPE_CHECKING, ClassVar, Literal, overload
 
-from .color import Color
-from .pigment import Pigment
-from .transformable import Transformable
+import numpy as np
+
+from .color import COLOR_PALETTE, Color
+from .core import Transformable
+from .texture import Pigment
 from .utils import convert, reflect_point
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterator, Mapping
     from typing import Any, Self
 
-    import numpy as np
     from numpy.typing import NDArray
 
     from .typing import Point
 
 
-class Shape(Transformable, ABC):
-    """Abstract base class for all 3D shapes.
+class Object(Transformable):
+    """Base class for all 3D objects.
 
-    This class defines common behavior for all shapes including:
+    This class defines common behavior for all objects including:
 
     - String serialization to POV-Ray SDL format
     - CSG operations (union, intersection, difference, merge)
@@ -52,16 +52,16 @@ class Shape(Transformable, ABC):
     """
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        args_ = (convert_attribute(arg) for arg in args)
+        args_ = (Pigment(arg) if isinstance(arg, Color) else arg for arg in args)
         super().__init__(*args_, **kwargs)
 
     @overload
-    def __add__(self, other: Shape) -> Union: ...
+    def __add__(self, other: Object) -> Union: ...
 
     @overload
     def __add__(self, other: Any) -> Self: ...
 
-    def __add__(self, other: Shape | Any) -> Union | Self:
+    def __add__(self, other: Object | Any) -> Union | Self:
         """Create a union. For attributes, adds them to this shape.
 
         Args:
@@ -71,12 +71,12 @@ class Shape(Transformable, ABC):
             Union of shapes if other is a Shape, or a new shape with
             the added attribute.
         """
-        if isinstance(other, Shape):
+        if isinstance(other, Object):
             return Union(self, other)
 
         return self.__class__(*self.args, *self.attrs, other)
 
-    def __sub__(self, other: Shape) -> Difference:
+    def __sub__(self, other: Object) -> Difference:
         """Subtract another shape from this shape.
 
         Args:
@@ -87,7 +87,7 @@ class Shape(Transformable, ABC):
         """
         return Difference(self, other)
 
-    def __mul__(self, other: Shape) -> Intersection:
+    def __mul__(self, other: Object) -> Intersection:
         """Create an intersection.
 
         Args:
@@ -98,7 +98,7 @@ class Shape(Transformable, ABC):
         """
         return Intersection(self, other)
 
-    def __or__(self, other: Shape) -> Merge:
+    def __or__(self, other: Object) -> Merge:
         """Create a merge.
 
         Args:
@@ -110,27 +110,7 @@ class Shape(Transformable, ABC):
         return Merge(self, other)
 
 
-def convert_attribute(attr: Any) -> Any:
-    """Convert an attribute to the appropriate type.
-
-    Handles:
-    - Keywords like "open"
-    - Colors specified as strings or tuples
-    - Other attributes
-
-    Args:
-        attr: The attribute to convert.
-
-    Returns:
-        Converted attribute.
-    """
-    if isinstance(attr, Color):
-        return Pigment(attr)
-
-    return attr
-
-
-class Csg(Shape):
+class Csg(Object):
     """Base class for Constructive Solid Geometry (CSG) operations.
 
     CSG operations combine shapes using boolean operations.
@@ -159,6 +139,44 @@ class Union(Csg):
     A union represents the boolean OR operation on shapes.
     """
 
+    @classmethod
+    def from_region(
+        cls,
+        region: list[int] | NDArray[np.integer],
+        obj: Object | None = None,
+        spacing: float | tuple[float, ...] = 1,
+        attrs: Mapping[int, Any] | None = None,
+    ) -> Self:
+        if isinstance(region, list):
+            region = np.array(region)
+
+        def get_default_attrs() -> dict[int, Any]:
+            colors = [Color(c) for c in COLOR_PALETTE]
+            return dict(zip(np.unique(region), cycle(colors), strict=False))
+
+        obj = obj or Cube((0, 0, 0), 0.85)
+        attrs = attrs or get_default_attrs()
+        objects = {k: obj.add(v) for k, v in attrs.items()}
+
+        if isinstance(spacing, (int, float)):
+            spacing = (spacing,) * region.ndim
+        elif len(spacing) != region.ndim:
+            msg = f"Spacing must have {region.ndim} components"
+            raise ValueError(msg)
+
+        def iter_objects() -> Iterator[Object]:
+            for idx in np.ndindex(region.shape):
+                index = region[idx]
+                if index not in objects:
+                    continue
+
+                position = (i * s for i, s in zip(idx, spacing, strict=True))
+                position = (*position, 0, 0)[:3]  # for 1D or 2D regions
+
+                yield objects[index].translate(*position)
+
+        return cls(*iter_objects())
+
 
 class Intersection(Csg):
     """Intersection of shapes - points inside all shapes are inside the intersection.
@@ -166,7 +184,7 @@ class Intersection(Csg):
     An intersection represents the boolean AND operation on shapes.
     """
 
-    def __mul__(self, other: Shape) -> Self:
+    def __mul__(self, other: Object) -> Self:
         """Add another shape to this intersection using the * operator.
 
         Args:
@@ -184,7 +202,7 @@ class Difference(Csg):
     A difference represents the boolean subtraction operation on shapes.
     """
 
-    def __sub__(self, other: Shape) -> Self:
+    def __sub__(self, other: Object) -> Self:
         """Subtract another shape from this difference using the - operator.
 
         Args:
@@ -202,7 +220,7 @@ class Merge(Csg):
     A merge represents a union where internal surfaces are removed.
     """
 
-    def __or__(self, other: Shape) -> Self:
+    def __or__(self, other: Object) -> Self:
         """Add another shape to this merge using the | operator.
 
         Args:
@@ -214,101 +232,7 @@ class Merge(Csg):
         return super().__add__(other)
 
 
-class ShapeGroup:
-    """A group of shapes combined as a union with utility methods.
-
-    This is a convenience class that combines multiple shapes and provides
-    transformation methods that apply to all shapes in the group.
-
-    Attributes:
-        union: The Union object containing all shapes in the group.
-
-    Args:
-        *shapes: Shapes to include in the group.
-    """
-
-    union: Union
-
-    def __init__(self, *shapes: Shape) -> None:
-        self.union = Union(*shapes)
-
-    def __str__(self) -> str:
-        """Convert the shape group to POV-Ray SDL format."""
-        return str(self.union)
-
-    def __add__(self, other: Any) -> Self:
-        """Add a shape or attribute to all shapes in this group.
-
-        Args:
-            other: Shape or attribute to add.
-
-        Returns:
-            New shape group with the addition applied.
-        """
-        group = self.__class__.__new__(self.__class__)
-        group.union = self.union + other
-        return group
-
-    def add(self, *others: Any) -> Self:
-        """Add multiple attributes to all shapes in this group.
-
-        Args:
-            *others: Attributes to add. Lists or tuples will be flattened.
-
-        Returns:
-            New shape group with the additions applied.
-        """
-        group = self.__class__.__new__(self.__class__)
-        group.union = self.union.add(*others)
-        return group
-
-    def scale(self, x: float, y: float | None = None, z: float | None = None) -> Self:
-        """Scale all shapes in this group.
-
-        Args:
-            x: Scale factor. If y and z are None, scales uniformly.
-            y: Scale factor for y-axis. If None, uses x for uniform scaling.
-            z: Scale factor for z-axis. If None, uses x for uniform scaling.
-
-        Returns:
-            New shape group with scaling applied to all shapes.
-        """
-        group = self.__class__.__new__(self.__class__)
-        group.union = self.union.scale(x, y, z)
-        return group
-
-    def rotate(self, x: float, y: float, z: float) -> Self:
-        """Rotate all shapes in this group.
-
-        Args:
-            x: Rotation angle in degrees around the x-axis.
-            y: Rotation angle in degrees around the y-axis.
-            z: Rotation angle in degrees around the z-axis.
-
-        Returns:
-            New shape group with rotation applied to all shapes.
-        """
-        group = self.__class__.__new__(self.__class__)
-        group.union = self.union.rotate(x, y, z)
-        return group
-
-    def translate(self, x: float, y: float, z: float) -> Self:
-        """Translate all shapes in this group.
-
-        Args:
-            x: Translation distance along the x-axis.
-            y: Translation distance along the y-axis.
-            z: Translation distance along the z-axis.
-
-        Returns:
-            New shape group with translation applied to all shapes.
-        """
-        group = self.__class__.__new__(self.__class__)
-        group.union = self.union.translate(x, y, z)
-        return group
-
-
-class Box(Shape):
+class Box(Object):
     """A box defined by two corner points.
 
     A box is an axis-aligned rectangular prism defined by two opposite corners.
@@ -332,7 +256,7 @@ class Box(Shape):
         super().__init__(corner1, corner2, *attrs, **kwargs)
 
 
-class Cuboid(Shape):
+class Cuboid(Object):
     """A rectangular prism defined by a center point and dimensions.
 
     This is a convenience class that creates a Box centered at a specified point.
@@ -364,7 +288,7 @@ class Cuboid(Shape):
         return str(Box(corner1, corner2, *self.attrs))
 
 
-class Cube(Shape):
+class Cube(Object):
     """A cube defined by a center point and edge length.
 
     This is a convenience class that creates a Box representing a cube.
@@ -390,7 +314,7 @@ class Cube(Shape):
         return str(Box(corner1, corner2, *self.attrs))
 
 
-class Cone(Shape):
+class Cone(Object):
     """A cone or truncated cone between two points with specified radii.
 
     Args:
@@ -416,7 +340,7 @@ class Cone(Shape):
         super().__init__(center1, radius1, center2, radius2, *attrs, **kwargs)
 
 
-class Cylinder(Shape):
+class Cylinder(Object):
     """A cylinder defined by two points and a radius.
 
     Args:
@@ -440,7 +364,7 @@ class Cylinder(Shape):
         super().__init__(center1, center2, radius, *attrs, **kwargs)
 
 
-class Plane(Shape):
+class Plane(Object):
     """A plane defined by a normal vector and distance from origin.
 
     Args:
@@ -462,7 +386,7 @@ class Plane(Shape):
         super().__init__(normal, distance, *attrs, **kwargs)
 
 
-class Sphere(Shape):
+class Sphere(Object):
     """A sphere defined by a center point and radius.
 
     Args:
@@ -484,7 +408,7 @@ class Sphere(Shape):
         super().__init__(center, radius, *attrs, **kwargs)
 
 
-class SphereSweep(Shape):
+class SphereSweep(Object):
     """A sweep of spheres along a path with specified interpolation.
 
     SphereSweep creates a smooth shape passing through a series of spheres
@@ -544,7 +468,7 @@ class SphereSweep(Shape):
         return super().__str__()
 
 
-class Polyline(Shape):
+class Polyline(Object):
     """A polyline (broken line) represented as a linear sphere sweep.
 
     This is a convenience class that creates a sphere sweep with linear_spline

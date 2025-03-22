@@ -6,7 +6,7 @@ import shutil
 import subprocess
 from pathlib import Path
 from tempfile import NamedTemporaryFile, mkdtemp
-from typing import TYPE_CHECKING, overload
+from typing import TYPE_CHECKING, Literal, overload
 
 import numpy as np
 from PIL import Image
@@ -100,31 +100,39 @@ class Renderer:
     def render(self, scene: Any) -> NDArray[np.uint8]: ...
 
     @overload
+    def render(self, scene: Any, *, return_image: Literal[True]) -> Image.Image: ...
+
+    @overload
     def render(self, scene: Any, output_file: str | Path) -> None: ...
 
     def render(
         self,
         scene: Any,
         output_file: str | Path | None = None,
-    ) -> NDArray[np.uint8] | None:
+        *,
+        return_image: bool = False,
+    ) -> NDArray[np.uint8] | Image.Image | None:
         """Render a POV-Ray scene.
 
         Args:
             scene: POV-Ray scene description
             output_file: Output image file path.
                 If None, returns a numpy array instead of saving to file.
+            return_image: If True, returns a PIL image instead of a numpy array.
 
         Returns:
-            NDArray[np.uint8] | None: RGB(A) image array if output_file is None
+            NDArray[np.uint8] | Image.Image | None: RGB(A) image array or PIL
+            image if output_file is None
         """
         if output_file is None:
             with NamedTemporaryFile(suffix=".png") as file:
                 output_file = Path(file.name)
                 self.render(scene, output_file)
-                return np.array(Image.open(output_file))
+                image = Image.open(output_file)
+                return image if return_image else np.array(image)
 
         if isinstance(scene, Scene):
-            scene = scene.render(self.width, self.height)
+            scene = scene.to_str(self.width, self.height)
         else:
             scene = str(scene)
 

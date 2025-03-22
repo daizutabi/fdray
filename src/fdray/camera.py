@@ -1,10 +1,11 @@
 """The camera implementation.
 
-This camera implementation is based on the following Qiita article:
-Title: Efficient Camera Settings in POV-Ray
-Author: @Hyrodium (Yuto Horikawa)
-URL: https://qiita.com/Hyrodium/items/af91b1ddb8ea2c4359c2
-Date: 2017-12-07
+This camera implementation is based on the following Qiita article
+
+ - Title: Efficient Camera Settings in POV-Ray
+ - Author: @Hyrodium (Yuto Horikawa)
+ - URL: https://qiita.com/Hyrodium/items/af91b1ddb8ea2c4359c2
+ - Date: 2017-12-07
 
 We adopt the spherical coordinate system for camera positioning
 and the calculation methods for direction, right, and up vectors
@@ -49,18 +50,16 @@ from dataclasses import InitVar, dataclass, field
 from math import cos, radians, sin, sqrt
 from typing import TYPE_CHECKING
 
-from .attributes import Attribute
+from .core import Descriptor
 from .utils import convert
 from .vector import Vector
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from .typing import Point
-
 
 @dataclass
-class Camera(Attribute):
+class Camera(Descriptor):
     """A camera for viewing 3D scenes.
 
     Define the viewpoint and projection for a 3D scene.
@@ -107,7 +106,7 @@ class Camera(Attribute):
     clockwise (positive) or counterclockwise (negative).
     """
 
-    look_at: Point = (0, 0, 0)
+    look_at: tuple[float, float, float] = (0, 0, 0)
     """The point the camera is looking at.
 
     Define the center of the view and the point the camera is oriented
@@ -161,9 +160,8 @@ class Camera(Attribute):
         return self.z * self.distance
 
     @property
-    def location(self) -> Point:
-        x, y, z = self.direction
-        return x + self.look_at[0], y + self.look_at[1], z + self.look_at[2]
+    def location(self) -> Vector:
+        return self.direction + self.look_at
 
     @property
     def right(self) -> Vector:

@@ -33,6 +33,7 @@ dev = [
   "pytest-randomly>=3.16",
   "pytest-xdist>=3.6",
 ]
+docs = ["mkapi", "mkdocs-jupyter", "mkdocs-material"]
 
 [tool.pytest.ini_options]
 addopts = ["--cov=fdray", "--cov-report=lcov:lcov.info", "--doctest-modules"]
@@ -64,7 +65,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["ANN", "FBT", "S101"]
-"notebooks/*" = ["ANN"]
+"*.ipynb" = ["ANN", "F403", "F405"]
 
 [tool.pyright]
 include = ["src", "tests"]
