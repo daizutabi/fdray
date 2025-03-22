@@ -20,8 +20,9 @@ from collections.abc import Sequence
 from itertools import repeat
 from typing import TYPE_CHECKING, ClassVar, Literal, overload
 
-from .color import Color, ColorList
-from .transformable import Pigment, Transformable
+from .color import Color
+from .pigment import Pigment
+from .transformable import Transformable
 from .utils import convert, reflect_point
 
 if TYPE_CHECKING:
@@ -123,7 +124,7 @@ def convert_attribute(attr: Any) -> Any:
     Returns:
         Converted attribute.
     """
-    if isinstance(attr, Color | ColorList):
+    if isinstance(attr, Color):
         return Pigment(attr)
 
     return attr

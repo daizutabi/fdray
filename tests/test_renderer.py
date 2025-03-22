@@ -25,7 +25,7 @@ def scene() -> str:
 def test_render_output_file(scene: str, tmp_path: Path):
     from fdray.renderer import Renderer
 
-    renderer = Renderer(150, 100, quality=4)
+    renderer = Renderer(150, 100, quality=4, antialias=False)
     output_file = tmp_path / "test.png"
     assert renderer.render(scene, output_file) is None
 

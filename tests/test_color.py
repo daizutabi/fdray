@@ -1,4 +1,4 @@
-from fdray.color import Background, Color
+from fdray.color import Background, Color, ColorMap
 
 
 def test_color_name():
@@ -75,3 +75,8 @@ def test_color_color():
 def test_background_str():
     background = Background("blue")
     assert str(background) == "background { rgb <0, 0, 1> }"
+
+
+def test_color_map_str():
+    color_map = ColorMap((0, Color("red")), (1, "Blue"))
+    assert str(color_map) == "color_map { [0 rgb <1, 0, 0>] [1 Blue] }"
