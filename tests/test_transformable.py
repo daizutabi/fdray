@@ -1,5 +1,26 @@
 from fdray.color import Color
-from fdray.pigment import Pigment
+from fdray.texture import Pigment
+
+
+def test_transform_scale():
+    from fdray.transformable import Transform
+
+    x = Transform(scale=(1, 2, 3))
+    assert str(x) == "scale <1, 2, 3>"
+
+
+def test_transform_rotate():
+    from fdray.transformable import Transform
+
+    x = Transform(rotate=(1, 2, 3))
+    assert str(x) == "rotate <1, 2, 3>"
+
+
+def test_transform_translate():
+    from fdray.transformable import Transform
+
+    x = Transform(translate=(1, 2, 3))
+    assert str(x) == "translate <1, 2, 3>"
 
 
 def test_pigment():

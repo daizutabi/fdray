@@ -2,14 +2,39 @@ from __future__ import annotations
 
 import textwrap
 from abc import ABC
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, ClassVar
 
-from .attributes import Transform
+from fdray.attribute import Attribute
+
 from .utils import convert, to_snake_case
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
     from typing import Any, Self
+
+    from fdray.typing import Vector
+
+
+@dataclass
+class Transform(Attribute):
+    """POV-Ray transformation attributes."""
+
+    scale: Vector | float | None = None
+    rotate: Vector | None = None
+    translate: Vector | None = None
+
+    def __str__(self) -> str:
+        if self.scale is not None and self.rotate is None and self.translate is None:
+            return f"scale {convert(self.scale)}"
+
+        if self.scale is None and self.rotate is not None and self.translate is None:
+            return f"rotate {convert(self.rotate)}"
+
+        if self.scale is None and self.rotate is None and self.translate is not None:
+            return f"translate {convert(self.translate)}"
+
+        return super().__str__()
 
 
 class Transformable(ABC):

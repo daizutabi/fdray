@@ -1,7 +1,6 @@
-from .attributes import Finish, Interior, Transform
+from .attribute import Finish, Interior
 from .camera import Camera
 from .color import Background, Color, ColorMap
-from .pigment import Pigment, PigmentMap
 from .region import Region
 from .renderer import Renderer
 from .scene import Include, LightSource, Scene, Spotlight
@@ -16,6 +15,8 @@ from .shapes import (
     Sphere,
     SphereSweep,
 )
+from .texture import Pigment, PigmentMap
+from .transformable import Transform
 
 __all__ = [
     "Background",

@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from .attributes import Attribute
+from .attribute import Attribute
 from .camera import Camera
 from .color import Color
 
