@@ -57,6 +57,13 @@ def test_scene_global_settings():
     assert x.global_settings.assumed_gamma == 0.2
 
 
+def test_scene_include():
+    from fdray.scene import Include, Scene
+
+    x = Scene(Include("a", "b", "c"))
+    assert x.includes[0].filenames == ["a", "b", "c"]
+
+
 def test_scene_str():
     from fdray.scene import Scene
 

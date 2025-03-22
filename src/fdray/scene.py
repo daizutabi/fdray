@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from .camera import Camera
 from .color import Color
-from .core import Descriptor
+from .core import Declare, Descriptor
 
 if TYPE_CHECKING:
     from typing import Any
@@ -59,15 +60,19 @@ class Scene:
 
     attrs: list[Any]
     version: str = "3.7"
+    includes: list[Include]
     global_settings: GlobalSettings | None = None
 
     def __init__(self, *attrs: Any) -> None:
         self.attrs = []
+        self.includes = []
 
         for attr in attrs:
             if isinstance(attr, GlobalSettings):
                 self.global_settings = attr
-            elif isinstance(attr, list | tuple):
+            elif isinstance(attr, Include):
+                self.includes.append(attr)
+            elif isinstance(attr, Sequence):
                 self.attrs.extend(attr)
             else:
                 self.attrs.append(attr)
@@ -76,9 +81,12 @@ class Scene:
             self.global_settings = GlobalSettings()
 
     def __str__(self) -> str:
+        Declare.clear()
         version = f"#version {self.version};"
-        attrs = [version, self.global_settings, *self.attrs]
-        return "\n".join(str(attr) for attr in attrs if attr is not None)
+        includes = (str(include) for include in self.includes)
+        attrs = [str(attr) for attr in (self.global_settings, *self.attrs)]  # must list
+        attrs = (version, *includes, *Declare.iter_strs(), *attrs)
+        return "\n".join(attr for attr in attrs)
 
     @property
     def camera(self) -> Camera | None:

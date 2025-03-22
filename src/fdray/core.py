@@ -92,10 +92,66 @@ class Map(Base):
                 yield f"[{k} {arg}]"
 
 
+class IdGenerator:
+    """Generate unique identifiers for objects."""
+
+    counters: ClassVar[dict[str, int]] = {}
+
+    @classmethod
+    def clear(cls) -> None:
+        """Clear the counters."""
+        cls.counters.clear()
+
+    @classmethod
+    def generate(cls, value: Any, name: str | None = None) -> str:
+        """Generate a unique identifier for an object."""
+        if name is None:
+            name = str(value.__class__.__name__.upper())
+
+        if name not in cls.counters:
+            cls.counters[name] = 0
+            return name
+
+        cls.counters[name] += 1
+
+        return f"{name}_{cls.counters[name]}"
+
+
+class Declare:
+    name: str
+    value: Any
+    declarations: ClassVar[dict[str, Self]] = {}
+
+    def __init__(self, value: Any, name: str | None = None) -> None:
+        self.name = IdGenerator.generate(value, name)
+        self.value = value
+
+    @classmethod
+    def clear(cls) -> None:
+        """Clear the members."""
+        IdGenerator.clear()
+        cls.declarations.clear()
+
+    @classmethod
+    def add(cls, member: Self) -> None:
+        cls.declarations.setdefault(member.name, member)
+
+    def __str__(self) -> str:
+        self.__class__.add(self)
+        return self.name
+
+    def to_str(self) -> str:
+        return f"#declare {self.name} = {self.value};"
+
+    @classmethod
+    def iter_strs(cls) -> Iterator[str]:
+        yield from (m.to_str() for m in cls.declarations.values())
+
+
 @dataclass
 class Descriptor(Base):
     def __iter__(self) -> Iterator[str]:
-        """Iterate over the attribute."""
+        """Iterate over the descriptor."""
         for field in fields(self):
             value = getattr(self, field.name)
             if value is True:
@@ -120,7 +176,7 @@ class Descriptor(Base):
 
 @dataclass
 class Transform(Descriptor):
-    """POV-Ray transformation attributes."""
+    """POV-Ray transformation descriptor."""
 
     scale: Vector | float | None = None
     rotate: Vector | None = None

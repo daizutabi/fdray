@@ -1,6 +1,6 @@
 from .camera import Camera
 from .color import Background, Color, ColorMap
-from .core import Transform
+from .core import Declare, Transform
 from .object import (
     Box,
     Cone,
@@ -8,6 +8,7 @@ from .object import (
     Cuboid,
     Curve,
     Cylinder,
+    Object,
     Polyline,
     Sphere,
     SphereSweep,
@@ -36,12 +37,14 @@ __all__ = [
     "Cuboid",
     "Curve",
     "Cylinder",
+    "Declare",
     "Finish",
     "Include",
     "Interior",
     "LightSource",
     "Normal",
     "NormalMap",
+    "Object",
     "Pigment",
     "PigmentMap",
     "Polyline",
