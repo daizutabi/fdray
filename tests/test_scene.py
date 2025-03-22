@@ -73,8 +73,8 @@ def test_scene_str():
     assert x.endswith("\na\nb\nc")
 
 
-def test_scene_render_without_camera():
+def test_scene_to_str_without_camera():
     from fdray.scene import Scene
 
     x = Scene("a", ["b", "c"])
-    assert "a\nb\nc" in x.render(100, 100)
+    assert "a\nb\nc" in x.to_str(100, 100)

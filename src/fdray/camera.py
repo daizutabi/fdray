@@ -1,10 +1,11 @@
 """The camera implementation.
 
-This camera implementation is based on the following Qiita article:
-Title: Efficient Camera Settings in POV-Ray
-Author: @Hyrodium (Yuto Horikawa)
-URL: https://qiita.com/Hyrodium/items/af91b1ddb8ea2c4359c2
-Date: 2017-12-07
+This camera implementation is based on the following Qiita article
+
+ - Title: Efficient Camera Settings in POV-Ray
+ - Author: @Hyrodium (Yuto Horikawa)
+ - URL: https://qiita.com/Hyrodium/items/af91b1ddb8ea2c4359c2
+ - Date: 2017-12-07
 
 We adopt the spherical coordinate system for camera positioning
 and the calculation methods for direction, right, and up vectors

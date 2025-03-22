@@ -2,14 +2,17 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from .camera import Camera
 from .color import Color
 from .core import Declare, Descriptor
 
 if TYPE_CHECKING:
+    from pathlib import Path
     from typing import Any
+
+    from PIL import Image
 
     from .typing import ColorLike, Point
     from .vector import Vector
@@ -98,10 +101,20 @@ class Scene:
 
         return None
 
-    def render(self, width: int, height: int) -> str:
+    def to_str(self, width: int, height: int) -> str:
         """Render the scene with the given image dimensions."""
         if (camera := self.camera) is None:
             return str(self)
 
         with camera.set(aspect_ratio=width / height):
             return str(self)
+
+    def render(
+        self,
+        width: int | None = None,
+        height: int | None = None,
+    ) -> Image.Image:
+        """Render the scene with the given image dimensions."""
+        from .renderer import Renderer
+
+        return Renderer(width, height).render(self, return_image=True)

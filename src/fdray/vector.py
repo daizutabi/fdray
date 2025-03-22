@@ -1,15 +1,16 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 from math import cos, sin, sqrt
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING, Self, overload
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Sequence
+    from collections.abc import Iterator
 
 
 @dataclass
-class Vector:
+class Vector(Sequence[float]):
     x: float
     y: float
     z: float
@@ -19,6 +20,21 @@ class Vector:
 
     def __str__(self) -> str:
         return f"<{self.x:.5g}, {self.y:.5g}, {self.z:.5g}>"
+
+    def __len__(self) -> int:
+        return 3
+
+    @overload
+    def __getitem__(self, index: int) -> float: ...
+
+    @overload
+    def __getitem__(self, index: slice) -> list[float]: ...
+
+    def __getitem__(self, index: int | slice) -> float | list[float]:
+        values = [self.x, self.y, self.z]
+        if isinstance(index, slice):
+            return values[index]
+        return values[index]
 
     def __iter__(self) -> Iterator[float]:
         yield self.x
