@@ -53,6 +53,7 @@ nav:
   - Home: index.md
   - Usage:
       - notebooks/camera.ipynb
+      - notebooks/pigment.ipynb
   - Reference: $api/fdray.***
 extra_css:
   - css/hide-prompt.css
