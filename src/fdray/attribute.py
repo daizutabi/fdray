@@ -46,26 +46,3 @@ class Attribute:
         finally:
             for name, value in zip(kwargs, values, strict=True):
                 setattr(self, name, value)
-
-
-@dataclass
-class Finish(Attribute):
-    """POV-Ray finish attributes."""
-
-    ambient: float | None = None
-    diffuse: float | None = None
-    phong: float | None = None
-    phong_size: float | None = None
-    reflection: float | None = None
-    specular: float | None = None
-    roughness: float | None = None
-
-
-@dataclass
-class Interior(Attribute):
-    """POV-Ray interior attributes."""
-
-    ior: float | None = None  # Index of Refraction
-    caustics: float | None = None
-    fade_distance: float | None = None
-    fade_power: float | None = None

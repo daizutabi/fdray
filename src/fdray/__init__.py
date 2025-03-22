@@ -1,4 +1,3 @@
-from .attribute import Finish, Interior
 from .camera import Camera
 from .color import Background, Color, ColorMap
 from .region import Region
@@ -15,7 +14,7 @@ from .shapes import (
     Sphere,
     SphereSweep,
 )
-from .texture import Pigment, PigmentMap
+from .texture import Finish, Interior, Pigment, PigmentMap
 from .transformable import Transform
 
 __all__ = [
