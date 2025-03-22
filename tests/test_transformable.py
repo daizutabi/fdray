@@ -1,5 +1,5 @@
 from fdray.color import Color
-from fdray.transformable import Pigment
+from fdray.pigment import Pigment
 
 
 def test_pigment():
