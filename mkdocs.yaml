@@ -31,7 +31,7 @@ theme:
     - navigation.expand
     - navigation.footer
     - navigation.indexes
-    - navigation.sections
+    # - navigation.sections
     - navigation.tabs
     - navigation.tabs.sticky
     - navigation.top
@@ -52,8 +52,12 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Usage:
-      - notebooks/camera.ipynb
-      - notebooks/pigment.ipynb
+      - Camera:
+          - notebooks/camera/camera.ipynb
+      - Texture:
+          - notebooks/texture/pigment.ipynb
+          - notebooks/texture/normal.ipynb
+          - notebooks/texture/pattern.ipynb
   - Reference: $api/fdray.***
 extra_css:
   - css/hide-prompt.css

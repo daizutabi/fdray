@@ -24,6 +24,7 @@ from .texture import (
     Pigment,
     PigmentMap,
     SlopeMap,
+    Texture,
 )
 
 __all__ = [
@@ -54,6 +55,7 @@ __all__ = [
     "Sphere",
     "SphereSweep",
     "Spotlight",
+    "Texture",
     "Transform",
     "Union",
 ]

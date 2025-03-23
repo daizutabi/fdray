@@ -42,6 +42,7 @@ class Renderer:
     threads: int | None = None
     display: bool = False
     executable: str = "povray"
+    scene: str = ""
     stdout: str = ""
     stderr: str = ""
 
@@ -132,11 +133,11 @@ class Renderer:
                 return image if return_image else np.array(image)
 
         if isinstance(scene, Scene):
-            scene = scene.to_str(self.width, self.height)
+            self.scene = scene.to_str(self.width, self.height)
         else:
-            scene = str(scene)
+            self.scene = str(scene)
 
-        command = self.build(scene, output_file)
+        command = self.build(self.scene, output_file)
         cp = subprocess.run(command, check=False, capture_output=True, text=True)
         self.stdout = cp.stdout
         self.stderr = remove_progress(cp.stderr)

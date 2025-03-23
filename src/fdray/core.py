@@ -196,7 +196,12 @@ class Transform(Descriptor):
 
 
 class Transformable(Element):
-    def scale(self, x: float, y: float | None = None, z: float | None = None) -> Self:
+    def scale(
+        self,
+        x: float | str,
+        y: float | None = None,
+        z: float | None = None,
+    ) -> Self:
         """Scale the object uniformly or non-uniformly.
 
         Args:
@@ -207,12 +212,17 @@ class Transformable(Element):
         Returns:
             New object with the scaling transformation applied.
         """
-        if y is None or z is None:
+        if isinstance(x, str) or y is None or z is None:
             return self.__class__(*self.args, *self.attrs, Transform(scale=x))
 
         return self.__class__(*self.args, *self.attrs, Transform(scale=(x, y, z)))
 
-    def rotate(self, x: float, y: float, z: float) -> Self:
+    def rotate(
+        self,
+        x: float | str,
+        y: float | None = None,
+        z: float | None = None,
+    ) -> Self:
         """Rotate the object around the x, y, and z axes.
 
         Args:
@@ -223,9 +233,17 @@ class Transformable(Element):
         Returns:
             New object with the rotation transformation applied.
         """
+        if isinstance(x, str) or y is None or z is None:
+            return self.__class__(*self.args, *self.attrs, Transform(rotate=x))
+
         return self.__class__(*self.args, *self.attrs, Transform(rotate=(x, y, z)))
 
-    def translate(self, x: float, y: float, z: float) -> Self:
+    def translate(
+        self,
+        x: float | str,
+        y: float | None = None,
+        z: float | None = None,
+    ) -> Self:
         """Translate the object along the x, y, and z axes.
 
         Args:
@@ -236,4 +254,7 @@ class Transformable(Element):
         Returns:
             New object with the translation transformation applied.
         """
+        if isinstance(x, str) or y is None or z is None:
+            return self.__class__(*self.args, *self.attrs, Transform(translate=x))
+
         return self.__class__(*self.args, *self.attrs, Transform(translate=(x, y, z)))
