@@ -15,6 +15,10 @@ class Texture(Transformable):
     pass
 
 
+class TextureMap(Map):
+    cls = Texture
+
+
 class Pigment(Transformable):
     pass
 

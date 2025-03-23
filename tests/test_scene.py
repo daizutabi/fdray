@@ -78,3 +78,23 @@ def test_scene_to_str_without_camera():
 
     x = Scene("a", ["b", "c"])
     assert "a\nb\nc" in x.to_str(100, 100)
+
+
+def test_scene_format():
+    from fdray.core import Declare
+    from fdray.object import Object, Sphere
+    from fdray.scene import Scene
+
+    x = Scene(Object(Declare(Sphere(1, 1))).scale(1))
+    x = f"{x}"
+    assert "#declare SPHERE =\nsphere {\n  1, 1\n};\n" in x
+    assert "object {\n  SPHERE scale 1\n}" in x
+
+
+def test_scene_render():
+    from fdray.core import Declare
+    from fdray.object import Object, Sphere
+    from fdray.scene import Scene
+
+    s = Scene(Object(Declare(Sphere(1, 1))).scale(1))
+    assert s.render(100, 100)

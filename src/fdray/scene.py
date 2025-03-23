@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from .camera import Camera
 from .color import Color
 from .core import Declare, Descriptor
+from .format import format_code
 
 if TYPE_CHECKING:
     from typing import Any
@@ -14,12 +15,11 @@ if TYPE_CHECKING:
     from PIL import Image
 
     from .typing import ColorLike, Point
-    from .vector import Vector
 
 
 @dataclass
 class LightSource(Descriptor):
-    location: Point | Vector | str
+    location: Point | str
     color: ColorLike | Color | None = None
     shadowless: bool = False
     fade_distance: float | None = None
@@ -90,6 +90,9 @@ class Scene:
         attrs = [str(attr) for attr in (self.global_settings, *self.attrs)]  # must list
         attrs = (version, *includes, *Declare.iter_strs(), *attrs)
         return "\n".join(attr for attr in attrs)
+
+    def __format__(self, format_spec: str) -> str:
+        return format_code(str(self))
 
     @property
     def camera(self) -> Camera | None:

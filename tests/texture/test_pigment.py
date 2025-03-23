@@ -13,6 +13,11 @@ def test_pigment_pattern():
     assert str(pigment) == x
 
 
-def test_pigment_map():
+def test_pigment_map_tuple():
     pigment = PigmentMap((0, Pigment("Red")), (0.5, Color("blue")), (1, "Green"))
+    assert str(pigment) == "pigment_map { [0 Red] [0.5 rgb <0, 0, 1>] [1 Green] }"
+
+
+def test_pigment_map_dict():
+    pigment = PigmentMap({0: Pigment("Red"), 0.5: Color("blue"), 1: "Green"})
     assert str(pigment) == "pigment_map { [0 Red] [0.5 rgb <0, 0, 1>] [1 Green] }"

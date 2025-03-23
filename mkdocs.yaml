@@ -58,6 +58,9 @@ nav:
           - notebooks/texture/pigment.ipynb
           - notebooks/texture/normal.ipynb
           - notebooks/texture/pattern.ipynb
+      - fdray:
+          - notebooks/fdray/curve.ipynb
+          - notebooks/fdray/region.ipynb
   - Reference: $api/fdray.***
 extra_css:
   - css/hide-prompt.css

@@ -1,19 +1,33 @@
 from __future__ import annotations
 
-from collections.abc import Sequence
-from dataclasses import dataclass
+from collections.abc import Iterable
 from math import cos, sin, sqrt
-from typing import TYPE_CHECKING, Self, overload
+from typing import TYPE_CHECKING, Self
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
 
-@dataclass
-class Vector(Sequence[float]):
+class Vector:
     x: float
     y: float
     z: float
+
+    def __init__(
+        self,
+        x: float | Iterable[float],
+        y: float | None = None,
+        z: float | None = None,
+    ) -> None:
+        if isinstance(x, Iterable):
+            self.x, self.y, self.z = x
+        elif y is not None and z is not None:
+            self.x = x
+            self.y = y
+            self.z = z
+        else:
+            msg = "Invalid arguments"
+            raise ValueError(msg)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.x}, {self.y}, {self.z})"
@@ -21,33 +35,27 @@ class Vector(Sequence[float]):
     def __str__(self) -> str:
         return f"<{self.x:.5g}, {self.y:.5g}, {self.z:.5g}>"
 
-    def __len__(self) -> int:
-        return 3
-
-    @overload
-    def __getitem__(self, index: int) -> float: ...
-
-    @overload
-    def __getitem__(self, index: slice) -> list[float]: ...
-
-    def __getitem__(self, index: int | slice) -> float | list[float]:
-        values = [self.x, self.y, self.z]
-        if isinstance(index, slice):
-            return values[index]
-        return values[index]
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, Vector):
+            return self.x == other.x and self.y == other.y and self.z == other.z
+        if isinstance(other, Iterable):
+            o = list(other)
+            if len(o) == 3:
+                return self.x == o[0] and self.y == o[1] and self.z == o[2]
+        return False
 
     def __iter__(self) -> Iterator[float]:
         yield self.x
         yield self.y
         yield self.z
 
-    def __add__(self, other: Vector | Sequence[float]) -> Self:
+    def __add__(self, other: Vector | Iterable[float]) -> Self:
         if not isinstance(other, Vector):
             other = Vector(*other)
 
         return self.__class__(self.x + other.x, self.y + other.y, self.z + other.z)
 
-    def __sub__(self, other: Vector | Sequence[float]) -> Self:
+    def __sub__(self, other: Vector | Iterable[float]) -> Self:
         if not isinstance(other, Vector):
             other = Vector(*other)
 
@@ -72,19 +80,19 @@ class Vector(Sequence[float]):
         length = self.norm()
         return self.__class__(self.x / length, self.y / length, self.z / length)
 
-    def dot(self, other: Vector | Sequence[float]) -> float:
+    def dot(self, other: Vector | Iterable[float]) -> float:
         if not isinstance(other, Vector):
             other = Vector(*other)
 
         return self.x * other.x + self.y * other.y + self.z * other.z
 
-    def __matmul__(self, other: Vector | Sequence[float]) -> float:
+    def __matmul__(self, other: Vector | Iterable[float]) -> float:
         if not isinstance(other, Vector):
             other = Vector(*other)
 
         return self.dot(other)
 
-    def cross(self, other: Vector | Sequence[float]) -> Self:
+    def cross(self, other: Vector | Iterable[float]) -> Self:
         if not isinstance(other, Vector):
             other = Vector(*other)
 
@@ -94,7 +102,7 @@ class Vector(Sequence[float]):
             self.x * other.y - self.y * other.x,
         )
 
-    def rotate(self, axis: Vector | Sequence[float], theta: float) -> Self:
+    def rotate(self, axis: Vector | Iterable[float], theta: float) -> Self:
         """Rotate a vector around an axis by an angle (Rodrigues' rotation formula).
 
         Args:

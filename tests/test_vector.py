@@ -14,6 +14,20 @@ def o(request: pytest.FixtureRequest):
     return request.param
 
 
+def test_vector_init_from_iteralbe():
+    assert Vector([1, 2, 3]) == (1, 2, 3)
+
+
+def test_vector_ne():
+    assert Vector(1, 2, 3) != (1, 2, 4)
+    assert Vector(1, 2, 3) != (1, 2)
+
+
+def test_vector_init_error():
+    with pytest.raises(ValueError, match="Invalid arguments"):
+        Vector(1, 2)
+
+
 def test_vector_repr(v: Vector):
     assert repr(v) == "Vector(1, 2, 3)"
 
@@ -28,10 +42,12 @@ def test_vector_iter(v: Vector):
 
 def test_vector_add(v: Vector, o):
     assert v + o == Vector(5, 7, 9)
+    assert v + list(o) == Vector(5, 7, 9)
 
 
 def test_vector_sub(v: Vector, o):
     assert v - o == Vector(-3, -3, -3)
+    assert v - list(o) == Vector(-3, -3, -3)
 
 
 def test_vector_mul(v: Vector):
@@ -64,10 +80,13 @@ def test_vector_normalize(v: Vector):
 def test_vector_dot(v: Vector, o):
     assert v.dot(o) == 32
     assert v @ o == 32
+    assert v.dot(list(o)) == 32
+    assert v @ list(o) == 32
 
 
 def test_vector_cross(v: Vector, o):
     assert v.cross(o) == Vector(-3, 6, -3)
+    assert v.cross(list(o)) == Vector(-3, 6, -3)
 
 
 @pytest.mark.parametrize("sign", [1, -1])

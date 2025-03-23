@@ -5,13 +5,14 @@ from contextlib import contextmanager
 from dataclasses import MISSING, dataclass, fields
 from typing import TYPE_CHECKING, Any, ClassVar
 
+from .format import format_code
 from .utils import convert, to_snake_case
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterable, Iterator
     from typing import Any, Self
 
-    from fdray.typing import Vector
+    from fdray.typing import Point
 
 
 class Base:
@@ -24,6 +25,9 @@ class Base:
 
     def __str__(self) -> str:
         return f"{self.name} {{ {' '.join(self)} }}"
+
+    def __format__(self, format_spec: str) -> str:
+        return format_code(str(self))
 
 
 @dataclass
@@ -79,10 +83,15 @@ class Element(Base):
 
 class Map(Base):
     cls: ClassVar[type]
-    args: list[tuple[float, Any]]
+    args: list[tuple[Any, Any]]
 
-    def __init__(self, *args: tuple[float, Any]) -> None:
-        self.args = list(args)
+    def __init__(self, *args: Iterable[Any]) -> None:
+        self.args = []
+        for arg in args:
+            if isinstance(arg, dict):
+                self.args.extend(arg.items())
+            else:
+                self.args.append(tuple(arg))
 
     def __iter__(self) -> Iterator[str]:
         for k, arg in self.args:
@@ -141,7 +150,7 @@ class Declare:
         return self.name
 
     def to_str(self) -> str:
-        return f"#declare {self.name} = {self.value};"
+        return f"#declare {self.name} = {self.value!s};"
 
     @classmethod
     def iter_strs(cls) -> Iterator[str]:
@@ -178,9 +187,9 @@ class Descriptor(Base):
 class Transform(Descriptor):
     """POV-Ray transformation descriptor."""
 
-    scale: Vector | float | None = None
-    rotate: Vector | None = None
-    translate: Vector | None = None
+    scale: Point | float | None = None
+    rotate: Point | None = None
+    translate: Point | None = None
 
     def __str__(self) -> str:
         if self.scale is not None and self.rotate is None and self.translate is None:

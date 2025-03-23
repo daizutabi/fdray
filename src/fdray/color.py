@@ -16,6 +16,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from .core import Map
+
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
@@ -149,15 +151,8 @@ class Background(Color):
         return f"background {{ {super().__str__()} }}"
 
 
-class ColorMap:
-    colors: list[tuple[float, Color]]
-
-    def __init__(self, *colors: tuple[float, ColorLike | Color]) -> None:
-        self.colors = [(k, Color(color)) for k, color in colors]
-
-    def __str__(self) -> str:
-        colors = " ".join(f"[{k} {color}]" for k, color in self.colors)
-        return f"color_map {{ {colors} }}"
+class ColorMap(Map):
+    cls = Color
 
 
 def rgb(color: str) -> RGB | str:
