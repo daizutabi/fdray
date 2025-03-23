@@ -2,14 +2,13 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING
 
 from .camera import Camera
 from .color import Color
 from .core import Declare, Descriptor
 
 if TYPE_CHECKING:
-    from pathlib import Path
     from typing import Any
 
     from PIL import Image
