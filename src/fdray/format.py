@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import html
+import textwrap
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -90,3 +92,17 @@ def iter_maps(line: str) -> Iterator[str]:
             if depth == 0:
                 start = end
             depth += 1
+
+
+def to_html(code: str) -> str:
+    from pygments import highlight
+    from pygments.formatters import HtmlFormatter
+    from pygments.lexers import PovrayLexer
+
+    code = highlight(
+        format_code(code),
+        PovrayLexer(),
+        HtmlFormatter(cssclass="highlight-ipynb"),
+    )
+
+    return f"<div>{code}</div>"

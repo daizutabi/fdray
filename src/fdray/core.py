@@ -5,7 +5,7 @@ from contextlib import contextmanager
 from dataclasses import MISSING, dataclass, fields
 from typing import TYPE_CHECKING, Any, ClassVar
 
-from .format import format_code
+from .format import format_code, to_html
 from .utils import convert, to_snake_case
 
 if TYPE_CHECKING:
@@ -28,6 +28,9 @@ class Base:
 
     def __format__(self, format_spec: str) -> str:
         return format_code(str(self))
+
+    def _repr_html_(self) -> str:
+        return to_html(str(self))
 
 
 @dataclass
