@@ -14,8 +14,9 @@ if TYPE_CHECKING:
 
 @dataclass
 class LightSource(Descriptor):
-    location: Point | str
+    location: Point
     color: ColorLike | None = None
+    from_camera: bool = True
     shadowless: bool = False
     fade_distance: float | None = None
     fade_power: float | None = None
@@ -28,7 +29,17 @@ class LightSource(Descriptor):
     def name(self) -> str:
         return "light_source"
 
+    def __str__(self) -> str:
+        with self.set(from_camera=False):
+            return super().__str__()
+
     def to_str(self, camera: Camera | None) -> str:
+        if camera is None:
+            return str(self)
+
+        if not self.from_camera or isinstance(self.location, str):
+            return str(self)
+
         return str(self)
 
 

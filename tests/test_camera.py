@@ -1,3 +1,5 @@
+from math import asin, degrees, sqrt
+
 import numpy as np
 import pytest
 
@@ -88,3 +90,71 @@ def test_camera_iter(camera: Camera):
     assert x[1] == "<1.2997, 0.63667, 1.3713>"
     assert x[-2] == "sky"
     assert x[-1] == "<-0.53546, -0.37968, 0.75441>"
+
+
+@pytest.fixture(params=[3, 4, 5])
+def distance(request: pytest.FixtureRequest):
+    return request.param
+
+
+@pytest.fixture(params=[(0, 0, 0), (1, 2, 3), (-2, -4, -8)])
+def look_at(request: pytest.FixtureRequest):
+    return request.param
+
+
+def test_camera_orbital_location(distance: float, look_at: tuple[float, float, float]):
+    camera = Camera(0, 0, view_scale=2, distance=distance, look_at=look_at)
+
+    n = sqrt(distance**2 + 4)
+    forward = n / distance
+    p = camera.orbital_location(forward, degrees(asin(2 / n)), 0)
+    np.testing.assert_allclose(p.x, look_at[0], atol=1e-5)
+    np.testing.assert_allclose(p.y, look_at[1], atol=1e-5)
+    np.testing.assert_allclose(p.z, look_at[2] + 2, atol=1e-5)
+
+
+def test_camera_orbital_location_left(
+    distance: float,
+    look_at: tuple[float, float, float],
+):
+    camera = Camera(0, 0, view_scale=2, distance=distance, look_at=look_at)
+
+    n = sqrt(distance**2 + 4)
+    forward = n / distance
+    p = camera.orbital_location(forward, degrees(asin(2 / n)), 90)
+    np.testing.assert_allclose(p.x, look_at[0], atol=1e-5)
+    np.testing.assert_allclose(p.y, look_at[1] - 2, atol=1e-5)
+    np.testing.assert_allclose(p.z, look_at[2], atol=1e-5)
+
+
+def test_camera_orbital_location_down(distance):
+    camera = Camera(0, 0, view_scale=2, distance=distance)
+
+    n = sqrt(distance**2 + 4)
+    forward = n / distance
+    p = camera.orbital_location(forward, degrees(asin(2 / n)), 180)
+    np.testing.assert_allclose(p.x, 0, atol=1e-5)
+    np.testing.assert_allclose(p.y, 0, atol=1e-5)
+    np.testing.assert_allclose(p.z, -2, atol=1e-5)
+
+
+def test_camera_orbital_location_right(distance):
+    camera = Camera(0, 0, view_scale=2, distance=distance)
+
+    n = sqrt(distance**2 + 4)
+    forward = n / distance
+    p = camera.orbital_location(forward, degrees(asin(2 / n)), 270)
+    np.testing.assert_allclose(p.x, 0, atol=1e-5)
+    np.testing.assert_allclose(p.y, 2, atol=1e-5)
+    np.testing.assert_allclose(p.z, 0, atol=1e-5)
+
+
+def test_camera_orbital_location_behind(distance):
+    camera = Camera(0, 0, view_scale=2, distance=distance)
+
+    n = sqrt((distance / 2) ** 2 + 1)
+    forward = -n / distance
+    p = camera.orbital_location(forward, degrees(asin(1 / n)), 0)
+    np.testing.assert_allclose(p.x, 3 * distance / 2, atol=1e-5)
+    np.testing.assert_allclose(p.y, 0, atol=1e-5)
+    np.testing.assert_allclose(p.z, -1, atol=1e-5)

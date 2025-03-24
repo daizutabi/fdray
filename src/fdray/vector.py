@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from math import cos, sin, sqrt
+from math import acos, cos, sin, sqrt
 from typing import TYPE_CHECKING, Self
 
 if TYPE_CHECKING:
@@ -120,6 +120,23 @@ class Vector:
         a = axis.normalize()
 
         return self * cos_t + a.cross(self) * sin_t + a * (a @ self) * (1 - cos_t)
+
+    def angle(self, other: Vector | Iterable[float]) -> float:
+        """Calculate angle between two vectors in degrees.
+
+        Args:
+            other: Another vector to calculate angle with
+
+        Returns:
+            Angle between vectors in degrees (0-180)
+        """
+        if not isinstance(other, Vector):
+            other = Vector(*other)
+
+        v1 = self.normalize()
+        v2 = other.normalize()
+        cos_theta = max(min(v1.dot(v2), 1), -1)
+        return acos(cos_theta)
 
     @classmethod
     def from_spherical(cls, phi: float, theta: float) -> Self:

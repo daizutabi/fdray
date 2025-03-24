@@ -190,7 +190,7 @@ class Descriptor(Base):
 class Transform(Descriptor):
     """POV-Ray transformation descriptor."""
 
-    scale: Point | float | None = None
+    scale: Point | None = None
     rotate: Point | None = None
     translate: Point | None = None
 
