@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 @dataclass
 class LightSource(Descriptor):
     location: Point | str
-    color: ColorLike | Color | None = None
+    color: ColorLike | None = None
     shadowless: bool = False
     fade_distance: float | None = None
     fade_power: float | None = None
