@@ -34,6 +34,7 @@ class Include:
 class Scene:
     """A scene is a collection of elements."""
 
+    camera: Camera | None
     includes: list[Include]
     light_sources: list[LightSource]
     global_settings: GlobalSettings
@@ -41,13 +42,16 @@ class Scene:
     version: str = "3.7"
 
     def __init__(self, *attrs: Any) -> None:
+        self.camera = None
         self.includes = []
         self.light_sources = []
         self.global_settings = GlobalSettings()
         self.attrs = []
 
         for attr in attrs:
-            if isinstance(attr, Include):
+            if isinstance(attr, Camera):
+                self.camera = attr
+            elif isinstance(attr, Include):
                 self.includes.append(attr)
             elif isinstance(attr, LightSource):
                 self.light_sources.append(attr)
@@ -58,14 +62,23 @@ class Scene:
             else:
                 self.attrs.append(attr)
 
-    @property
-    def camera(self) -> Camera | None:
-        """Get the camera from the scene."""
-        for attr in self.attrs:
-            if isinstance(attr, Camera):
-                return attr
+    def __iter__(self) -> Iterator[str]:
+        Declare.clear()
+        yield f"#version {self.version};"
+        yield from (str(include) for include in self.includes)
+        yield str(self.global_settings)
+        if self.camera:
+            yield str(self.camera)
+        yield from (light.to_str(self.camera) for light in self.light_sources)
+        attrs = [str(attr) for attr in self.attrs]  # must list to consume Declare
+        yield from Declare.iter_strs()  # must be before attrs
+        yield from attrs  # finally, yield the attrs
 
-        return None
+    def __str__(self) -> str:
+        return "\n".join(self)
+
+    def __format__(self, format_spec: str) -> str:
+        return format_code(str(self))
 
     def to_str(self, width: int, height: int) -> str:
         """Render the scene with the given image dimensions."""
@@ -74,21 +87,6 @@ class Scene:
 
         with camera.set(aspect_ratio=width / height):
             return str(self)
-
-    def __iter__(self) -> Iterator[str]:
-        Declare.clear()
-        yield f"#version {self.version};"
-        yield from (str(include) for include in self.includes)
-        yield str(self.global_settings)
-        attrs = [str(attr) for attr in self.attrs]  # must list to consume Declare
-        yield from Declare.iter_strs()  # must be before attrs
-        yield from attrs
-
-    def __str__(self) -> str:
-        return "\n".join(self)
-
-    def __format__(self, format_spec: str) -> str:
-        return format_code(str(self))
 
     def render(
         self,

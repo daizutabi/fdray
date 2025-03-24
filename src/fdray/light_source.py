@@ -3,10 +3,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from .camera import Camera
 from .color import Color
 from .core import Descriptor
 
 if TYPE_CHECKING:
+    from .camera import Camera
     from .typing import ColorLike, Point
 
 
@@ -25,6 +27,9 @@ class LightSource(Descriptor):
     @property
     def name(self) -> str:
         return "light_source"
+
+    def to_str(self, camera: Camera | None) -> str:
+        return str(self)
 
 
 @dataclass
