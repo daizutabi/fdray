@@ -84,7 +84,7 @@ class Color:
 
     def __init__(
         self,
-        color: ColorLike | Color,
+        color: ColorLike,
         alpha: float | None = None,
         *,
         filter: float | None = None,

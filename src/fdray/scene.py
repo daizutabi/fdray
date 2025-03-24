@@ -5,42 +5,15 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from .camera import Camera
-from .color import Color
 from .core import Declare, Descriptor
 from .format import format_code
+from .light_source import LightSource
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from typing import Any
 
     from PIL import Image
-
-    from .typing import ColorLike, Point
-
-
-@dataclass
-class LightSource(Descriptor):
-    location: Point | str
-    color: ColorLike | Color | None = None
-    shadowless: bool = False
-    fade_distance: float | None = None
-    fade_power: float | None = None
-
-    def __post_init__(self) -> None:
-        if self.color and not isinstance(self.color, Color):
-            self.color = Color(self.color)
-
-    @property
-    def name(self) -> str:
-        return "light_source"
-
-
-@dataclass
-class Spotlight(LightSource):
-    spotlight: bool = True
-    radius: float | None = None
-    falloff: float | None = None
-    tightness: float | None = None
-    point_at: Point | None = None
 
 
 @dataclass
@@ -61,47 +34,51 @@ class Include:
 class Scene:
     """A scene is a collection of elements."""
 
+    camera: Camera | None
+    includes: list[Include]
+    light_sources: list[LightSource]
+    global_settings: GlobalSettings
     attrs: list[Any]
     version: str = "3.7"
-    includes: list[Include]
-    global_settings: GlobalSettings | None = None
 
     def __init__(self, *attrs: Any) -> None:
-        self.attrs = []
+        self.camera = None
         self.includes = []
+        self.light_sources = []
+        self.global_settings = GlobalSettings()
+        self.attrs = []
 
         for attr in attrs:
-            if isinstance(attr, GlobalSettings):
-                self.global_settings = attr
+            if isinstance(attr, Camera):
+                self.camera = attr
             elif isinstance(attr, Include):
                 self.includes.append(attr)
-            elif isinstance(attr, Sequence):
+            elif isinstance(attr, LightSource):
+                self.light_sources.append(attr)
+            elif isinstance(attr, GlobalSettings):
+                self.global_settings = attr
+            elif not isinstance(attr, str) and isinstance(attr, Sequence):
                 self.attrs.extend(attr)
             else:
                 self.attrs.append(attr)
 
-        if self.global_settings is None:
-            self.global_settings = GlobalSettings()
+    def __iter__(self) -> Iterator[str]:
+        Declare.clear()
+        yield f"#version {self.version};"
+        yield from (str(include) for include in self.includes)
+        yield str(self.global_settings)
+        if self.camera:
+            yield str(self.camera)
+        yield from (light.to_str(self.camera) for light in self.light_sources)
+        attrs = [str(attr) for attr in self.attrs]  # must list to consume Declare
+        yield from Declare.iter_strs()  # must be before attrs
+        yield from attrs  # finally, yield the attrs
 
     def __str__(self) -> str:
-        Declare.clear()
-        version = f"#version {self.version};"
-        includes = (str(include) for include in self.includes)
-        attrs = [str(attr) for attr in (self.global_settings, *self.attrs)]  # must list
-        attrs = (version, *includes, *Declare.iter_strs(), *attrs)
-        return "\n".join(attr for attr in attrs)
+        return "\n".join(self)
 
     def __format__(self, format_spec: str) -> str:
         return format_code(str(self))
-
-    @property
-    def camera(self) -> Camera | None:
-        """Get the camera from the scene."""
-        for attr in self.attrs:
-            if isinstance(attr, Camera):
-                return attr
-
-        return None
 
     def to_str(self, width: int, height: int) -> str:
         """Render the scene with the given image dimensions."""

@@ -4,6 +4,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+from fdray.light_source import LightSource
+
 
 @pytest.fixture(scope="module")
 def scene() -> str:
@@ -52,7 +54,6 @@ def test_render_scene():
     from fdray import (
         Camera,
         Color,
-        LightSource,
         Renderer,
         Scene,
         Sphere,

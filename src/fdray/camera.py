@@ -179,3 +179,41 @@ class Camera(Descriptor):
         for name in ["location", "look_at", "direction", "right", "up", "sky"]:
             yield name
             yield convert(getattr(self, name))
+
+    def orbital_location(
+        self,
+        forward: float = 0,
+        angle: float = 0,
+        rotation: float = 0,
+    ) -> Vector:
+        """Calculate a position in orbit around the camera's location.
+
+        Imagine tilting your head up (angle) and then rotating
+        counter-clockwise (rotation):
+
+        - First, move forward along viewing direction (0=at `camera.location`,
+          1=at `camera.look_at`). Negative values move behind the camera.
+        - Then, tilt up from viewing direction by 'angle' degrees
+        - Finally, rotate counter-clockwise from up by 'rotation' degrees
+          (0=up, 90=left, 180=down, 270=right)
+
+        Args:
+            forward (float): Relative position along viewing direction
+                (0=camera, 1=look_at, negative=behind camera)
+            angle (float): Tilt angle from viewing direction in degrees
+            rotation (float): Rotation angle from up direction in degrees
+                (counter-clockwise)
+
+        Returns:
+            Position vector in absolute coordinates
+        """
+        if forward == 0:
+            return self.location
+
+        pos = -self.direction * forward
+
+        if angle != 0:
+            rotation_axis = self.x.rotate(self.direction, radians(rotation))
+            pos = pos.rotate(rotation_axis, radians(angle))
+
+        return pos + self.location
