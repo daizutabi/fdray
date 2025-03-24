@@ -15,8 +15,8 @@ def test_include():
 def test_scene_attrs():
     from fdray.scene import Scene
 
-    x = Scene("a", ["b", "c"])
-    assert x.attrs == ["a", "b", "c"]
+    x = Scene("abc", ["def", "ghi"])
+    assert x.attrs == ["abc", "def", "ghi"]
 
 
 def test_scene_global_settings():

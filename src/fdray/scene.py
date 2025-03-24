@@ -7,8 +7,10 @@ from typing import TYPE_CHECKING
 from .camera import Camera
 from .core import Declare, Descriptor
 from .format import format_code
+from .light_source import LightSource
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from typing import Any
 
     from PIL import Image
@@ -32,38 +34,29 @@ class Include:
 class Scene:
     """A scene is a collection of elements."""
 
+    includes: list[Include]
+    light_sources: list[LightSource]
+    global_settings: GlobalSettings
     attrs: list[Any]
     version: str = "3.7"
-    includes: list[Include]
-    global_settings: GlobalSettings | None = None
 
     def __init__(self, *attrs: Any) -> None:
-        self.attrs = []
         self.includes = []
+        self.light_sources = []
+        self.global_settings = GlobalSettings()
+        self.attrs = []
 
         for attr in attrs:
-            if isinstance(attr, GlobalSettings):
-                self.global_settings = attr
-            elif isinstance(attr, Include):
+            if isinstance(attr, Include):
                 self.includes.append(attr)
-            elif isinstance(attr, Sequence):
+            elif isinstance(attr, LightSource):
+                self.light_sources.append(attr)
+            elif isinstance(attr, GlobalSettings):
+                self.global_settings = attr
+            elif not isinstance(attr, str) and isinstance(attr, Sequence):
                 self.attrs.extend(attr)
             else:
                 self.attrs.append(attr)
-
-        if self.global_settings is None:
-            self.global_settings = GlobalSettings()
-
-    def __str__(self) -> str:
-        Declare.clear()
-        version = f"#version {self.version};"
-        includes = (str(include) for include in self.includes)
-        attrs = [str(attr) for attr in (self.global_settings, *self.attrs)]  # must list
-        attrs = (version, *includes, *Declare.iter_strs(), *attrs)
-        return "\n".join(attr for attr in attrs)
-
-    def __format__(self, format_spec: str) -> str:
-        return format_code(str(self))
 
     @property
     def camera(self) -> Camera | None:
@@ -81,6 +74,21 @@ class Scene:
 
         with camera.set(aspect_ratio=width / height):
             return str(self)
+
+    def __iter__(self) -> Iterator[str]:
+        Declare.clear()
+        yield f"#version {self.version};"
+        yield from (str(include) for include in self.includes)
+        yield str(self.global_settings)
+        attrs = [str(attr) for attr in self.attrs]  # must list to consume Declare
+        yield from Declare.iter_strs()  # must be before attrs
+        yield from attrs
+
+    def __str__(self) -> str:
+        return "\n".join(self)
+
+    def __format__(self, format_spec: str) -> str:
+        return format_code(str(self))
 
     def render(
         self,
