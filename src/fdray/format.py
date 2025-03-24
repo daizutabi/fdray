@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import html
-import textwrap
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
