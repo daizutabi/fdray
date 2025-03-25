@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -40,7 +41,13 @@ class LightSource(Descriptor):
         if not self.from_camera or isinstance(self.location, str):
             return str(self)
 
-        return str(self)
+        if not isinstance(self.location, Iterable):
+            loc = camera.orbital_location(self.location)
+        else:
+            loc = camera.orbital_location(*self.location)
+
+        with self.set(location=loc):
+            return str(self)
 
 
 @dataclass
