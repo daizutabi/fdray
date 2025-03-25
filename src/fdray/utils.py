@@ -24,6 +24,9 @@ def to_snake_case(name: str) -> str:
 
 def to_str(arg: Any) -> str:
     if isinstance(arg, float):
+        if abs(arg) < 1e-5:
+            return "0"
+
         return f"{arg:.5g}"
 
     return str(arg)

@@ -29,11 +29,10 @@ from PIL import Image
 
 from fdray import Background, Camera, Color, Cylinder, LightSource, Renderer, Scene
 
-camera = Camera(30, 30, view_scale=1)
 scene = Scene(
-    camera,
     Background("white"),
-    LightSource(camera.location, "white"),
+    Camera(30, 30, view_scale=1),
+    LightSource(0, "white"),  # at camera location
     Cylinder((0, 0, 0), (1, 0, 0), 0.1, Color("red")),
     Cylinder((0, 0, 0), (0, 1, 0), 0.1, Color("green")),
     Cylinder((0, 0, 0), (0, 0, 1), 0.1, Color("blue")),

@@ -1,3 +1,4 @@
+import shutil
 import textwrap
 from pathlib import Path
 
@@ -5,6 +6,10 @@ import numpy as np
 import pytest
 
 from fdray.light_source import LightSource
+
+
+def test_povray_path():
+    assert shutil.which("povray") is not None
 
 
 @pytest.fixture(scope="module")
