@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest]
         python-version: ["3.11", "3.12", "3.13"]
 
     steps:
@@ -31,27 +31,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y povray
-
-      - name: Download POV-Ray (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          curl -L -o povray-setup.exe https://www.povray.org/ftp/pub/povray/Official/povwin-3.7-agpl3-setup.exe
-
-      - name: Install POV-Ray (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          .\povray-setup.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /LOG="install.log" /DIR="C:\Program Files\POV-Ray"
-          Get-Content install.log
-          Get-ChildItem "C:\Program Files\POV-Ray" -Recurse
-          echo "C:\Program Files\POV-Ray\v3.7\bin" >> $env:GITHUB_PATH
-          $env:Path += ";C:\Program Files\POV-Ray\v3.7\bin"
-
-      - name: Verify POV-Ray installation (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          where povray
-          Get-Command povray
-          $env:Path -split ";"
 
       - name: Install POV-Ray (macOS)
         if: runner.os == 'macOS'
