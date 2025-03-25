@@ -40,9 +40,14 @@ jobs:
       - name: Install POV-Ray (Windows)
         if: runner.os == 'Windows'
         run: |
-          Start-Process -FilePath .\povray-setup.exe -ArgumentList '/VERYSILENT /SUPPRESSMSGBOXES /NORESTART' -Wait
+          .\povray-setup.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /LOG=install.log
+          Get-Content install.log
           echo "C:\Program Files\POV-Ray\v3.7\bin" >> $env:GITHUB_PATH
           $env:Path += ";C:\Program Files\POV-Ray\v3.7\bin"
+
+      - name: Verify POV-Ray installation (Windows)
+        if: runner.os == 'Windows'
+        run: |
           where povray
 
       - name: Install POV-Ray (macOS)
