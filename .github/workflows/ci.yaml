@@ -35,7 +35,8 @@ jobs:
       - name: Install POV-Ray (Windows)
         if: runner.os == 'Windows'
         run: |
-          choco install povray
+          curl -L -o povray-setup.exe https://www.povray.org/ftp/pub/povray/Official/povwin-3.7-agpl3-setup.exe
+          .\povray-setup.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART
           echo "C:\Program Files\POV-Ray\bin" >> $env:GITHUB_PATH
 
       - name: Install POV-Ray (macOS)
