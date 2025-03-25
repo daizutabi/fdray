@@ -92,6 +92,11 @@ def test_camera_iter(camera: Camera):
     assert x[-1] == "<-0.53546, -0.37968, 0.75441>"
 
 
+def test_camera_orbital_location_zero():
+    camera = Camera(30, 40)
+    assert camera.orbital_location() == camera.location
+
+
 @pytest.fixture(params=[3, 4, 5])
 def distance(request: pytest.FixtureRequest):
     return request.param
