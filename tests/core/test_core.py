@@ -31,6 +31,11 @@ def test_element_kwargs():
     assert str(x) == "element { x 1 y <1, 2, 3> }"
 
 
+def test_element_repr_html():
+    x = Element(x=1, y=[1, 2, 3])
+    assert '<div class="highlight-ipynb">' in x._repr_html_()
+
+
 class ElementArgs(Element):
     nargs = 2
 
