@@ -113,6 +113,33 @@ def test_rotate_z(sign):
     np.testing.assert_allclose(x.z, 1)
 
 
+def test_angle():
+    assert Vector(1, 0, 0).angle((0, 1, 0)) == np.pi / 2
+    assert Vector(1, 0, 0).angle((-1, 0, 0)) == np.pi
+    assert Vector(1, 0, 0).angle((1, 0, 0)) == 0
+    assert Vector(1, 0, 0).angle((-1, 0, 0)) == np.pi
+    assert Vector(1, 0, 0).angle((0, 1, 0)) == np.pi / 2
+
+
+@pytest.mark.parametrize(
+    ("phi", "theta", "expected"),
+    [
+        (0, 0, (1, 0, 0)),
+        (np.pi / 2, 0, (0, 1, 0)),
+        (np.pi, 0, (-1, 0, 0)),
+        (3 * np.pi / 2, 0, (0, -1, 0)),
+        (np.pi / 2, np.pi / 2, (0, 0, 1)),
+        (0, -np.pi / 2, (0, 0, -1)),
+        (np.pi / 4, np.pi / 4, (0.5, 0.5, 0.70711)),
+    ],
+)
+def test_from_spherical_0_0(phi, theta, expected):
+    x = Vector.from_spherical(phi, theta)
+    np.testing.assert_allclose(x.x, expected[0], atol=1e-5)
+    np.testing.assert_allclose(x.y, expected[1], atol=1e-5)
+    np.testing.assert_allclose(x.z, expected[2], atol=1e-5)
+
+
 def test_from_spherical():
     x = Vector.from_spherical(np.pi / 5, np.pi / 6)
     np.testing.assert_allclose(x.x, 0.7006292692220368)
