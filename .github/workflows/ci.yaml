@@ -40,7 +40,9 @@ jobs:
       - name: Install POV-Ray (Windows)
         if: runner.os == 'Windows'
         run: |
-          .\povray-setup.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART
+          .\povray-setup.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /LOG="install.log" /DIR="C:\Program Files\POV-Ray"
+          Get-Content install.log
+          Get-ChildItem "C:\Program Files\POV-Ray" -Recurse
           echo "C:\Program Files\POV-Ray\v3.7\bin" >> $env:GITHUB_PATH
           $env:Path += ";C:\Program Files\POV-Ray\v3.7\bin"
 
@@ -48,6 +50,8 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           where povray
+          Get-Command povray
+          $env:Path -split ";"
 
       - name: Install POV-Ray (macOS)
         if: runner.os == 'macOS'
