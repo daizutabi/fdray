@@ -35,8 +35,7 @@ jobs:
       - name: Install POV-Ray (Windows)
         if: runner.os == 'Windows'
         run: |
-          curl -L -o povray.zip https://github.com/POV-Ray/povray/releases/download/v3.7.0.8/povray-v3.7.0.8-windows.zip
-          7z x povray.zip -o"C:\Program Files\POV-Ray"
+          choco install povray
           echo "C:\Program Files\POV-Ray\bin" >> $env:GITHUB_PATH
 
       - name: Install POV-Ray (macOS)
