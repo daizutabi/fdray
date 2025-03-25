@@ -36,8 +36,9 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           curl -L -o povray-setup.exe https://www.povray.org/ftp/pub/povray/Official/povwin-3.7-agpl3-setup.exe
-          .\povray-setup.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART
-          echo "C:\Program Files\POV-Ray\bin" >> $env:GITHUB_PATH
+          Start-Process -FilePath .\povray-setup.exe -ArgumentList '/VERYSILENT /SUPPRESSMSGBOXES /NORESTART' -Wait
+          echo "C:\Program Files\POV-Ray\v3.7\bin" >> $env:GITHUB_PATH
+          $env:Path += ";C:\Program Files\POV-Ray\v3.7\bin"
           where povray
 
       - name: Install POV-Ray (macOS)
