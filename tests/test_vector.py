@@ -36,6 +36,10 @@ def test_vector_str(v: Vector):
     assert str(v) == "<1, 2, 3>"
 
 
+def test_vector_str_zero():
+    assert str(Vector(1e-6, 1.2345678e-5, 0)) == "<0, 1.2346e-05, 0>"
+
+
 def test_vector_iter(v: Vector):
     assert list(v) == [1, 2, 3]
 

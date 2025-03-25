@@ -33,7 +33,7 @@ class Vector:
         return f"{self.__class__.__name__}({self.x}, {self.y}, {self.z})"
 
     def __str__(self) -> str:
-        args = ["0" if abs(arg) < 1e-10 else f"{arg:.5g}" for arg in self]
+        args = ["0" if abs(arg) < 1e-5 else f"{arg:.5g}" for arg in self]
         return f"<{', '.join(args)}>"
 
     def __eq__(self, other: object) -> bool:
