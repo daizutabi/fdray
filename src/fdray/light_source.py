@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -30,17 +31,35 @@ class LightSource(Descriptor):
         return "light_source"
 
     def __str__(self) -> str:
-        with self.set(from_camera=False):
-            return super().__str__()
+        if self.from_camera:
+            msg = (
+                "Cannot convert camera-relative light source to string directly. "
+                "Use Scene.to_str() or LightSource.to_str(camera) instead.",
+            )
+            raise ValueError(msg)
+
+        return super().__str__()
 
     def to_str(self, camera: Camera | None) -> str:
         if camera is None:
-            return str(self)
+            if self.from_camera:
+                msg = (
+                    "Camera is required for camera-relative light source. "
+                    "Set from_camera=False to use absolute coordinates."
+                )
+                raise ValueError(msg)
+
+            return super().__str__()
 
         if not self.from_camera or isinstance(self.location, str):
-            return str(self)
+            loc = self.location
+        elif not isinstance(self.location, Iterable):
+            loc = camera.orbital_location(self.location)
+        else:
+            loc = camera.orbital_location(*self.location)
 
-        return str(self)
+        with self.set(location=loc, from_camera=False):
+            return super().__str__()
 
 
 @dataclass
