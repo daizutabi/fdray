@@ -20,34 +20,55 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ["3.11", "3.12", "3.13"]
 
     steps:
       - uses: actions/checkout@v4
-      - name: Install POV-Ray
+
+      - name: Install POV-Ray (Ubuntu)
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y povray
+
+      - name: Install POV-Ray (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          curl -L -o povray.zip https://github.com/POV-Ray/povray/releases/download/v3.7.0.8/povray-v3.7.0.8-windows.zip
+          7z x povray.zip -o"C:\Program Files\POV-Ray"
+          echo "C:\Program Files\POV-Ray\bin" >> $env:GITHUB_PATH
+
+      - name: Install POV-Ray (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install povray
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           allow-prereleases: true
+
       - name: Install uv and ruff
         run: pip install uv ruff
+
       - name: Install the project
         run: uv sync
+
       - name: Ruff check
         run: ruff check
+
       - name: Run test
         run: uv run pytest -n 8 --junitxml=junit.xml
+
       - name: Upload Codecov Results
         if: success()
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: lcov.info
+
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
