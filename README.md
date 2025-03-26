@@ -1,10 +1,80 @@
-# fdray
+# fdray - Python Ray Tracing Interface
 
 [![PyPI Version][pypi-v-image]][pypi-v-link]
 [![Python Version][python-v-image]][python-v-link]
 [![Build Status][GHAction-image]][GHAction-link]
 [![Coverage Status][codecov-image]][codecov-link]
 
+fdray is a Python library that provides a clean interface to POV-Ray,
+making it easy to create and render 3D scenes programmatically.
+
+## Features
+
+- **Simple Scene Description**: Express 3D scenes in clean, readable Python code
+- **Pythonic API**: Natural integration with Python's ecosystem
+- **POV-Ray Integration**: Seamless integration with a high-quality rendering engine
+- **Jupyter Support**: Interactive scene development in Jupyter notebooks
+
+## Installation
+
+```bash
+pip install fdray
+```
+
+Requires POV-Ray to be installed:
+
+- **Linux**: `sudo apt-get install povray`
+- **macOS**: `brew install povray`
+- **Windows**: Download from [POV-Ray website](https://www.povray.org/download/)
+
+## Quick Start
+
+```python
+from fdray import Scene, Camera, Sphere, LightSource
+
+# Create a simple scene
+scene = Scene(
+    Camera(30, 30),
+    LightSource(0, "white"),
+    Sphere((0, 0, 0), 1),
+)
+
+# Render the scene
+image = scene.render(width=800, height=600)
+image.save("sphere.png")
+```
+
+## Documentation
+
+For detailed documentation and examples, visit our
+[documentation site](https://daizutabi.github.io/fdray/).
+
+## Examples
+
+### Basic Shapes
+
+```python
+scene = Scene(
+    Camera(30, 30),
+    LightSource(0, "white"),
+    Sphere((0, 0, 0), 1),
+    Box((-1, -1, -1), (1, 1, 1)),
+    Cylinder((0, 0, 0), (0, 2, 0), 0.5),
+)
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- POV-Ray team for their excellent ray tracing engine
+- The Python community for inspiration and support
 
 <!-- Badges -->
 [pypi-v-image]: https://img.shields.io/pypi/v/fdray.svg
