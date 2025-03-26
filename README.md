@@ -1,4 +1,4 @@
-# fdray - Python Ray Tracing Interface
+# fdray - Python Ray Tracing Interface for POV-Ray
 
 [![PyPI Version][pypi-v-image]][pypi-v-link]
 [![Python Version][python-v-image]][python-v-link]
