@@ -10,6 +10,8 @@ from .core import Descriptor, Transformable
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
 
+    from .typing import ColorLike
+
 
 class Texture(Transformable):
     pass
@@ -48,20 +50,13 @@ class SlopeMap(Map):
 class Finish(Descriptor):
     """POV-Ray finish attributes."""
 
-    ambient: float | None = None
+    ambient: float | ColorLike | None = None
+    emission: float | ColorLike | None = None
     diffuse: float | None = None
+    brilliance: float | None = None
     phong: float | None = None
     phong_size: float | None = None
-    reflection: float | None = None
     specular: float | None = None
     roughness: float | None = None
-
-
-@dataclass
-class Interior(Descriptor):
-    """POV-Ray interior attributes."""
-
-    ior: float | None = None  # Index of Refraction
-    caustics: float | None = None
-    fade_distance: float | None = None
-    fade_power: float | None = None
+    metallic: float | None = None
+    reflection: float | ColorLike | None = None
