@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 from .camera import Camera
 from .core import Declare, Descriptor
-from .format import format_code
+from .format import format_code, to_html
 from .light_source import LightSource
 
 if TYPE_CHECKING:
@@ -79,6 +79,9 @@ class Scene:
 
     def __format__(self, format_spec: str) -> str:
         return format_code(str(self))
+
+    def _repr_html_(self) -> str:
+        return to_html(str(self))
 
     def to_str(self, width: int, height: int) -> str:
         """Render the scene with the given image dimensions."""

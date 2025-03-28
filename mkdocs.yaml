@@ -54,9 +54,12 @@ nav:
   - Usage:
       - Camera:
           - notebooks/camera/camera.ipynb
+      - Lighting Types:
+          - notebooks/lighting_types/light_source.ipynb
       - Texture:
           - notebooks/texture/pigment.ipynb
           - notebooks/texture/normal.ipynb
+          - notebooks/texture/finish.ipynb
           - notebooks/texture/pattern.ipynb
       - fdray:
           - notebooks/fdray/curve.ipynb

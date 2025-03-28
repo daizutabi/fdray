@@ -2,6 +2,7 @@ from .camera import Camera
 from .color import Background, Color, ColorMap
 from .core import Declare, Transform
 from .light_source import LightSource, Spotlight
+from .media import Interior
 from .object import (
     Box,
     Cone,
@@ -10,6 +11,7 @@ from .object import (
     Curve,
     Cylinder,
     Object,
+    Plane,
     Polyline,
     Sphere,
     SphereSweep,
@@ -19,7 +21,6 @@ from .renderer import Renderer
 from .scene import Include, Scene
 from .texture import (
     Finish,
-    Interior,
     Normal,
     NormalMap,
     Pigment,
@@ -49,6 +50,7 @@ __all__ = [
     "Object",
     "Pigment",
     "PigmentMap",
+    "Plane",
     "Polyline",
     "Renderer",
     "Scene",

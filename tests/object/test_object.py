@@ -108,6 +108,42 @@ def test_merge_or_object():
     assert x.attrs[2] is c
 
 
+def test_object_texture():
+    from fdray.texture import Texture
+
+    x = Sphere((0, 0, 0), 1).texture("abc")
+    t = x.attrs[0]
+    assert isinstance(t, Texture)
+    assert t.attrs == ["abc"]
+
+
+def test_object_pigment():
+    from fdray.texture import Pigment
+
+    x = Sphere((0, 0, 0), 1).pigment("abc")
+    p = x.attrs[0]
+    assert isinstance(p, Pigment)
+    assert p.attrs == ["abc"]
+
+
+def test_object_normal():
+    from fdray.texture import Normal
+
+    x = Sphere((0, 0, 0), 1).normal("abc")
+    n = x.attrs[0]
+    assert isinstance(n, Normal)
+    assert n.attrs == ["abc"]
+
+
+def test_object_finish():
+    from fdray.texture import Finish
+
+    x = Sphere((0, 0, 0), 1).finish(ambient=1)
+    f = x.attrs[0]
+    assert isinstance(f, Finish)
+    assert f.ambient == 1
+
+
 def test_csg_transform():
     x = Sphere((0, 0, 0), 1) + Sphere((1, 0, 0), 2)
     x = x.scale(1, 2, 3).rotate(2, 3, 4).translate(3, 4, 5)
