@@ -62,6 +62,17 @@ def test_scene_format():
     assert "object {\n  SPHERE scale 1\n}" in x
 
 
+def test_scene_html():
+    from fdray.scene import Scene
+
+    x = Scene("a", ["b", "c"])._repr_html_()
+    assert x.startswith("<div>")
+    assert '<span class="n">a</span>' in x
+    assert '<span class="n">b</span>' in x
+    assert '<span class="n">c</span>' in x
+    assert x.endswith("</div>")
+
+
 def test_scene_render():
     from fdray.core import Declare
     from fdray.object import Object, Sphere
