@@ -23,7 +23,7 @@ import numpy as np
 
 from .color import COLOR_PALETTE, Color
 from .core import Transformable
-from .texture import Pigment
+from .texture import Finish, Normal, Pigment, Texture
 from .utils import convert, reflect_point
 
 if TYPE_CHECKING:
@@ -108,6 +108,22 @@ class Object(Transformable):
             Merge of this shape and other.
         """
         return Merge(self, other)
+
+    def texture(self, *args: Any, **kwargs: Any) -> Self:
+        """Add a texture to the object."""
+        return self.add(Texture(*args, **kwargs))
+
+    def pigment(self, *args: Any, **kwargs: Any) -> Self:
+        """Add a pigment to the object."""
+        return self.add(Pigment(*args, **kwargs))
+
+    def normal(self, *args: Any, **kwargs: Any) -> Self:
+        """Add a normal to the object."""
+        return self.add(Normal(*args, **kwargs))
+
+    def finish(self, *args: Any, **kwargs: Any) -> Self:
+        """Add a finish to the object."""
+        return self.add(Finish(*args, **kwargs))
 
 
 class Csg(Object):
