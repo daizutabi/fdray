@@ -16,63 +16,10 @@ if TYPE_CHECKING:
     from numpy.typing import NDArray
 
 
-def translate(
-    obj: Object,
-    indices: Iterable[Iterable[float]],
-    spacing: float | Iterable[float] = 1,
-) -> Iterator[Object]:
-    spacing = list(spacing) if isinstance(spacing, Iterable) else [spacing]
-
-    for index in indices:
-        position = (i * s for i, s in zip(index, cycle(spacing), strict=False))
-        position = (*position, 0, 0)[:3]  # for 1D or 2D regions
-
-        yield obj.translate(*position)
-
-
-def iter_objects_from_callable(
-    obj: Callable[[Any], Object | None],
-    field: Sequence | NDArray,
-    spacing: float | tuple[float, ...] = 1,
-    ndim: int = 1,
-) -> Iterator[Object]:
-    if not isinstance(field, np.ndarray):
-        field = np.array(field)
-
-    for idx in np.ndindex(field.shape[: field.ndim - ndim]):
-        if o := obj(field[idx]):
-            yield from translate(o, [idx], spacing)
-
-
-def iter_objects_from_dict(
-    objects: dict[Any, Object],
-    region: Sequence | NDArray,
-    spacing: float | tuple[float, ...] = 1,
-) -> Iterator[Object]:
-    indices = get_indices(region)
-
-    for index, obj in objects.items():
-        if index in indices:
-            yield from translate(obj, indices[index], spacing)
-
-
-def get_indices(region: Sequence | NDArray) -> dict[Any, list[tuple[int, ...]]]:
-    if not isinstance(region, np.ndarray):
-        region = np.array(region)
-
-    indices: dict[Any, list[tuple[int, ...]]] = {}
-
-    for idx in np.ndindex(region.shape):
-        index = region[idx]
-        indices.setdefault(index, []).append(idx)
-
-    return indices
-
-
 @overload
 def from_field(
     field: Sequence | NDArray,
-    obj: Callable[[Any], Object | None],
+    obj: Callable[[Any], Object | Iterable[Object] | None],
     spacing: float | tuple[float, ...] = 1,
     ndim: int = 1,
     *,
@@ -83,7 +30,7 @@ def from_field(
 @overload
 def from_field(
     field: Sequence | NDArray,
-    obj: Callable[[Any], Object | None],
+    obj: Callable[[Any], Object | Iterable[Object] | None],
     spacing: float | tuple[float, ...] = 1,
     ndim: int = 1,
     *,
@@ -94,7 +41,7 @@ def from_field(
 @overload
 def from_field(
     field: Sequence | NDArray,
-    obj: Callable[[Any], Object | None],
+    obj: Callable[[Any], Object | Iterable[Object] | None],
     spacing: float | tuple[float, ...] = 1,
     ndim: int = 1,
     *,
@@ -104,7 +51,7 @@ def from_field(
 
 def from_field(
     field: Sequence | NDArray,
-    obj: Callable[[Any], Object | None],
+    obj: Callable[[Any], Object | Iterable[Object] | None],
     spacing: float | tuple[float, ...] = 1,
     ndim: int = 1,
     *,
@@ -118,8 +65,9 @@ def from_field(
 
     Args:
         field (Sequence | NDArray): Array containing field data
-        obj (Callable[[Any], Object | None]): Function that takes field
-            data at a position and returns an Object (or None to skip)
+        obj (Callable[[Any], Object | Iterable[Object] | None]): Function
+            that takes field data at a position and returns an Object
+            (or None to skip)
         spacing (float | tuple[float, ...]): Distance between objects
             (scalar or per-dimension)
         ndim (int): Number of dimensions to treat as field components:
@@ -135,10 +83,29 @@ def from_field(
     return Union(*it) if as_union else list(it)
 
 
+def iter_objects_from_callable(
+    obj: Callable[[Any], Object | Iterable[Object] | None],
+    field: Sequence | NDArray,
+    spacing: float | tuple[float, ...] = 1,
+    ndim: int = 1,
+) -> Iterator[Object]:
+    if not isinstance(field, np.ndarray):
+        field = np.array(field)
+
+    shape = field.shape[: field.ndim - ndim]
+    offset = [(i - 1) / 2 for i in shape]
+
+    for idx in np.ndindex(shape):
+        if o := obj(field[idx]):
+            if not isinstance(o, Object):
+                o = Union(*o)
+            yield from translate(o, [idx], spacing, offset)
+
+
 @overload
 def from_region(
     region: Sequence | NDArray,
-    obj: Object | Callable[[Any], Object | None] | None = None,
+    obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
     spacing: float | tuple[float, ...] = 1,
     mapping: Mapping[Any, Any] | None = None,
     *,
@@ -149,7 +116,7 @@ def from_region(
 @overload
 def from_region(
     region: Sequence | NDArray,
-    obj: Object | Callable[[Any], Object | None] | None = None,
+    obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
     spacing: float | tuple[float, ...] = 1,
     mapping: Mapping[Any, Any] | None = None,
     *,
@@ -160,7 +127,7 @@ def from_region(
 @overload
 def from_region(
     region: Sequence | NDArray,
-    obj: Object | Callable[[Any], Object | None] | None = None,
+    obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
     spacing: float | tuple[float, ...] = 1,
     mapping: Mapping[Any, Any] | None = None,
     *,
@@ -170,7 +137,7 @@ def from_region(
 
 def from_region(
     region: Sequence | NDArray,
-    obj: Object | Callable[[Any], Object | None] | None = None,
+    obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
     spacing: float | tuple[float, ...] = 1,
     mapping: Mapping[Any, Any] | None = None,
     *,
@@ -192,8 +159,8 @@ def from_region(
     Args:
         region (Sequence | NDArray): Array containing region data
             (discrete values)
-        obj (Object | Callable[[Any], Object | None] | None): Either
-            an Object instance to be used as base, or a function that
+        obj (Object | Callable[[Any], Object | Iterable[Object] | None] | None):
+            Either an Object instance to be used as base, or a function that
             takes a region value and returns an Object, or None to use
             a default Cube
         spacing (float | tuple[float, ...]): Distance between objects
@@ -218,6 +185,49 @@ def from_region(
     return Union(*it) if as_union else list(it)
 
 
+def iter_objects_from_dict(
+    objects: dict[Any, Object],
+    region: Sequence | NDArray,
+    spacing: float | tuple[float, ...] = 1,
+) -> Iterator[Object]:
+    indices = get_indices(region)
+    offset = [(i - 1) / 2 for i in np.shape(region)]
+
+    for index, obj in objects.items():
+        if index in indices:
+            yield from translate(obj, indices[index], spacing, offset)
+
+
+def get_indices(region: Sequence | NDArray) -> dict[Any, list[tuple[int, ...]]]:
+    if not isinstance(region, np.ndarray):
+        region = np.array(region)
+
+    indices: dict[Any, list[tuple[int, ...]]] = {}
+
+    for idx in np.ndindex(region.shape):
+        index = region[idx]
+        indices.setdefault(index, []).append(idx)
+
+    return indices
+
+
 def get_default_mapping(region: Sequence | NDArray) -> dict[Any, Any]:
     colors = [Color(c) for c in COLOR_PALETTE]
     return dict(zip(np.unique(region), cycle(colors), strict=False))
+
+
+def translate(
+    obj: Object,
+    indices: Iterable[Iterable[float]],
+    spacing: float | Iterable[float] = 1,
+    offset: float | Iterable[float] = 0,
+) -> Iterator[Object]:
+    spacing = list(spacing) if isinstance(spacing, Iterable) else [spacing]
+    offset = list(offset) if isinstance(offset, Iterable) else [offset]
+
+    for index in indices:
+        it = zip(index, cycle(spacing), cycle(offset), strict=False)
+        position = ((i - o) * s for i, s, o in it)
+        position = (*position, 0, 0)[:3]  # for 1D or 2D regions
+
+        yield obj.translate(*position)

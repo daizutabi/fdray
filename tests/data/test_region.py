@@ -14,11 +14,11 @@ def region_1d():
 
 def test_region_1d(region_1d: Union):
     x = str(region_1d)
-    assert "rgb <0.122, 0.467, 0.706> } translate <0, 0, 0>" in x
-    assert "rgb <1, 0.498, 0.0549> } translate <1, 0, 0>" in x
-    assert "rgb <1, 0.498, 0.0549> } translate <2, 0, 0>" in x
-    assert "rgb <0.173, 0.627, 0.173> } translate <3, 0, 0>" in x
-    assert "rgb <0.173, 0.627, 0.173> } translate <4, 0, 0>" in x
+    assert "rgb <0.122, 0.467, 0.706> } translate <-2, 0, 0>" in x
+    assert "rgb <1, 0.498, 0.0549> } translate <-1, 0, 0>" in x
+    assert "rgb <1, 0.498, 0.0549> } translate <0, 0, 0>" in x
+    assert "rgb <0.173, 0.627, 0.173> } translate <1, 0, 0>" in x
+    assert "rgb <0.173, 0.627, 0.173> } translate <2, 0, 0>" in x
 
 
 @pytest.fixture(scope="module")
@@ -33,12 +33,12 @@ def region_2d():
 
 def test_region_2d(region_2d: Union):
     x = str(region_2d)
-    assert "pigment { rgb <1, 0, 0> } translate <2, 0, 0>" in x
-    assert "pigment { rgb <1, 0, 0> } translate <2, 2, 0>" in x
-    assert "pigment { rgb <1, 0, 0> } translate <4, 0, 0>" in x
-    assert "pigment { rgb <0, 0, 1> } translate <4, 2, 0>" in x
-    assert "pigment { rgb <0, 0, 1> } translate <6, 0, 0>" in x
-    assert "pigment { rgb <0, 0, 1> } translate <6, 2, 0>" in x
+    assert "pigment { rgb <1, 0, 0> } translate <-1, -1, 0>" in x
+    assert "pigment { rgb <1, 0, 0> } translate <-1, 1, 0>" in x
+    assert "pigment { rgb <1, 0, 0> } translate <1, -1, 0>" in x
+    assert "pigment { rgb <0, 0, 1> } translate <1, 1, 0>" in x
+    assert "pigment { rgb <0, 0, 1> } translate <3, -1, 0>" in x
+    assert "pigment { rgb <0, 0, 1> } translate <3, 1, 0>" in x
 
 
 @pytest.fixture(scope="module")
@@ -53,7 +53,7 @@ def region_3d():
 
 def test_region_3d(region_3d: Union):
     x = str(region_3d)
-    assert "pigment { rgb <1, 0, 0> } translate <0, 3, 0>" in x
-    assert "pigment { rgb <0, 0, 1> } translate <0, 3, 4>" in x
-    assert "pigment { rgb <1, 0, 0> } translate <2, 0, 0>" in x
-    assert "pigment { rgb <1, 0, 0> } translate <2, 3, 4>" in x
+    assert "pigment { rgb <1, 0, 0> } translate <-1, 1.5, -2>" in x
+    assert "pigment { rgb <1, 0, 0> } translate <1, -1.5, -2>" in x
+    assert "pigment { rgb <1, 0, 0> } translate <1, 1.5, 2>" in x
+    assert "pigment { rgb <0, 0, 1> } translate <-1, 1.5, 2>" in x

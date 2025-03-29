@@ -149,8 +149,6 @@ class Csg(Object):
         attrs: List of shapes to combine with the CSG operation.
     """
 
-    attrs: list[Any]
-
     def __add__(self, other: Any) -> Self:
         """Add another shape to this CSG operation.
 
