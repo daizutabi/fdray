@@ -56,6 +56,8 @@ nav:
           - notebooks/camera/camera.ipynb
       - Lighting Types:
           - notebooks/lighting_types/light_source.ipynb
+      - Media:
+          - notebooks/media/interior.ipynb
       - Texture:
           - notebooks/texture/pigment.ipynb
           - notebooks/texture/normal.ipynb
