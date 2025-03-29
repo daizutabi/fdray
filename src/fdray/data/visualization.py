@@ -10,7 +10,7 @@ from fdray.core.color import COLOR_PALETTE, Color
 from fdray.core.object import Cube, Object, Union
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Mapping, Sequence
+    from collections.abc import Callable, Iterator, Mapping, Sequence
     from typing import Any
 
     from numpy.typing import NDArray
@@ -96,3 +96,66 @@ def from_region(
     it = iter_objects(objects, region, spacing)
 
     return Union(*it) if as_union else list(it)
+
+
+@overload
+def from_field(
+    field: Sequence | NDArray,
+    obj: Callable[[Any], Object | None],
+    spacing: float | tuple[float, ...] = 1,
+    ndim: int = 1,
+    *,
+    as_union: Literal[True] = True,
+) -> Union: ...
+
+
+@overload
+def from_field(
+    field: Sequence | NDArray,
+    obj: Callable[[Any], Object | None],
+    spacing: float | tuple[float, ...] = 1,
+    ndim: int = 1,
+    *,
+    as_union: Literal[False],
+) -> list[Object]: ...
+
+
+def from_field(
+    field: Sequence | NDArray,
+    obj: Callable[[Any], Object | None],
+    spacing: float | tuple[float, ...] = 1,
+    ndim: int = 1,
+    *,
+    as_union: bool = True,
+) -> Union | list[Object]:
+    """Create objects from scalar, vector or tensor fields.
+
+    This function generates 3D objects from field data.
+    The last `ndim` dimensions of the input array are considered
+    as field components.
+
+    Args:
+        field (Sequence | NDArray): Array containing field data
+        obj (Callable[[Any], Object | None]): Function that takes field
+            data at a position and returns an Object (or None to skip)
+        spacing (float | tuple[float, ...]): Distance between objects
+            (scalar or per-dimension)
+        ndim (int): Number of dimensions to treat as field components:
+            - ndim=0: Scalar field (all dimensions used for positioning)
+            - ndim=1: Vector field (last dimension contains vector components)
+            - ndim=2: Tensor field (last two dimensions contain tensor components)
+        as_union (bool): Whether to return a Union object or a list of objects
+
+    Returns:
+        Union object or list of objects representing the field
+    """
+    if not isinstance(field, np.ndarray):
+        field = np.array(field)
+
+    objects = []
+
+    for idx in np.ndindex(field.shape[:-ndim]):
+        if o := obj(field[idx]):
+            objects.extend(translate(o, [idx], spacing))
+
+    return Union(*objects) if as_union else objects
