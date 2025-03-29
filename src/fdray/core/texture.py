@@ -5,12 +5,12 @@ from typing import TYPE_CHECKING
 
 from fdray.core.base import Map
 
-from .core.base import Descriptor, Transformable
+from .base import Descriptor, Transformable
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
 
-    from .typing import ColorLike
+    from fdray.typing import ColorLike
 
 
 class Texture(Transformable):

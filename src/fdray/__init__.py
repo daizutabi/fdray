@@ -16,11 +16,7 @@ from .core.object import (
     SphereSweep,
     Union,
 )
-from .light_source import LightSource, Spotlight
-from .media import Interior
-from .renderer import Renderer
-from .scene import GlobalSettings, Include, Scene
-from .texture import (
+from .core.texture import (
     Finish,
     Normal,
     NormalMap,
@@ -29,6 +25,10 @@ from .texture import (
     SlopeMap,
     Texture,
 )
+from .light_source import LightSource, Spotlight
+from .media import Interior
+from .renderer import Renderer
+from .scene import GlobalSettings, Include, Scene
 
 __all__ = [
     "Background",

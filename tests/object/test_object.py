@@ -109,7 +109,7 @@ def test_merge_or_object():
 
 
 def test_object_texture():
-    from fdray.texture import Texture
+    from fdray.core.texture import Texture
 
     x = Sphere((0, 0, 0), 1).texture("abc")
     t = x.attrs[0]
@@ -118,7 +118,7 @@ def test_object_texture():
 
 
 def test_object_pigment():
-    from fdray.texture import Pigment
+    from fdray.core.texture import Pigment
 
     x = Sphere((0, 0, 0), 1).pigment("abc")
     p = x.attrs[0]
@@ -127,7 +127,7 @@ def test_object_pigment():
 
 
 def test_object_normal():
-    from fdray.texture import Normal
+    from fdray.core.texture import Normal
 
     x = Sphere((0, 0, 0), 1).normal("abc")
     n = x.attrs[0]
@@ -136,7 +136,7 @@ def test_object_normal():
 
 
 def test_object_finish():
-    from fdray.texture import Finish
+    from fdray.core.texture import Finish
 
     x = Sphere((0, 0, 0), 1).finish(ambient=1)
     f = x.attrs[0]

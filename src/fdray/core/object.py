@@ -22,7 +22,7 @@ from typing import TYPE_CHECKING, ClassVar, Literal, overload
 import numpy as np
 
 from fdray.color import COLOR_PALETTE, Color
-from fdray.texture import Finish, Normal, Pigment, Texture
+from fdray.core.texture import Finish, Normal, Pigment, Texture
 from fdray.utils import convert, reflect_point
 
 from .base import Transformable

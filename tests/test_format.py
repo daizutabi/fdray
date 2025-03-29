@@ -2,8 +2,8 @@ import re
 
 import pytest
 
+from fdray.core.texture import Pigment
 from fdray.format import format_code
-from fdray.texture import Pigment
 
 
 @pytest.mark.parametrize("text", ["Hello, world!", "Hello,\nworld!"])
