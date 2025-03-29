@@ -22,6 +22,7 @@ def from_field(
     obj: Callable[[Any], Object | Iterable[Object] | None],
     spacing: float | tuple[float, ...] = 1,
     ndim: int = 1,
+    mask: Sequence | NDArray | None = None,
     *,
     as_union: Literal[True] = True,
 ) -> Union: ...
@@ -33,6 +34,7 @@ def from_field(
     obj: Callable[[Any], Object | Iterable[Object] | None],
     spacing: float | tuple[float, ...] = 1,
     ndim: int = 1,
+    mask: Sequence | NDArray | None = None,
     *,
     as_union: Literal[False],
 ) -> list[Object]: ...
@@ -44,6 +46,7 @@ def from_field(
     obj: Callable[[Any], Object | Iterable[Object] | None],
     spacing: float | tuple[float, ...] = 1,
     ndim: int = 1,
+    mask: Sequence | NDArray | None = None,
     *,
     as_union: bool,
 ) -> Union | list[Object]: ...
@@ -54,6 +57,7 @@ def from_field(
     obj: Callable[[Any], Object | Iterable[Object] | None],
     spacing: float | tuple[float, ...] = 1,
     ndim: int = 1,
+    mask: Sequence | NDArray | None = None,
     *,
     as_union: bool = True,
 ) -> Union | list[Object]:
@@ -74,12 +78,13 @@ def from_field(
             - ndim=0: Scalar field (all dimensions used for positioning)
             - ndim=1: Vector field (last dimension contains vector components)
             - ndim=2: Tensor field (last two dimensions contain tensor components)
+        mask (Sequence | NDArray | None): Boolean mask to filter field data
         as_union (bool): Whether to return a Union object or a list of objects
 
     Returns:
         Union object or list of objects representing the field
     """
-    it = iter_objects_from_callable(obj, field, spacing, ndim)
+    it = iter_objects_from_callable(obj, field, spacing, ndim, mask)
     return Union(*it) if as_union else list(it)
 
 
@@ -88,14 +93,21 @@ def iter_objects_from_callable(
     field: Sequence | NDArray,
     spacing: float | tuple[float, ...] = 1,
     ndim: int = 1,
+    mask: Sequence | NDArray | None = None,
 ) -> Iterator[Object]:
     if not isinstance(field, np.ndarray):
         field = np.array(field)
+
+    if mask is not None and not isinstance(mask, np.ndarray):
+        mask = np.array(mask)
 
     shape = field.shape[: field.ndim - ndim]
     offset = [(i - 1) / 2 for i in shape]
 
     for idx in np.ndindex(shape):
+        if mask is not None and not mask[idx]:
+            continue
+
         if o := obj(field[idx]):
             if not isinstance(o, Object):
                 o = Union(*o)
