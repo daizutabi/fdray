@@ -16,23 +16,22 @@ The module structure follows these principles:
 from __future__ import annotations
 
 from collections.abc import Sequence
-from itertools import cycle, repeat
+from itertools import repeat
 from typing import TYPE_CHECKING, ClassVar, Literal, overload
-
-import numpy as np
 
 from fdray.utils.string import convert
 from fdray.utils.vector import Vector
 
 from .base import Transformable
-from .color import COLOR_PALETTE, Color
+from .color import Color
 from .media import Interior
 from .texture import Finish, Normal, Pigment, Texture
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Mapping
+    from collections.abc import Iterator
     from typing import Any, Self
 
+    import numpy as np
     from numpy.typing import NDArray
 
     from fdray.utils.typing import Point
@@ -169,44 +168,6 @@ class Union(Csg):
 
     A union represents the boolean OR operation on shapes.
     """
-
-    @classmethod
-    def from_region(
-        cls,
-        region: list[int] | NDArray[np.integer],
-        obj: Object | None = None,
-        spacing: float | tuple[float, ...] = 1,
-        attrs: Mapping[int, Any] | None = None,
-    ) -> Self:
-        if isinstance(region, list):
-            region = np.array(region)
-
-        def get_default_attrs() -> dict[int, Any]:
-            colors = [Color(c) for c in COLOR_PALETTE]
-            return dict(zip(np.unique(region), cycle(colors), strict=False))
-
-        obj = obj or Cube((0, 0, 0), 0.85)
-        attrs = attrs or get_default_attrs()
-        objects = {k: obj.add(v) for k, v in attrs.items()}
-
-        if isinstance(spacing, (int, float)):
-            spacing = (spacing,) * region.ndim
-        elif len(spacing) != region.ndim:
-            msg = f"Spacing must have {region.ndim} components"
-            raise ValueError(msg)
-
-        def iter_objects() -> Iterator[Object]:
-            for idx in np.ndindex(region.shape):
-                index = region[idx]
-                if index not in objects:
-                    continue
-
-                position = (i * s for i, s in zip(idx, spacing, strict=True))
-                position = (*position, 0, 0)[:3]  # for 1D or 2D regions
-
-                yield objects[index].translate(*position)
-
-        return cls(*iter_objects())
 
 
 class Intersection(Csg):

@@ -99,9 +99,9 @@ class Map(Base):
     def __iter__(self) -> Iterator[str]:
         for k, arg in self.args:
             if isinstance(arg, self.cls):
-                yield f"[{k} {' '.join(arg)}]"
+                yield f"[{convert(k)} {' '.join(arg)}]"
             else:
-                yield f"[{k} {arg}]"
+                yield f"[{convert(k)} {convert(arg)}]"
 
 
 class IdGenerator:
