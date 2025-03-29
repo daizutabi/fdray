@@ -16,12 +16,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from .core.base import Map
+from .base import Map
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from .typing import RGB, ColorLike
+    from fdray.typing import RGB, ColorLike
 
 
 class Color:

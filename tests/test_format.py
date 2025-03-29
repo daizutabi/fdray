@@ -72,7 +72,7 @@ def test_iter_maps(line: str, expected):
 
 @pytest.fixture
 def pigment():
-    from fdray.color import ColorMap
+    from fdray.core.color import ColorMap
 
     a = Pigment("granite", ColorMap((0, "red { d }"), (0.9, "white")))
     b = Pigment("granite", ColorMap((0, "blue"), (0.9, "white")))

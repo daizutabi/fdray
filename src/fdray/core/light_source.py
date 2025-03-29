@@ -4,9 +4,8 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from fdray.color import Color
-
 from .base import Descriptor
+from .color import Color
 
 if TYPE_CHECKING:
     from fdray.typing import ColorLike, Point

@@ -1,6 +1,6 @@
-from .color import Background, Color, ColorMap
 from .core.base import Declare, Transform
 from .core.camera import Camera
+from .core.color import Background, Color, ColorMap
 from .core.light_source import LightSource, Spotlight
 from .core.media import Interior
 from .core.object import (

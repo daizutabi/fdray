@@ -1,4 +1,4 @@
-from fdray.color import Color
+from fdray.core.color import Color
 from fdray.core.texture import Pigment, PigmentMap
 
 
