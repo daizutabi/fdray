@@ -4,10 +4,11 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from .core.base import Declare, Descriptor
-from .core.camera import Camera
-from .core.light_source import LightSource
-from .format import format_code, to_html
+from fdray.format import format_code, to_html
+
+from .base import Declare, Descriptor
+from .camera import Camera
+from .light_source import LightSource
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

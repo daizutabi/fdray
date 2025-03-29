@@ -2,6 +2,7 @@ from .color import Background, Color, ColorMap
 from .core.base import Declare, Transform
 from .core.camera import Camera
 from .core.light_source import LightSource, Spotlight
+from .core.media import Interior
 from .core.object import (
     Box,
     Cone,
@@ -17,6 +18,8 @@ from .core.object import (
     SphereSweep,
     Union,
 )
+from .core.renderer import Renderer
+from .core.scene import GlobalSettings, Include, Scene
 from .core.texture import (
     Finish,
     Normal,
@@ -26,9 +29,6 @@ from .core.texture import (
     SlopeMap,
     Texture,
 )
-from .media import Interior
-from .renderer import Renderer
-from .scene import GlobalSettings, Include, Scene
 
 __all__ = [
     "Background",
