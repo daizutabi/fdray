@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from math import acos, cos, sin, sqrt
+from math import acos, asin, atan2, cos, sin, sqrt
 from typing import TYPE_CHECKING, Self
 
 if TYPE_CHECKING:
@@ -192,3 +192,22 @@ class Vector:
                 z = sin(θ)
         """
         return cls(cos(theta) * cos(phi), cos(theta) * sin(phi), sin(theta))
+
+    def to_spherical(self) -> tuple[float, float]:
+        """Convert vector to spherical coordinates.
+
+        Returns:
+            tuple[float, float]: A tuple of (phi, theta) where
+            - phi: azimuthal angle in radians (-π to π),
+              0 on x-axis, π/2 on y-axis
+            - theta: polar angle in radians (-π/2 to π/2),
+              0 at equator, π/2 at north pole, -π/2 at south pole
+        """
+        length = self.norm()
+        if length < 1e-10:
+            return 0.0, 0.0
+
+        theta = asin(self.z / length)
+        phi = atan2(self.y, self.x)
+
+        return phi, theta

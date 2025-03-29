@@ -3,10 +3,12 @@ from __future__ import annotations
 from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import MISSING, dataclass, fields
+from math import degrees
 from typing import TYPE_CHECKING, Any, ClassVar
 
 from fdray.utils.format import format_code, to_html
 from fdray.utils.string import convert, to_snake_case
+from fdray.utils.vector import Vector
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
@@ -99,9 +101,9 @@ class Map(Base):
     def __iter__(self) -> Iterator[str]:
         for k, arg in self.args:
             if isinstance(arg, self.cls):
-                yield f"[{k} {' '.join(arg)}]"
+                yield f"[{convert(k)} {' '.join(arg)}]"
             else:
-                yield f"[{k} {arg}]"
+                yield f"[{convert(k)} {convert(arg)}]"
 
 
 class IdGenerator:
@@ -270,3 +272,10 @@ class Transformable(Element):
             return self.__class__(*self.args, *self.attrs, Transform(translate=x))
 
         return self.__class__(*self.args, *self.attrs, Transform(translate=(x, y, z)))
+
+    def align(self, direction: Vector | Iterable[float]) -> Self:
+        if not isinstance(direction, Vector):
+            direction = Vector(*direction)
+
+        phi, theta = direction.to_spherical()
+        return self.rotate(0, -degrees(theta), degrees(phi))
