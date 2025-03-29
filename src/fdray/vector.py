@@ -122,6 +122,20 @@ class Vector:
 
         return self * cos_t + a.cross(self) * sin_t + a * (a @ self) * (1 - cos_t)
 
+    def reflect(self, across: Vector | Iterable[float]) -> Self:
+        """Reflect this vector across another vector.
+
+        Args:
+            across: The vector to reflect across
+
+        Returns:
+            The reflected vector
+        """
+        if not isinstance(across, Vector):
+            across = Vector(*across)
+
+        return -self + 2 * across
+
     def angle(self, other: Vector | Iterable[float]) -> float:
         """Calculate angle between two vectors in degrees.
 

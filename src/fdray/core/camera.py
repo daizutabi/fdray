@@ -49,7 +49,7 @@ from dataclasses import InitVar, dataclass, field
 from math import cos, radians, sin, sqrt
 from typing import TYPE_CHECKING
 
-from fdray.utils import convert
+from fdray.string import convert
 from fdray.vector import Vector
 
 from .base import Descriptor

@@ -1,4 +1,4 @@
-from fdray.utils import convert
+from fdray.string import convert
 
 
 def test_convert_tuple_2():

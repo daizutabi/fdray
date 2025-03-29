@@ -21,7 +21,8 @@ from typing import TYPE_CHECKING, ClassVar, Literal, overload
 
 import numpy as np
 
-from fdray.utils import convert, reflect_point
+from fdray.string import convert
+from fdray.vector import Vector
 
 from .base import Transformable
 from .color import COLOR_PALETTE, Color
@@ -582,8 +583,8 @@ class Curve(Polyline):
         if len(centers) < 2:
             return str(Polyline(centers, radius, *self.attrs))
 
-        ghost_first = reflect_point(centers[1], centers[0])
-        ghost_last = reflect_point(centers[-2], centers[-1])
+        ghost_first = Vector(*centers[1]).reflect(centers[0])
+        ghost_last = Vector(*centers[-2]).reflect(centers[-1])
         centers = [ghost_first, *centers, ghost_last]
 
         if isinstance(radius, Sequence):

@@ -6,7 +6,7 @@ from dataclasses import MISSING, dataclass, fields
 from typing import TYPE_CHECKING, Any, ClassVar
 
 from fdray.format import format_code, to_html
-from fdray.utils import convert, to_snake_case
+from fdray.string import convert, to_snake_case
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
