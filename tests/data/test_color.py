@@ -61,3 +61,10 @@ def test_encode_direction():
 
     c = encode_direction([1, 2, 3])
     assert str(c) == "rgb <0.97, 0.99, 0.637>"
+
+
+def test_import_error():
+    from fdray.data.color import raise_import_error
+
+    with pytest.raises(ImportError):
+        raise_import_error("test")
