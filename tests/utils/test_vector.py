@@ -182,3 +182,7 @@ def test_to_spherical(x, y, z):
     np.testing.assert_allclose(v.x, x, atol=1e-5)
     np.testing.assert_allclose(v.y, y, atol=1e-5)
     np.testing.assert_allclose(v.z, z, atol=1e-5)
+
+
+def test_to_spherical_zero():
+    assert Vector(0, 0, 0).to_spherical() == (0, 0)
