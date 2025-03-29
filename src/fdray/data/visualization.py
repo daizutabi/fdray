@@ -30,6 +30,32 @@ def translate(
         yield obj.translate(*position)
 
 
+def iter_objects_from_callable(
+    obj: Callable[[Any], Object | None],
+    field: Sequence | NDArray,
+    spacing: float | tuple[float, ...] = 1,
+    ndim: int = 1,
+) -> Iterator[Object]:
+    if not isinstance(field, np.ndarray):
+        field = np.array(field)
+
+    for idx in np.ndindex(field.shape[:-ndim]):
+        if o := obj(field[idx]):
+            yield from translate(o, [idx], spacing)
+
+
+def iter_objects_from_dict(
+    objects: dict[Any, Object],
+    region: Sequence | NDArray,
+    spacing: float | tuple[float, ...] = 1,
+) -> Iterator[Object]:
+    indices = get_indices(region)
+
+    for index, obj in objects.items():
+        if index in indices:
+            yield from translate(obj, indices[index], spacing)
+
+
 def get_indices(region: Sequence | NDArray) -> dict[Any, list[tuple[int, ...]]]:
     if not isinstance(region, np.ndarray):
         region = np.array(region)
@@ -43,61 +69,6 @@ def get_indices(region: Sequence | NDArray) -> dict[Any, list[tuple[int, ...]]]:
     return indices
 
 
-def iter_objects(
-    objects: dict[Any, Object],
-    region: Sequence | NDArray,
-    spacing: float | tuple[float, ...] = 1,
-) -> Iterator[Object]:
-    indices = get_indices(region)
-
-    for index, obj in objects.items():
-        if index in indices:
-            yield from translate(obj, indices[index], spacing)
-
-
-@overload
-def from_region(
-    region: Sequence | NDArray,
-    obj: Object | None = None,
-    spacing: float | tuple[float, ...] = 1,
-    mapping: Mapping[Any, Any] | None = None,
-    *,
-    as_union: Literal[True] = True,
-) -> Union: ...
-
-
-@overload
-def from_region(
-    region: Sequence | NDArray,
-    obj: Object | None = None,
-    spacing: float | tuple[float, ...] = 1,
-    mapping: Mapping[Any, Any] | None = None,
-    *,
-    as_union: Literal[False] = False,
-) -> list[Object]: ...
-
-
-def from_region(
-    region: Sequence | NDArray,
-    obj: Object | None = None,
-    spacing: float | tuple[float, ...] = 1,
-    mapping: Mapping[Any, Any] | None = None,
-    *,
-    as_union: bool = True,
-) -> Union | list[Object]:
-    def get_default_attrs() -> dict[Any, Any]:
-        colors = [Color(c) for c in COLOR_PALETTE]
-        return dict(zip(np.unique(region), cycle(colors), strict=False))
-
-    obj = obj or Cube((0, 0, 0), 0.85)
-    mapping = mapping or get_default_attrs()
-    objects = {k: obj.add(v) for k, v in mapping.items()}
-
-    it = iter_objects(objects, region, spacing)
-
-    return Union(*it) if as_union else list(it)
-
-
 @overload
 def from_field(
     field: Sequence | NDArray,
@@ -105,7 +76,7 @@ def from_field(
     spacing: float | tuple[float, ...] = 1,
     ndim: int = 1,
     *,
-    as_union: Literal[True] = True,
+    as_union: Literal[True],
 ) -> Union: ...
 
 
@@ -118,6 +89,17 @@ def from_field(
     *,
     as_union: Literal[False],
 ) -> list[Object]: ...
+
+
+@overload
+def from_field(
+    field: Sequence | NDArray,
+    obj: Callable[[Any], Object | None],
+    spacing: float | tuple[float, ...] = 1,
+    ndim: int = 1,
+    *,
+    as_union: bool,
+) -> Union | list[Object]: ...
 
 
 def from_field(
@@ -149,13 +131,93 @@ def from_field(
     Returns:
         Union object or list of objects representing the field
     """
-    if not isinstance(field, np.ndarray):
-        field = np.array(field)
+    it = iter_objects_from_callable(obj, field, spacing, ndim)
+    return Union(*it) if as_union else list(it)
 
-    objects = []
 
-    for idx in np.ndindex(field.shape[:-ndim]):
-        if o := obj(field[idx]):
-            objects.extend(translate(o, [idx], spacing))
+@overload
+def from_region(
+    region: Sequence | NDArray,
+    obj: Object | Callable[[Any], Object | None] | None = None,
+    spacing: float | tuple[float, ...] = 1,
+    mapping: Mapping[Any, Any] | None = None,
+    *,
+    as_union: Literal[True] = True,
+) -> Union: ...
 
-    return Union(*objects) if as_union else objects
+
+@overload
+def from_region(
+    region: Sequence | NDArray,
+    obj: Object | Callable[[Any], Object | None] | None = None,
+    spacing: float | tuple[float, ...] = 1,
+    mapping: Mapping[Any, Any] | None = None,
+    *,
+    as_union: Literal[False],
+) -> list[Object]: ...
+
+
+@overload
+def from_region(
+    region: Sequence | NDArray,
+    obj: Object | Callable[[Any], Object | None] | None = None,
+    spacing: float | tuple[float, ...] = 1,
+    mapping: Mapping[Any, Any] | None = None,
+    *,
+    as_union: bool,
+) -> Union | list[Object]: ...
+
+
+def from_region(
+    region: Sequence | NDArray,
+    obj: Object | Callable[[Any], Object | None] | None = None,
+    spacing: float | tuple[float, ...] = 1,
+    mapping: Mapping[Any, Any] | None = None,
+    *,
+    as_union: bool = True,
+) -> Union | list[Object]:
+    """Create objects from a discrete region.
+
+    This function generates 3D objects from a discrete region,
+    where each unique value in the region corresponds to an
+    object with specific attributes.
+
+    The function supports two modes:
+
+    1. Base object + attribute mapping: Provide an Object instance
+       and a mapping of region values to attributes (e.g., colors).
+    2. Custom object generation: Provide a callback function that
+       takes a region value and returns an Object (similar to from_field).
+
+    Args:
+        region (Sequence | NDArray): Array containing region data
+            (discrete values)
+        obj (Object | Callable[[Any], Object | None] | None): Either
+            an Object instance to be used as base, or a function that
+            takes a region value and returns an Object, or None to use
+            a default Cube
+        spacing (float | tuple[float, ...]): Distance between objects
+            (scalar or per-dimension)
+        mapping: Mapping from region values to attributes (used only
+            when obj is an Object)
+        as_union: Whether to return a Union object or a list of objects
+
+    Returns:
+        Union object or list of objects representing the region
+    """
+    if callable(obj):
+        return from_field(region, obj, spacing, ndim=0, as_union=as_union)
+
+    if obj is None:
+        obj = Cube((0, 0, 0), 0.85)
+
+    mapping = mapping or get_default_mapping(region)
+    objects = {k: obj.add(v) for k, v in mapping.items()}
+    it = iter_objects_from_dict(objects, region, spacing)
+
+    return Union(*it) if as_union else list(it)
+
+
+def get_default_mapping(region: Sequence | NDArray) -> dict[Any, Any]:
+    colors = [Color(c) for c in COLOR_PALETTE]
+    return dict(zip(np.unique(region), cycle(colors), strict=False))
