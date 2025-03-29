@@ -10,6 +10,7 @@ from .core.object import (
     Cuboid,
     Curve,
     Cylinder,
+    Material,
     Object,
     Plane,
     Polyline,
@@ -22,6 +23,7 @@ from .core.renderer import Renderer
 from .core.scene import GlobalSettings, Include, Scene
 from .core.texture import (
     Finish,
+    InteriorTexture,
     Normal,
     NormalMap,
     Pigment,
@@ -46,7 +48,9 @@ __all__ = [
     "GlobalSettings",
     "Include",
     "Interior",
+    "InteriorTexture",
     "LightSource",
+    "Material",
     "Normal",
     "NormalMap",
     "Object",

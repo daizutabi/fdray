@@ -15,6 +15,10 @@ class Texture(Transformable):
     pass
 
 
+class InteriorTexture(Transformable):
+    pass
+
+
 class TextureMap(Map):
     cls = Texture
 

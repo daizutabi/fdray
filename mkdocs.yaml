@@ -63,6 +63,7 @@ nav:
           - notebooks/texture/normal.ipynb
           - notebooks/texture/finish.ipynb
           - notebooks/texture/pattern.ipynb
+          - notebooks/texture/interior_texture.ipynb
       - fdray:
           - notebooks/fdray/curve.ipynb
           - notebooks/fdray/region.ipynb
