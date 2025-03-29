@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from fdray.color import Color
-from fdray.object import Sphere, Union
+from fdray.core.color import Color
+from fdray.core.object import Sphere, Union
 
 
 @pytest.fixture(scope="module")

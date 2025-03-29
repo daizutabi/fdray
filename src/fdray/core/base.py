@@ -5,14 +5,14 @@ from contextlib import contextmanager
 from dataclasses import MISSING, dataclass, fields
 from typing import TYPE_CHECKING, Any, ClassVar
 
-from .format import format_code, to_html
-from .utils import convert, to_snake_case
+from fdray.utils.format import format_code, to_html
+from fdray.utils.string import convert, to_snake_case
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
     from typing import Any, Self
 
-    from fdray.typing import Point
+    from fdray.utils.typing import Point
 
 
 class Base:

@@ -21,10 +21,12 @@ from typing import TYPE_CHECKING, ClassVar, Literal, overload
 
 import numpy as np
 
+from fdray.utils.string import convert
+from fdray.utils.vector import Vector
+
+from .base import Transformable
 from .color import COLOR_PALETTE, Color
-from .core import Transformable
 from .texture import Finish, Normal, Pigment, Texture
-from .utils import convert, reflect_point
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
@@ -32,7 +34,7 @@ if TYPE_CHECKING:
 
     from numpy.typing import NDArray
 
-    from .typing import Point
+    from fdray.utils.typing import Point
 
 
 class Object(Transformable):
@@ -581,8 +583,8 @@ class Curve(Polyline):
         if len(centers) < 2:
             return str(Polyline(centers, radius, *self.attrs))
 
-        ghost_first = reflect_point(centers[1], centers[0])
-        ghost_last = reflect_point(centers[-2], centers[-1])
+        ghost_first = Vector(*centers[1]).reflect(centers[0])
+        ghost_last = Vector(*centers[-2]).reflect(centers[-1])
         centers = [ghost_first, *centers, ghost_last]
 
         if isinstance(radius, Sequence):

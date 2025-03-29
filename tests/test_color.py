@@ -1,4 +1,4 @@
-from fdray.color import Background, Color, ColorMap
+from fdray.core.color import Background, Color, ColorMap
 
 
 def test_color_name():

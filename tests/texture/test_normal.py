@@ -1,4 +1,4 @@
-from fdray.texture import SlopeMap
+from fdray.core.texture import SlopeMap
 
 
 def test_slope_map():

@@ -4,9 +4,10 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from fdray.utils.format import format_code, to_html
+
+from .base import Declare, Descriptor
 from .camera import Camera
-from .core import Declare, Descriptor
-from .format import format_code, to_html
 from .light_source import LightSource
 
 if TYPE_CHECKING:

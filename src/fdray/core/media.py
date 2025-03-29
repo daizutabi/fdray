@@ -3,10 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from .core import Descriptor
+from .base import Descriptor
 
 if TYPE_CHECKING:
-    from .typing import ColorLike
+    from fdray.utils.typing import ColorLike
 
 
 @dataclass

@@ -1,9 +1,9 @@
-from .camera import Camera
-from .color import Background, Color, ColorMap
-from .core import Declare, Transform
-from .light_source import LightSource, Spotlight
-from .media import Interior
-from .object import (
+from .core.base import Declare, Transform
+from .core.camera import Camera
+from .core.color import Background, Color, ColorMap
+from .core.light_source import LightSource, Spotlight
+from .core.media import Interior
+from .core.object import (
     Box,
     Cone,
     Cube,
@@ -18,9 +18,9 @@ from .object import (
     SphereSweep,
     Union,
 )
-from .renderer import Renderer
-from .scene import GlobalSettings, Include, Scene
-from .texture import (
+from .core.renderer import Renderer
+from .core.scene import GlobalSettings, Include, Scene
+from .core.texture import (
     Finish,
     Normal,
     NormalMap,

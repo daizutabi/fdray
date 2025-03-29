@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pytest
 
-from fdray.core import Descriptor
+from fdray.core.base import Descriptor
 
 
 def test_descriptor_missing():

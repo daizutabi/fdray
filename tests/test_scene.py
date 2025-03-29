@@ -1,26 +1,26 @@
 def test_global_settings():
-    from fdray.scene import GlobalSettings
+    from fdray.core.scene import GlobalSettings
 
     x = GlobalSettings(assumed_gamma=0.2)
     assert str(x) == "global_settings { assumed_gamma 0.2 }"
 
 
 def test_include():
-    from fdray.scene import Include
+    from fdray.core.scene import Include
 
     x = Include("a", "b", "c")
     assert str(x) == '#include "a"\n#include "b"\n#include "c"'
 
 
 def test_scene_attrs():
-    from fdray.scene import Scene
+    from fdray.core.scene import Scene
 
     x = Scene("abc", ["def", "ghi"])
     assert x.attrs == ["abc", "def", "ghi"]
 
 
 def test_scene_global_settings():
-    from fdray.scene import GlobalSettings, Scene
+    from fdray.core.scene import GlobalSettings, Scene
 
     x = Scene(GlobalSettings(assumed_gamma=0.2), "a", ["b", "c"])
     assert x.attrs == ["a", "b", "c"]
@@ -29,14 +29,14 @@ def test_scene_global_settings():
 
 
 def test_scene_include():
-    from fdray.scene import Include, Scene
+    from fdray.core.scene import Include, Scene
 
     x = Scene(Include("a", "b", "c"))
     assert x.includes[0].filenames == ["a", "b", "c"]
 
 
 def test_scene_str():
-    from fdray.scene import Scene
+    from fdray.core.scene import Scene
 
     x = str(Scene("a", ["b", "c"]))
     assert x.startswith("#version 3.7;\n")
@@ -45,16 +45,16 @@ def test_scene_str():
 
 
 def test_scene_to_str_without_camera():
-    from fdray.scene import Scene
+    from fdray.core.scene import Scene
 
     x = Scene("a", ["b", "c"])
     assert "a\nb\nc" in x.to_str(100, 100)
 
 
 def test_scene_format():
-    from fdray.core import Declare
-    from fdray.object import Object, Sphere
-    from fdray.scene import Scene
+    from fdray.core.base import Declare
+    from fdray.core.object import Object, Sphere
+    from fdray.core.scene import Scene
 
     x = Scene(Object(Declare(Sphere(1, 1))).scale(1))
     x = f"{x}"
@@ -63,7 +63,7 @@ def test_scene_format():
 
 
 def test_scene_html():
-    from fdray.scene import Scene
+    from fdray.core.scene import Scene
 
     x = Scene("a", ["b", "c"])._repr_html_()
     assert x.startswith("<div>")
@@ -74,9 +74,9 @@ def test_scene_html():
 
 
 def test_scene_render():
-    from fdray.core import Declare
-    from fdray.object import Object, Sphere
-    from fdray.scene import Scene
+    from fdray.core.base import Declare
+    from fdray.core.object import Object, Sphere
+    from fdray.core.scene import Scene
 
     s = Scene(Object(Declare(Sphere(1, 1))).scale(1))
     assert s.render(100, 100)

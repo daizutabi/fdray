@@ -5,10 +5,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
     from typing import Any
-
-    from .typing import Point
 
 
 def to_snake_case(name: str) -> str:
@@ -41,20 +38,3 @@ def convert(arg: Any) -> str:
         return f"<{arg}>"
 
     return str(arg)
-
-
-def reflect_point(point: Sequence[float], across: Sequence[float]) -> Point:
-    """Reflect a point across another point.
-
-    Args:
-        point: The point to be reflected
-        across: The point to reflect across
-
-    Returns:
-        The reflected point
-    """
-    return (
-        2 * across[0] - point[0],
-        2 * across[1] - point[1],
-        2 * across[2] - point[2],
-    )

@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from fdray.light_source import LightSource
+from fdray.core.light_source import LightSource
 
 
 def test_povray_path():
@@ -30,7 +30,7 @@ def scene() -> str:
 
 
 def test_render_output_file(scene: str, tmp_path: Path):
-    from fdray.renderer import Renderer
+    from fdray.core.renderer import Renderer
 
     renderer = Renderer(150, 100, quality=4, antialias=False)
     output_file = tmp_path / "test.png"
@@ -39,7 +39,7 @@ def test_render_output_file(scene: str, tmp_path: Path):
 
 @pytest.mark.parametrize(("output_alpha", "n"), [(True, 4), (False, 3)])
 def test_render_array(scene: str, output_alpha: bool, n: int):
-    from fdray.renderer import Renderer
+    from fdray.core.renderer import Renderer
 
     renderer = Renderer(200, quality=4, output_alpha=output_alpha)
     array = renderer.render(scene)
@@ -48,7 +48,7 @@ def test_render_array(scene: str, output_alpha: bool, n: int):
 
 
 def test_render_error():
-    from fdray.renderer import Renderer, RenderError
+    from fdray.core.renderer import Renderer, RenderError
 
     renderer = Renderer(100, 200)
     with pytest.raises(RenderError):
@@ -78,7 +78,7 @@ def test_render_scene():
 
 
 def test_build_options():
-    from fdray.renderer import Renderer
+    from fdray.core.renderer import Renderer
 
     renderer = Renderer(display=True, threads=2)
     x = renderer.build("test")
@@ -87,7 +87,7 @@ def test_build_options():
 
 
 def test_render_error_message():
-    from fdray.renderer import RenderError
+    from fdray.core.renderer import RenderError
 
     error = RenderError("a\n= [Parsing...] =\nb")
     assert str(error) == "POV-Ray rendering failed:\n= [Parsing...] =\nb"
