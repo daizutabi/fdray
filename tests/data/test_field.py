@@ -49,3 +49,17 @@ def field_vector():
 def test_field_vector(field_vector: Union, ry, rz, p):
     x = str(field_vector)
     assert f"rotate <0, {ry}, {rz}> }} translate <{p}, 0, 0>" in x
+
+
+def test_field_mask():
+    from fdray.data.field import from_field
+
+    direction = [[1, 0, 0], [0, 1, 0], [0, -1, 0]]
+    mask = [True, False, True]
+    objs = from_field(
+        direction,
+        lambda x: [Box(0, 1).align(x)],
+        mask=mask,
+        as_union=False,
+    )
+    assert len(objs) == 2
