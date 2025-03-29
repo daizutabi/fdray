@@ -13,12 +13,13 @@ from .object import (
     Object,
     Plane,
     Polyline,
+    SkySphere,
     Sphere,
     SphereSweep,
     Union,
 )
 from .renderer import Renderer
-from .scene import Include, Scene
+from .scene import GlobalSettings, Include, Scene
 from .texture import (
     Finish,
     Normal,
@@ -42,6 +43,7 @@ __all__ = [
     "Cylinder",
     "Declare",
     "Finish",
+    "GlobalSettings",
     "Include",
     "Interior",
     "LightSource",
@@ -54,6 +56,7 @@ __all__ = [
     "Polyline",
     "Renderer",
     "Scene",
+    "SkySphere",
     "SlopeMap",
     "Sphere",
     "SphereSweep",
