@@ -402,6 +402,10 @@ class Plane(Object):
         super().__init__(normal, distance, *attrs, **kwargs)
 
 
+class SkySphere(Object):
+    """A sky sphere that defines the background color of the scene."""
+
+
 class Sphere(Object):
     """A sphere defined by a center point and radius.
 
