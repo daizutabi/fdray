@@ -78,10 +78,23 @@ class Vector:
         return sqrt(self.x**2 + self.y**2 + self.z**2)
 
     def normalize(self) -> Self:
+        """Normalize the vector to unit length.
+
+        Returns:
+            The normalized vector.
+        """
         length = self.norm()
         return self.__class__(self.x / length, self.y / length, self.z / length)
 
     def dot(self, other: Vector | Iterable[float]) -> float:
+        """Compute the dot product of two vectors.
+
+        Args:
+            other (Vector | Iterable[float]): The vector to dot with
+
+        Returns:
+            The dot product of the two vectors.
+        """
         if not isinstance(other, Vector):
             other = Vector(*other)
 
@@ -94,6 +107,14 @@ class Vector:
         return self.dot(other)
 
     def cross(self, other: Vector | Iterable[float]) -> Self:
+        """Compute the cross product of two vectors.
+
+        Args:
+            other (Vector | Iterable[float]): The vector to cross with
+
+        Returns:
+            The cross product of the two vectors.
+        """
         if not isinstance(other, Vector):
             other = Vector(*other)
 
@@ -107,7 +128,8 @@ class Vector:
         """Rotate a vector around an axis by an angle (Rodrigues' rotation formula).
 
         Args:
-            axis (Vector): The axis of rotation (will be normalized).
+            axis (Vector | Iterable[float]): The axis of rotation
+                (will be normalized).
             theta (float): The angle of rotation in radians.
 
         Returns:
@@ -126,7 +148,7 @@ class Vector:
         """Reflect this vector across another vector.
 
         Args:
-            across: The vector to reflect across
+            across (Vector | Iterable[float]): The vector to reflect across
 
         Returns:
             The reflected vector
@@ -140,7 +162,7 @@ class Vector:
         """Calculate angle between two vectors in radians.
 
         Args:
-            other: Another vector to calculate angle with
+            other (Vector | Iterable[float]): Another vector to calculate angle with
 
         Returns:
             Angle between vectors in radians (0-π)
@@ -158,9 +180,9 @@ class Vector:
         """Create a vector from spherical coordinates.
 
         Args:
-            phi: azimuthal angle in radians (-π to π or 0 to 2π)
+            phi (float): azimuthal angle in radians (-π to π or 0 to 2π)
                 0 on x-axis, π/2 on y-axis
-            theta: polar angle in radians (-π/2 to π/2)
+            theta (float): polar angle in radians (-π/2 to π/2)
                 0 at equator, π/2 at north pole, -π/2 at south pole
 
         Returns:
