@@ -1,4 +1,3 @@
-import numpy as np
 import pytest
 
 from fdray.core.color import Color
