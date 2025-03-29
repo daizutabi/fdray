@@ -144,6 +144,24 @@ def test_object_finish():
     assert f.ambient == 1
 
 
+def test_object_interior():
+    from fdray.core.media import Interior
+
+    x = Sphere((0, 0, 0), 1).interior(ior=1.5)
+    f = x.attrs[0]
+    assert isinstance(f, Interior)
+    assert f.ior == 1.5
+
+
+def test_object_material():
+    from fdray.core.object import Material
+
+    x = Sphere((0, 0, 0), 1).material("abc")
+    f = x.attrs[0]
+    assert isinstance(f, Material)
+    assert f.attrs == ["abc"]
+
+
 def test_csg_transform():
     x = Sphere((0, 0, 0), 1) + Sphere((1, 0, 0), 2)
     x = x.scale(1, 2, 3).rotate(2, 3, 4).translate(3, 4, 5)

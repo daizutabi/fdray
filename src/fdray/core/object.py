@@ -26,6 +26,7 @@ from fdray.utils.vector import Vector
 
 from .base import Transformable
 from .color import COLOR_PALETTE, Color
+from .media import Interior
 from .texture import Finish, Normal, Pigment, Texture
 
 if TYPE_CHECKING:
@@ -126,6 +127,18 @@ class Object(Transformable):
     def finish(self, *args: Any, **kwargs: Any) -> Self:
         """Add a finish to the object."""
         return self.add(Finish(*args, **kwargs))
+
+    def interior(self, *args: Any, **kwargs: Any) -> Self:
+        """Add an interior to the object."""
+        return self.add(Interior(*args, **kwargs))
+
+    def material(self, *args: Any, **kwargs: Any) -> Self:
+        """Add a material to the object."""
+        return self.add(Material(*args, **kwargs))
+
+
+class Material(Transformable):
+    """Materials define the appearance of objects in the scene."""
 
 
 class Csg(Object):
