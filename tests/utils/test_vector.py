@@ -142,6 +142,10 @@ def test_from_spherical_0_0(phi, theta, expected):
     np.testing.assert_allclose(x.x, expected[0], atol=1e-5)
     np.testing.assert_allclose(x.y, expected[1], atol=1e-5)
     np.testing.assert_allclose(x.z, expected[2], atol=1e-5)
+    x = Vector.from_spherical(*x.to_spherical())
+    np.testing.assert_allclose(x.x, expected[0], atol=1e-5)
+    np.testing.assert_allclose(x.y, expected[1], atol=1e-5)
+    np.testing.assert_allclose(x.z, expected[2], atol=1e-5)
 
 
 def test_from_spherical():
@@ -149,3 +153,36 @@ def test_from_spherical():
     np.testing.assert_allclose(x.x, 0.7006292692220368)
     np.testing.assert_allclose(x.y, 0.5090369604551273)
     np.testing.assert_allclose(x.z, 0.5)
+    p, t = x.to_spherical()
+    np.testing.assert_allclose(p, np.pi / 5, atol=1e-5)
+    np.testing.assert_allclose(t, np.pi / 6, atol=1e-5)
+
+
+@pytest.mark.parametrize(
+    ("x", "y", "z"),
+    [
+        (1, 0, 0),
+        (0, 1, 0),
+        (0, 0, 1),
+        (-1, 0, 0),
+        (0, -1, 0),
+        (0, 0, -1),
+        (1, 1, 1),
+        (-1, -1, -1),
+        (1, -1, 1),
+        (-1, 1, -1),
+        (1, 1, -1),
+        (-1, -1, 1),
+    ],
+)
+def test_to_spherical(x, y, z):
+    v = Vector(x, y, z)
+    p, t = v.to_spherical()
+    v = Vector.from_spherical(p, t) * v.norm()
+    np.testing.assert_allclose(v.x, x, atol=1e-5)
+    np.testing.assert_allclose(v.y, y, atol=1e-5)
+    np.testing.assert_allclose(v.z, z, atol=1e-5)
+
+
+def test_to_spherical_zero():
+    assert Vector(0, 0, 0).to_spherical() == (0, 0)
