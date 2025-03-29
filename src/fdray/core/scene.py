@@ -16,9 +16,12 @@ if TYPE_CHECKING:
 
     from PIL import Image
 
+    from fdray.utils.typing import ColorLike
+
 
 @dataclass
 class GlobalSettings(Descriptor):
+    ambient_light: ColorLike | None = None
     assumed_gamma: float = 1
 
 
