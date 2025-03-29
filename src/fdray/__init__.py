@@ -31,6 +31,7 @@ from .core.texture import (
     SlopeMap,
     Texture,
 )
+from .utils.vector import Vector
 
 __all__ = [
     "Background",
@@ -68,4 +69,5 @@ __all__ = [
     "Texture",
     "Transform",
     "Union",
+    "Vector",
 ]

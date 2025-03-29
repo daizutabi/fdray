@@ -39,7 +39,7 @@ def iter_objects_from_callable(
     if not isinstance(field, np.ndarray):
         field = np.array(field)
 
-    for idx in np.ndindex(field.shape[:-ndim]):
+    for idx in np.ndindex(field.shape[: field.ndim - ndim]):
         if o := obj(field[idx]):
             yield from translate(o, [idx], spacing)
 
@@ -76,7 +76,7 @@ def from_field(
     spacing: float | tuple[float, ...] = 1,
     ndim: int = 1,
     *,
-    as_union: Literal[True],
+    as_union: Literal[True] = True,
 ) -> Union: ...
 
 
