@@ -1,7 +1,7 @@
 import pytest
 
 from fdray.color import Color
-from fdray.object import Curve, Polyline, SphereSweep
+from fdray.core.object import Curve, Polyline, SphereSweep
 
 
 @pytest.fixture(scope="module", params=["linear_spline", "b_spline", "cubic_spline"])

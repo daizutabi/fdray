@@ -49,7 +49,7 @@ from dataclasses import InitVar, dataclass, field
 from math import cos, radians, sin, sqrt
 from typing import TYPE_CHECKING
 
-from .core import Descriptor
+from .core.base import Descriptor
 from .utils import convert
 from .vector import Vector
 

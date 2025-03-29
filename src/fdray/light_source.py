@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 from .camera import Camera
 from .color import Color
-from .core import Descriptor
+from .core.base import Descriptor
 
 if TYPE_CHECKING:
     from .camera import Camera

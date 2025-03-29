@@ -52,8 +52,8 @@ def test_scene_to_str_without_camera():
 
 
 def test_scene_format():
-    from fdray.core import Declare
-    from fdray.object import Object, Sphere
+    from fdray.core.base import Declare
+    from fdray.core.object import Object, Sphere
     from fdray.scene import Scene
 
     x = Scene(Object(Declare(Sphere(1, 1))).scale(1))
@@ -74,8 +74,8 @@ def test_scene_html():
 
 
 def test_scene_render():
-    from fdray.core import Declare
-    from fdray.object import Object, Sphere
+    from fdray.core.base import Declare
+    from fdray.core.object import Object, Sphere
     from fdray.scene import Scene
 
     s = Scene(Object(Declare(Sphere(1, 1))).scale(1))

@@ -1,4 +1,4 @@
-from fdray.core import Transform, Transformable
+from fdray.core.base import Transform, Transformable
 
 
 def test_transform_scale():

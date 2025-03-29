@@ -21,10 +21,11 @@ from typing import TYPE_CHECKING, ClassVar, Literal, overload
 
 import numpy as np
 
-from .color import COLOR_PALETTE, Color
-from .core import Transformable
-from .texture import Finish, Normal, Pigment, Texture
-from .utils import convert, reflect_point
+from fdray.color import COLOR_PALETTE, Color
+from fdray.texture import Finish, Normal, Pigment, Texture
+from fdray.utils import convert, reflect_point
+
+from .base import Transformable
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
@@ -32,7 +33,7 @@ if TYPE_CHECKING:
 
     from numpy.typing import NDArray
 
-    from .typing import Point
+    from fdray.typing import Point
 
 
 class Object(Transformable):

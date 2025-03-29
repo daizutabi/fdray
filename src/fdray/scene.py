@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from .camera import Camera
-from .core import Declare, Descriptor
+from .core.base import Declare, Descriptor
 from .format import format_code, to_html
 from .light_source import LightSource
 

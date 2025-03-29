@@ -1,4 +1,4 @@
-from fdray.core import Attribute, Element
+from fdray.core.base import Attribute, Element
 
 
 def test_attribute_str():

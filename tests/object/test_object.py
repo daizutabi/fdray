@@ -1,4 +1,4 @@
-from fdray.object import Difference, Intersection, Merge, Sphere, Union
+from fdray.core.object import Difference, Intersection, Merge, Sphere, Union
 
 
 def test_args():
@@ -156,70 +156,70 @@ def test_csg_transform():
 
 
 def test_box():
-    from fdray.object import Box
+    from fdray.core.object import Box
 
     x = Box((0, 0, 0), (1, 1, 1), "a")
     assert str(x) == "box { <0, 0, 0>, <1, 1, 1> a }"
 
 
 def test_cone():
-    from fdray.object import Cone
+    from fdray.core.object import Cone
 
     x = Cone((0, 0, 0), 1, (1, 0, 0), 2)
     assert str(x) == "cone { <0, 0, 0>, 1, <1, 0, 0>, 2 }"
 
 
 def test_cone_open_kwarg():
-    from fdray.object import Cone
+    from fdray.core.object import Cone
 
     x = Cone((0, 0, 0), 1, (1, 0, 0), 2, open=True)
     assert str(x) == "cone { <0, 0, 0>, 1, <1, 0, 0>, 2 open }"
 
 
 def test_cone_open_arg():
-    from fdray.object import Cone
+    from fdray.core.object import Cone
 
     x = Cone((0, 0, 0), 1, (1, 0, 0), 2, "open")
     assert str(x) == "cone { <0, 0, 0>, 1, <1, 0, 0>, 2 open }"
 
 
 def test_cylinder():
-    from fdray.object import Cylinder
+    from fdray.core.object import Cylinder
 
     x = Cylinder((0, 0, 0), (1, 0, 0), 1)
     assert str(x) == "cylinder { <0, 0, 0>, <1, 0, 0>, 1 }"
 
 
 def test_plane():
-    from fdray.object import Plane
+    from fdray.core.object import Plane
 
     x = Plane((0, 0, 1), 1)
     assert str(x) == "plane { <0, 0, 1>, 1 }"
 
 
 def test_cuboid():
-    from fdray.object import Cuboid
+    from fdray.core.object import Cuboid
 
     x = Cuboid((1, 2, 3), (1, 2, 3))
     assert str(x) == "box { <0.5, 1, 1.5>, <1.5, 3, 4.5> }"
 
 
 def test_cuboid_add_str():
-    from fdray.object import Cuboid
+    from fdray.core.object import Cuboid
 
     x = Cuboid((1, 2, 3), (1, 2, 3)) + "abc"
     assert str(x) == "box { <0.5, 1, 1.5>, <1.5, 3, 4.5> abc }"
 
 
 def test_cube():
-    from fdray.object import Cube
+    from fdray.core.object import Cube
 
     x = Cube((1, 2, 3), 1)
     assert str(x) == "box { <0.5, 1.5, 2.5>, <1.5, 2.5, 3.5> }"
 
 
 def test_cube_add_str():
-    from fdray.object import Cube
+    from fdray.core.object import Cube
 
     x = Cube((1, 2, 3), 1) + "abc"
     assert str(x) == "box { <0.5, 1.5, 2.5>, <1.5, 2.5, 3.5> abc }"

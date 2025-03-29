@@ -1,7 +1,7 @@
 import pytest
 
-from fdray.core import Declare, IdGenerator
-from fdray.object import Sphere
+from fdray.core.base import Declare, IdGenerator
+from fdray.core.object import Sphere
 
 
 @pytest.fixture(autouse=True)
