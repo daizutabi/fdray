@@ -39,7 +39,33 @@ def get_colormap(name: str, num_colors: int = 256) -> list[Color]:
 def encode_direction_field(
     field: Sequence | NDArray,
     axis: int = 2,
-) -> NDArray[np.float64]:
+) -> NDArray:
+    """Encode a vector field as colors based on vector directions.
+
+    This function maps direction vectors to colors using a spherical
+    color mapping:
+
+    - Azimuthal angle (XY plane) determines the hue
+    - Polar angle (Z component) affects saturation and value
+
+    Note:
+        Input vectors must be normalized (unit length). No normalization is
+        performed by this function. Use `encode_direction` for automatic
+        normalization of single vectors.
+
+    Args:
+        field (Sequence | NDArray): Array of direction vectors to
+            encode as colors. Last dimension should contain vector
+            components.
+        axis (int): Principal axis index (0=X, 1=Y, 2=Z).
+            Default is 2 (Z-axis).
+
+    Returns:
+        Array of RGB colors corresponding to the input vector directions.
+
+    Requires:
+        matplotlib for HSV to RGB conversion.
+    """
     try:
         from matplotlib.colors import hsv_to_rgb
     except ImportError:  # no cov
@@ -63,6 +89,23 @@ def encode_direction_field(
 
 
 def encode_direction(vector: Sequence, axis: int = 2) -> Color:
+    """Encode a single direction vector as a color.
+
+    This function converts a direction vector to a color based
+    on its orientation. The vector is automatically normalized
+    to unit length before encoding.
+
+    Args:
+        vector (Sequence | NDArray): Direction vector to encode as a color
+        axis (int): Principal axis index (0=X, 1=Y, 2=Z).
+            Default is 2 (Z-axis).
+
+    Returns:
+        A Color object representing the encoded direction.
+
+    Requires:
+        matplotlib for HSV to RGB conversion.
+    """
     norm = np.linalg.norm(vector)
     field = [[x / norm for x in vector]]
     color = encode_direction_field(field, axis)
