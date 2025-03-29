@@ -77,17 +77,6 @@ def from_region(
 ) -> list[Object]: ...
 
 
-@overload
-def from_region(
-    region: Sequence | NDArray,
-    obj: Object | None = None,
-    spacing: float | tuple[float, ...] = 1,
-    mapping: Mapping[Any, Any] | None = None,
-    *,
-    as_union: Literal[False] = False,
-) -> list[Object]: ...
-
-
 def from_region(
     region: Sequence | NDArray,
     obj: Object | None = None,
