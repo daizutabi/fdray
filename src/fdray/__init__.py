@@ -1,6 +1,7 @@
 from .color import Background, Color, ColorMap
 from .core.base import Declare, Transform
 from .core.camera import Camera
+from .core.light_source import LightSource, Spotlight
 from .core.object import (
     Box,
     Cone,
@@ -25,7 +26,6 @@ from .core.texture import (
     SlopeMap,
     Texture,
 )
-from .light_source import LightSource, Spotlight
 from .media import Interior
 from .renderer import Renderer
 from .scene import GlobalSettings, Include, Scene

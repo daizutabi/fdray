@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from fdray.light_source import LightSource
+from fdray.core.light_source import LightSource
 
 
 def test_povray_path():

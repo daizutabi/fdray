@@ -3,9 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from fdray.core.base import Map
-
-from .base import Descriptor, Transformable
+from .base import Descriptor, Map, Transformable
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence

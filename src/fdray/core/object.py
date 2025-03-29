@@ -22,10 +22,10 @@ from typing import TYPE_CHECKING, ClassVar, Literal, overload
 import numpy as np
 
 from fdray.color import COLOR_PALETTE, Color
-from fdray.core.texture import Finish, Normal, Pigment, Texture
 from fdray.utils import convert, reflect_point
 
 from .base import Transformable
+from .texture import Finish, Normal, Pigment, Texture
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping

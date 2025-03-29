@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING
 
 from .core.base import Declare, Descriptor
 from .core.camera import Camera
+from .core.light_source import LightSource
 from .format import format_code, to_html
-from .light_source import LightSource
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

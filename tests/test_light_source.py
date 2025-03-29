@@ -2,7 +2,7 @@ import pytest
 
 from fdray.color import Color
 from fdray.core.camera import Camera
-from fdray.light_source import LightSource, Spotlight
+from fdray.core.light_source import LightSource, Spotlight
 
 
 def test_light_source_color_color():
