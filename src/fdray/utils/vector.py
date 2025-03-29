@@ -137,13 +137,13 @@ class Vector:
         return -self + 2 * across
 
     def angle(self, other: Vector | Iterable[float]) -> float:
-        """Calculate angle between two vectors in degrees.
+        """Calculate angle between two vectors in radians.
 
         Args:
             other: Another vector to calculate angle with
 
         Returns:
-            Angle between vectors in degrees (0-180)
+            Angle between vectors in radians (0-π)
         """
         if not isinstance(other, Vector):
             other = Vector(*other)
