@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from fdray.vector import Vector
+from fdray.utils.vector import Vector
 
 
 @pytest.fixture(scope="module")

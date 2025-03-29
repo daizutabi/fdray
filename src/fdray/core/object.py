@@ -21,8 +21,8 @@ from typing import TYPE_CHECKING, ClassVar, Literal, overload
 
 import numpy as np
 
-from fdray.string import convert
-from fdray.vector import Vector
+from fdray.utils.string import convert
+from fdray.utils.vector import Vector
 
 from .base import Transformable
 from .color import COLOR_PALETTE, Color
@@ -34,7 +34,7 @@ if TYPE_CHECKING:
 
     from numpy.typing import NDArray
 
-    from fdray.typing import Point
+    from fdray.utils.typing import Point
 
 
 class Object(Transformable):

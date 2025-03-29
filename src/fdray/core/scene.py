@@ -4,7 +4,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from fdray.format import format_code, to_html
+from fdray.utils.format import format_code, to_html
 
 from .base import Declare, Descriptor
 from .camera import Camera

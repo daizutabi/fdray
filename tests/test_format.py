@@ -3,7 +3,7 @@ import re
 import pytest
 
 from fdray.core.texture import Pigment
-from fdray.format import format_code
+from fdray.utils.format import format_code
 
 
 @pytest.mark.parametrize("text", ["Hello, world!", "Hello,\nworld!"])
@@ -33,7 +33,7 @@ def test_format_code_bracket():
     ],
 )
 def test_iter_lines(line: str, expected):
-    from fdray.format import iter_lines
+    from fdray.utils.format import iter_lines
 
     assert list(iter_lines(line)) == expected
 
@@ -49,7 +49,7 @@ def test_iter_lines(line: str, expected):
     ],
 )
 def test_split_line(line: str, expected):
-    from fdray.format import split_line
+    from fdray.utils.format import split_line
 
     assert split_line(line) == expected
 
@@ -65,7 +65,7 @@ def test_split_line(line: str, expected):
     ],
 )
 def test_iter_maps(line: str, expected):
-    from fdray.format import iter_maps
+    from fdray.utils.format import iter_maps
 
     assert list(iter_maps(line)) == expected
 

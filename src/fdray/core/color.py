@@ -21,7 +21,7 @@ from .base import Map
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from fdray.typing import RGB, ColorLike
+    from fdray.utils.typing import RGB, ColorLike
 
 
 class Color:
