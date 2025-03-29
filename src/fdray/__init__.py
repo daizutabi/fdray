@@ -1,6 +1,6 @@
-from .camera import Camera
 from .color import Background, Color, ColorMap
 from .core.base import Declare, Transform
+from .core.camera import Camera
 from .core.object import (
     Box,
     Cone,

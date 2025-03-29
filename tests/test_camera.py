@@ -3,7 +3,7 @@ from math import asin, degrees, sqrt
 import numpy as np
 import pytest
 
-from fdray.camera import Camera
+from fdray.core.camera import Camera
 
 
 @pytest.fixture(scope="module")

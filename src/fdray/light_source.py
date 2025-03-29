@@ -4,12 +4,12 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from .camera import Camera
 from .color import Color
 from .core.base import Descriptor
+from .core.camera import Camera
 
 if TYPE_CHECKING:
-    from .camera import Camera
+    from .core.camera import Camera
     from .typing import ColorLike, Point
 
 

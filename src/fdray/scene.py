@@ -4,8 +4,8 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from .camera import Camera
 from .core.base import Declare, Descriptor
+from .core.camera import Camera
 from .format import format_code, to_html
 from .light_source import LightSource
 
