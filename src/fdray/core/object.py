@@ -48,9 +48,9 @@ class Object(Transformable):
     - Attribute handling
 
     Attributes:
-        nargs: Number of required arguments for this shape.
-        args: List of positional arguments passed to the shape.
-        attrs: List of shape attributes (color, texture, etc.).
+        nargs: Number of required arguments for this object.
+        args: List of positional arguments passed to the object.
+        attrs: List of object attributes (pigment, texture, etc.).
     """
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
