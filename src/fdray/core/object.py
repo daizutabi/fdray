@@ -151,7 +151,7 @@ def has_attributes(obj: Any) -> bool:
 class Csg(Object):
     """Base class for Constructive Solid Geometry (CSG) operations."""
 
-    def add(self, other: Any) -> Self:
+    def __add__(self, other: Any) -> Self:
         """Add another shape to this CSG operation.
 
         Args:
@@ -181,7 +181,7 @@ class Union(Csg):
         Returns:
             New union with the added shape.
         """
-        return super().add(other)
+        return super().__add__(other)
 
 
 class Intersection(Csg):
@@ -199,7 +199,7 @@ class Intersection(Csg):
         Returns:
             New intersection with the added shape.
         """
-        return super().add(other)
+        return super().__add__(other)
 
 
 class Difference(Csg):
@@ -217,7 +217,7 @@ class Difference(Csg):
         Returns:
             New difference with the subtracted shape.
         """
-        return super().add(other)
+        return super().__add__(other)
 
 
 class Merge(Csg):
@@ -235,7 +235,7 @@ class Merge(Csg):
         Returns:
             New merge with the added shape.
         """
-        return super().add(other)
+        return super().__add__(other)
 
 
 class Box(Object):
