@@ -67,6 +67,7 @@ nav:
       - Data Visualization:
           - notebooks/data/curve.ipynb
           - notebooks/data/region.ipynb
+          - notebooks/data/field.ipynb
   - Reference: $api/fdray.***
 extra_css:
   - css/hide-prompt.css
