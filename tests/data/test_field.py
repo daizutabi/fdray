@@ -1,14 +1,13 @@
 import pytest
 
-from fdray.core.object import Box, Sphere, Union
+from fdray.core.object import Box, Sphere
+from fdray.data.field import Union
 
 
 @pytest.fixture(scope="module")
 def field_scalar():
-    from fdray.data.field import from_region
-
     region = [0.2, 0.3, 0.4]
-    return from_region(region, lambda x: Sphere(0, x))
+    return Union.from_region(region, lambda x: Sphere(0, x))
 
 
 @pytest.mark.parametrize(("r", "p"), [(0.2, -1), (0.3, 0), (0.4, 1)])
@@ -19,8 +18,6 @@ def test_field_scalar(field_scalar: Union, r, p):
 
 @pytest.fixture(scope="module")
 def field_vector():
-    from fdray.data.field import from_field
-
     direction = [
         [1, 0, 0],
         [0, 1, 0],
@@ -30,8 +27,7 @@ def field_vector():
         [1, 1, 1],
         [1, -1, -1],
     ]
-
-    return from_field(direction, lambda x: [Box(0, 1).align(x)], ndim=1)
+    return Union.from_field(direction, lambda x: [Box(0, 1).align(x)], ndim=1)
 
 
 @pytest.mark.parametrize(
@@ -52,11 +48,9 @@ def test_field_vector(field_vector: Union, ry, rz, p):
 
 
 def test_field_mask():
-    from fdray.data.field import from_field
-
     direction = [[1, 0, 0], [0, 1, 0], [0, -1, 0]]
     mask = [True, False, True]
-    objs = from_field(
+    objs = Union.from_field(
         direction,
         lambda x: [Box(0, 1).align(x)],
         mask=mask,

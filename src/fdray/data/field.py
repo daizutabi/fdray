@@ -7,85 +7,179 @@ from typing import TYPE_CHECKING, Literal, overload
 import numpy as np
 
 from fdray.core.color import COLOR_PALETTE, Color
-from fdray.core.object import Cube, Object, Union
+from fdray.core.object import Cube, Object
+from fdray.core.object import Union as BaseUnion
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator, Mapping, Sequence
-    from typing import Any
+    from typing import Any, Self
 
     from numpy.typing import NDArray
 
 
-@overload
-def from_field(
-    field: Sequence | NDArray,
-    obj: Callable[[Any], Object | Iterable[Object] | None],
-    spacing: float | tuple[float, ...] = 1,
-    ndim: int = 1,
-    mask: Sequence | NDArray | None = None,
-    *,
-    as_union: Literal[True] = True,
-) -> Union: ...
+class Union(BaseUnion):
+    @overload
+    @classmethod
+    def from_field(
+        cls,
+        field: Sequence | NDArray,
+        obj: Callable[[Any], Object | Iterable[Object] | None],
+        spacing: float | tuple[float, ...] = 1,
+        ndim: int = 1,
+        mask: Sequence | NDArray | None = None,
+        *,
+        as_union: Literal[True] = True,
+    ) -> Self: ...
 
+    @overload
+    @classmethod
+    def from_field(
+        cls,
+        field: Sequence | NDArray,
+        obj: Callable[[Any], Object | Iterable[Object] | None],
+        spacing: float | tuple[float, ...] = 1,
+        ndim: int = 1,
+        mask: Sequence | NDArray | None = None,
+        *,
+        as_union: Literal[False],
+    ) -> list[Object]: ...
 
-@overload
-def from_field(
-    field: Sequence | NDArray,
-    obj: Callable[[Any], Object | Iterable[Object] | None],
-    spacing: float | tuple[float, ...] = 1,
-    ndim: int = 1,
-    mask: Sequence | NDArray | None = None,
-    *,
-    as_union: Literal[False],
-) -> list[Object]: ...
+    @overload
+    @classmethod
+    def from_field(
+        cls,
+        field: Sequence | NDArray,
+        obj: Callable[[Any], Object | Iterable[Object] | None],
+        spacing: float | tuple[float, ...] = 1,
+        ndim: int = 1,
+        mask: Sequence | NDArray | None = None,
+        *,
+        as_union: bool,
+    ) -> Self | list[Object]: ...
 
+    @classmethod
+    def from_field(
+        cls,
+        field: Sequence | NDArray,
+        obj: Callable[[Any], Object | Iterable[Object] | None],
+        spacing: float | tuple[float, ...] = 1,
+        ndim: int = 1,
+        mask: Sequence | NDArray | None = None,
+        *,
+        as_union: bool = True,
+    ) -> Self | list[Object]:
+        """Create objects from scalar, vector or tensor fields.
 
-@overload
-def from_field(
-    field: Sequence | NDArray,
-    obj: Callable[[Any], Object | Iterable[Object] | None],
-    spacing: float | tuple[float, ...] = 1,
-    ndim: int = 1,
-    mask: Sequence | NDArray | None = None,
-    *,
-    as_union: bool,
-) -> Union | list[Object]: ...
+        This function generates 3D objects from field data.
+        The last `ndim` dimensions of the input array are considered
+        as field components.
 
+        Args:
+            field (Sequence | NDArray): Array containing field data
+            obj (Callable[[Any], Object | Iterable[Object] | None]): Function
+                that takes field data at a position and returns an Object
+                (or None to skip)
+            spacing (float | tuple[float, ...]): Distance between objects
+                (scalar or per-dimension)
+            ndim (int): Number of dimensions to treat as field components:
+                - ndim=0: Scalar field (all dimensions used for positioning)
+                - ndim=1: Vector field (last dimension contains vector components)
+                - ndim=2: Tensor field (last two dimensions contain tensor components)
+            mask (Sequence | NDArray | None): Boolean mask to filter field data
+            as_union (bool): Whether to return a Union object or a list of objects
 
-def from_field(
-    field: Sequence | NDArray,
-    obj: Callable[[Any], Object | Iterable[Object] | None],
-    spacing: float | tuple[float, ...] = 1,
-    ndim: int = 1,
-    mask: Sequence | NDArray | None = None,
-    *,
-    as_union: bool = True,
-) -> Union | list[Object]:
-    """Create objects from scalar, vector or tensor fields.
+        Returns:
+            Union object or list of objects representing the field
+        """
+        it = iter_objects_from_callable(obj, field, spacing, ndim, mask)
+        return cls(*it) if as_union else list(it)
 
-    This function generates 3D objects from field data.
-    The last `ndim` dimensions of the input array are considered
-    as field components.
+    @overload
+    @classmethod
+    def from_region(
+        cls,
+        region: Sequence | NDArray,
+        obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
+        spacing: float | tuple[float, ...] = 1,
+        mapping: Mapping[Any, Any] | None = None,
+        *,
+        as_union: Literal[True] = True,
+    ) -> Self: ...
 
-    Args:
-        field (Sequence | NDArray): Array containing field data
-        obj (Callable[[Any], Object | Iterable[Object] | None]): Function
-            that takes field data at a position and returns an Object
-            (or None to skip)
-        spacing (float | tuple[float, ...]): Distance between objects
-            (scalar or per-dimension)
-        ndim (int): Number of dimensions to treat as field components:
-            - ndim=0: Scalar field (all dimensions used for positioning)
-            - ndim=1: Vector field (last dimension contains vector components)
-            - ndim=2: Tensor field (last two dimensions contain tensor components)
-        mask (Sequence | NDArray | None): Boolean mask to filter field data
-        as_union (bool): Whether to return a Union object or a list of objects
+    @overload
+    @classmethod
+    def from_region(
+        cls,
+        region: Sequence | NDArray,
+        obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
+        spacing: float | tuple[float, ...] = 1,
+        mapping: Mapping[Any, Any] | None = None,
+        *,
+        as_union: Literal[False],
+    ) -> list[Object]: ...
 
-    Returns:
-        Union object or list of objects representing the field
-    """
-    it = iter_objects_from_callable(obj, field, spacing, ndim, mask)
-    return Union(*it) if as_union else list(it)
+    @overload
+    @classmethod
+    def from_region(
+        cls,
+        region: Sequence | NDArray,
+        obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
+        spacing: float | tuple[float, ...] = 1,
+        mapping: Mapping[Any, Any] | None = None,
+        *,
+        as_union: bool,
+    ) -> Self | list[Object]: ...
+
+    @classmethod
+    def from_region(
+        cls,
+        region: Sequence | NDArray,
+        obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
+        spacing: float | tuple[float, ...] = 1,
+        mapping: Mapping[Any, Any] | None = None,
+        *,
+        as_union: bool = True,
+    ) -> Self | list[Object]:
+        """Create objects from a discrete region.
+
+        This function generates 3D objects from a discrete region,
+        where each unique value in the region corresponds to an
+        object with specific attributes.
+
+        The function supports two modes:
+
+        1. Base object + attribute mapping: Provide an Object instance
+        and a mapping of region values to attributes (e.g., colors).
+        2. Custom object generation: Provide a callback function that
+        takes a region value and returns an Object (similar to from_field).
+
+        Args:
+            region (Sequence | NDArray): Array containing region data
+                (discrete values)
+            obj (Object | Callable[[Any], Object | Iterable[Object] | None] | None):
+                Either an Object instance to be used as base, or a function that
+                takes a region value and returns an Object, or None to use
+                a default Cube
+            spacing (float | tuple[float, ...]): Distance between objects
+                (scalar or per-dimension)
+            mapping: Mapping from region values to attributes (used only
+                when obj is an Object)
+            as_union: Whether to return a Union object or a list of objects
+
+        Returns:
+            Union object or list of objects representing the region
+        """
+        if callable(obj):
+            return cls.from_field(region, obj, spacing, ndim=0, as_union=as_union)
+
+        if obj is None:
+            obj = Cube((0, 0, 0), 0.85)
+
+        mapping = mapping or get_default_mapping(region)
+        objects = {k: obj.add(v) for k, v in mapping.items()}
+        it = iter_objects_from_dict(objects, region, spacing)
+
+        return cls(*it) if as_union else list(it)
 
 
 def iter_objects_from_callable(
@@ -112,89 +206,6 @@ def iter_objects_from_callable(
             if not isinstance(o, Object):
                 o = Union(*o)
             yield from translate(o, [idx], spacing, offset)
-
-
-@overload
-def from_region(
-    region: Sequence | NDArray,
-    obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
-    spacing: float | tuple[float, ...] = 1,
-    mapping: Mapping[Any, Any] | None = None,
-    *,
-    as_union: Literal[True] = True,
-) -> Union: ...
-
-
-@overload
-def from_region(
-    region: Sequence | NDArray,
-    obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
-    spacing: float | tuple[float, ...] = 1,
-    mapping: Mapping[Any, Any] | None = None,
-    *,
-    as_union: Literal[False],
-) -> list[Object]: ...
-
-
-@overload
-def from_region(
-    region: Sequence | NDArray,
-    obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
-    spacing: float | tuple[float, ...] = 1,
-    mapping: Mapping[Any, Any] | None = None,
-    *,
-    as_union: bool,
-) -> Union | list[Object]: ...
-
-
-def from_region(
-    region: Sequence | NDArray,
-    obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
-    spacing: float | tuple[float, ...] = 1,
-    mapping: Mapping[Any, Any] | None = None,
-    *,
-    as_union: bool = True,
-) -> Union | list[Object]:
-    """Create objects from a discrete region.
-
-    This function generates 3D objects from a discrete region,
-    where each unique value in the region corresponds to an
-    object with specific attributes.
-
-    The function supports two modes:
-
-    1. Base object + attribute mapping: Provide an Object instance
-       and a mapping of region values to attributes (e.g., colors).
-    2. Custom object generation: Provide a callback function that
-       takes a region value and returns an Object (similar to from_field).
-
-    Args:
-        region (Sequence | NDArray): Array containing region data
-            (discrete values)
-        obj (Object | Callable[[Any], Object | Iterable[Object] | None] | None):
-            Either an Object instance to be used as base, or a function that
-            takes a region value and returns an Object, or None to use
-            a default Cube
-        spacing (float | tuple[float, ...]): Distance between objects
-            (scalar or per-dimension)
-        mapping: Mapping from region values to attributes (used only
-            when obj is an Object)
-        as_union: Whether to return a Union object or a list of objects
-
-    Returns:
-        Union object or list of objects representing the region
-    """
-    if callable(obj):
-        return from_field(region, obj, spacing, ndim=0, as_union=as_union)
-
-    if obj is None:
-        obj = Cube((0, 0, 0), 0.85)
-
-    mapping = mapping or get_default_mapping(region)
-    objects = {k: obj.add(v) for k, v in mapping.items()}
-    it = iter_objects_from_dict(objects, region, spacing)
-
-    return Union(*it) if as_union else list(it)
 
 
 def iter_objects_from_dict(
