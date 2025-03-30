@@ -591,3 +591,46 @@ class Curve(Polyline):
             radius = [radius[0], *radius, radius[-1]]
 
         return str(SphereSweep(self.kind, centers, radius, *self.attrs))
+
+
+class Text(Object):
+    """A text object defined by a string and a font.
+
+    Args:
+        text: The text string to display.
+        font: The font to use for the text.
+        *attrs: Additional attributes.
+        **kwargs: Additional keyword attributes.
+    """
+
+    nargs: ClassVar[int] = 2
+
+    def __init__(
+        self,
+        text: str,
+        thickness: float = 0,
+        *attrs: Any,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(text, thickness, *attrs, **kwargs)
+
+    def __iter__(self) -> Iterator[str]:
+        text, thickness = self.args
+        font = "cyrvetic.ttf"
+        yield f'ttf "{font}", "{text}", {thickness}, 0'
+        attrs = (str(attr) for attr in self.attrs)
+        yield from (attr for attr in attrs if attr)
+
+    def align(self, longitude: float = 0, latitude: float = 0) -> Self:
+        """Align the text with the given longitude and latitude.
+
+        Args:
+            longitude: The longitude of the text.
+            latitude: The latitude of the text.
+        """
+        text = self.rotate("90*y").rotate("90*x")
+
+        if longitude == 0 and latitude == 0:
+            return text
+
+        return text.rotate(0, -latitude, longitude)

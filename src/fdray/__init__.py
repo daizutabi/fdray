@@ -20,6 +20,7 @@ from .core.object import (
     SkySphere,
     Sphere,
     SphereSweep,
+    Text,
     Union,
 )
 from .core.renderer import Renderer
@@ -72,6 +73,7 @@ __all__ = [
     "Sphere",
     "SphereSweep",
     "Spotlight",
+    "Text",
     "Texture",
     "Transform",
     "Union",
