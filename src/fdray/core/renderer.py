@@ -78,6 +78,15 @@ class Renderer:
         scene: str,
         output_file: str | Path | None = None,
     ) -> list[str]:
+        """Build the command line arguments for the POV-Ray renderer.
+
+        Args:
+            scene (str): The scene description.
+            output_file (str | Path | None): The output file path.
+
+        Returns:
+            list[str]: The command line arguments.
+        """
         input_file = create_input_file(scene)
         args = [
             self.executable,

@@ -88,7 +88,15 @@ class Scene:
         return to_html(str(self))
 
     def to_str(self, width: int, height: int) -> str:
-        """Render the scene with the given image dimensions."""
+        """Create a string representation of the scene with the given image dimensions.
+
+        Args:
+            width: The width of the image.
+            height: The height of the image.
+
+        Returns:
+            str: The rendered scene.
+        """
         if (camera := self.camera) is None:
             return str(self)
 
@@ -100,7 +108,15 @@ class Scene:
         width: int | None = None,
         height: int | None = None,
     ) -> Image.Image:
-        """Render the scene with the given image dimensions."""
+        """Render the scene with the given image dimensions.
+
+        Args:
+            width: The width of the image.
+            height: The height of the image.
+
+        Returns:
+            Image.Image: The rendered image.
+        """
         from .renderer import Renderer
 
         return Renderer(width, height).render(self, return_image=True)

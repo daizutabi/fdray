@@ -493,7 +493,7 @@ class SphereSweep(Object):
 class Polyline(Object):
     """A polyline (broken line) represented as a linear sphere sweep.
 
-    This is a convenience class that creates a sphere sweep with linear_spline
+    This is a convenience class that creates a sphere sweep with `linear_spline`
     interpolation, providing a simpler interface for creating polylines.
 
     Args:
