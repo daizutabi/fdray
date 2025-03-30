@@ -17,6 +17,10 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+      - name: Install POV-Ray
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y povray povray-includes
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
