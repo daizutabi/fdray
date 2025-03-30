@@ -288,3 +288,24 @@ def test_sphere_default():
 
     x = Sphere()
     assert str(x) == "sphere { 0, 1 }"
+
+
+def test_text():
+    from fdray.core.object import Text
+
+    x = Text("text", 0.1)
+    assert str(x) == 'text { ttf "cyrvetic.ttf", "text", 0.1, 0 }'
+
+
+def test_text_align():
+    from fdray.core.object import Text
+
+    x = Text("text", 0.1).align()
+    assert str(x).endswith("rotate 90*y rotate 90*x }")
+
+
+def test_text_align_angle():
+    from fdray.core.object import Text
+
+    x = Text("text", 0.1).align(20, 30)
+    assert str(x).endswith("90*x rotate <0, -30, 20> }")
