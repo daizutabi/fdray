@@ -42,12 +42,12 @@ class ElementArgs(Element):
 
 def test_element_kwargs_nargs():
     x = ElementArgs("a", "b", "c", "d", x=1, y=[1, 2, 3])
-    assert str(x) == "element_args { a, b x 1 y <1, 2, 3> c d }"
+    assert str(x) == "element_args { a, b c d x 1 y <1, 2, 3> }"
 
 
 def test_element_add():
     x = ElementArgs("a", "b", "c").add("d", x=1, y=[1, 2, 3])
-    assert str(x) == "element_args { a, b x 1 y <1, 2, 3> c d }"
+    assert str(x) == "element_args { a, b c d x 1 y <1, 2, 3> }"
 
 
 def test_element_add_list():
@@ -57,4 +57,4 @@ def test_element_add_list():
 
 def test_element_add_override():
     x = ElementArgs("a", "b", x=1, y=2).add(x=3)
-    assert str(x) == "element_args { a, b x 3 y 2 }"
+    assert str(x) == "element_args { a, b y 2 x 3 }"
