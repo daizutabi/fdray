@@ -1,4 +1,6 @@
+from fdray.core.color import Color
 from fdray.core.object import Difference, Intersection, Merge, Sphere, Union
+from fdray.core.texture import Pigment
 
 
 def test_args():
@@ -180,6 +182,56 @@ def test_box():
     assert str(x) == "box { <0, 0, 0>, <1, 1, 1> a }"
 
 
+def test_cuboid():
+    from fdray.core.object import Cuboid
+
+    x = Cuboid((1, 2, 3), (1, 2, 3))
+    assert str(x) == "box { <0.5, 1, 1.5>, <1.5, 3, 4.5> }"
+
+
+def test_cuboid_float():
+    from fdray.core.object import Cuboid
+
+    x = Cuboid(1, 2)
+    assert str(x) == "box { <0, 0, 0>, <2, 2, 2> }"
+
+
+def test_cuboid_add_str():
+    from fdray.core.object import Cuboid
+
+    x = Cuboid((1, 2, 3), (1, 2, 3)) + "abc"
+    assert str(x) == "box { <0.5, 1, 1.5>, <1.5, 3, 4.5> abc }"
+
+
+def test_cube():
+    from fdray.core.object import Cube
+
+    x = Cube((1, 2, 3), 1)
+    assert str(x) == "box { <0.5, 1.5, 2.5>, <1.5, 2.5, 3.5> }"
+
+
+def test_cube_default():
+    from fdray.core.object import Cube
+
+    x = Cube()
+    assert str(x) == "box { <-0.5, -0.5, -0.5>, <0.5, 0.5, 0.5> }"
+
+
+def test_cube_attr():
+    from fdray.core.object import Cube
+
+    x = Cube((1, 2, 3), 1, Color("red"))
+    assert len(x.attrs) == 1
+    assert isinstance(x.attrs[0], Pigment)
+
+
+def test_cube_add_str():
+    from fdray.core.object import Cube
+
+    x = Cube((1, 2, 3), 1) + "abc"
+    assert str(x) == "box { <0.5, 1.5, 2.5>, <1.5, 2.5, 3.5> abc }"
+
+
 def test_cone():
     from fdray.core.object import Cone
 
@@ -215,29 +267,8 @@ def test_plane():
     assert str(x) == "plane { <0, 0, 1>, 1 }"
 
 
-def test_cuboid():
-    from fdray.core.object import Cuboid
+def test_sphere_default():
+    from fdray.core.object import Sphere
 
-    x = Cuboid((1, 2, 3), (1, 2, 3))
-    assert str(x) == "box { <0.5, 1, 1.5>, <1.5, 3, 4.5> }"
-
-
-def test_cuboid_add_str():
-    from fdray.core.object import Cuboid
-
-    x = Cuboid((1, 2, 3), (1, 2, 3)) + "abc"
-    assert str(x) == "box { <0.5, 1, 1.5>, <1.5, 3, 4.5> abc }"
-
-
-def test_cube():
-    from fdray.core.object import Cube
-
-    x = Cube((1, 2, 3), 1)
-    assert str(x) == "box { <0.5, 1.5, 2.5>, <1.5, 2.5, 3.5> }"
-
-
-def test_cube_add_str():
-    from fdray.core.object import Cube
-
-    x = Cube((1, 2, 3), 1) + "abc"
-    assert str(x) == "box { <0.5, 1.5, 2.5>, <1.5, 2.5, 3.5> abc }"
+    x = Sphere()
+    assert str(x) == "sphere { 0, 1 }"

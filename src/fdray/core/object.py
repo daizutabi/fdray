@@ -262,8 +262,8 @@ class Cuboid(Object):
 
     def __init__(
         self,
-        center: Point,
-        size: tuple[float, float, float],
+        center: float | Sequence[float] | Vector,
+        size: float | Sequence[float] | Vector,
         *attrs: Any,
         **kwargs: Any,
     ) -> None:
@@ -272,6 +272,10 @@ class Cuboid(Object):
     def __str__(self) -> str:
         """Convert the cuboid to a POV-Ray box definition."""
         center, size = self.args
+        if not isinstance(center, Sequence):
+            center = (center,) * 3
+        if not isinstance(size, Sequence):
+            size = (size,) * 3
         half_x, half_y, half_z = size[0] / 2, size[1] / 2, size[2] / 2
         corner1 = (center[0] - half_x, center[1] - half_y, center[2] - half_z)
         corner2 = (center[0] + half_x, center[1] + half_y, center[2] + half_z)
@@ -292,12 +296,20 @@ class Cube(Object):
 
     nargs: ClassVar[int] = 2
 
-    def __init__(self, center: Point, size: float, *attrs: Any, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        center: float | Sequence[float] | Vector = 0,
+        size: float = 1,
+        *attrs: Any,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(center, size, *attrs, **kwargs)
 
     def __str__(self) -> str:
         """Convert the cube to a POV-Ray box definition."""
         center, size = self.args
+        if not isinstance(center, Sequence):
+            center = (center,) * 3
         half = size / 2
         corner1 = (center[0] - half, center[1] - half, center[2] - half)
         corner2 = (center[0] + half, center[1] + half, center[2] + half)
@@ -394,8 +406,8 @@ class Sphere(Object):
 
     def __init__(
         self,
-        center: Point,
-        radius: float,
+        center: Point = 0,
+        radius: float = 1,
         *attrs: Any,
         **kwargs: Any,
     ) -> None:
