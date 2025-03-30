@@ -95,7 +95,7 @@ class Scene:
             height: The height of the image.
 
         Returns:
-            str: The rendered scene.
+            str: A string representation of the scene.
         """
         if (camera := self.camera) is None:
             return str(self)
