@@ -56,16 +56,19 @@ nav:
           - notebooks/camera/camera.ipynb
       - Lighting Types:
           - notebooks/light/light_source.ipynb
-      - Media:
-          - notebooks/media/interior.ipynb
+      - Object:
+          - notebooks/object/primitives.ipynb
+          - notebooks/object/transformations.ipynb
+          - notebooks/object/csg.ipynb
       - Texture:
           - notebooks/texture/pigment.ipynb
           - notebooks/texture/normal.ipynb
           - notebooks/texture/finish.ipynb
           - notebooks/texture/pattern.ipynb
           - notebooks/texture/interior_texture.ipynb
+      - Media:
+          - notebooks/media/interior.ipynb
       - Data Visualization:
-          - notebooks/data/curve.ipynb
           - notebooks/data/region.ipynb
           - notebooks/data/field.ipynb
   - Reference: $api/fdray.***

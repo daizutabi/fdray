@@ -58,7 +58,7 @@ class Element(Base):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.args = list(args[: self.nargs])
         attrs = (Attribute(k, v) for k, v in kwargs.items() if v)
-        self.attrs = [*args[self.nargs :], *attrs]
+        self.attrs = [*attrs, *args[self.nargs :]]
 
     def __iter__(self) -> Iterator[str]:
         if self.args:
