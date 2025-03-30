@@ -21,7 +21,6 @@ from .core.object import (
     Sphere,
     SphereSweep,
     Text,
-    Union,
 )
 from .core.renderer import Renderer
 from .core.scene import GlobalSettings, Include, Scene
@@ -35,6 +34,7 @@ from .core.texture import (
     SlopeMap,
     Texture,
 )
+from .data.field import Union
 from .utils.vector import Vector
 
 __all__ = [

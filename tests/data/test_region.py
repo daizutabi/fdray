@@ -1,15 +1,14 @@
 import pytest
 
 from fdray.core.color import Color
-from fdray.core.object import Sphere, Union
+from fdray.core.object import Sphere
+from fdray.data.field import Union
 
 
 @pytest.fixture(scope="module")
 def region_1d():
-    from fdray.data.field import from_region
-
     region = [0, 1, 1, 2, 2]
-    return from_region(region)
+    return Union.from_region(region)
 
 
 def test_region_1d(region_1d: Union):
@@ -23,12 +22,10 @@ def test_region_1d(region_1d: Union):
 
 @pytest.fixture(scope="module")
 def region_2d():
-    from fdray.data.field import from_region
-
     region = [[0, 0], [1, 1], [1, 2], [2, 2]]
     obj = Sphere((0, 0, 0), 1)
     attrs = {1: Color("red"), 2: Color("blue")}
-    return from_region(region, obj, spacing=2, mapping=attrs)
+    return Union.from_region(region, obj, spacing=2, mapping=attrs)
 
 
 def test_region_2d(region_2d: Union):
@@ -43,12 +40,10 @@ def test_region_2d(region_2d: Union):
 
 @pytest.fixture(scope="module")
 def region_3d():
-    from fdray.data.field import from_region
-
     region = [[[0, 0], [1, 2]], [[1, 0], [0, 1]]]
     obj = Sphere((0, 0, 0), 1)
     attrs = {1: Color("red"), 2: Color("blue")}
-    return from_region(region, obj, spacing=(2, 3, 4), mapping=attrs)
+    return Union.from_region(region, obj, spacing=(2, 3, 4), mapping=attrs)
 
 
 def test_region_3d(region_3d: Union):
