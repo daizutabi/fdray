@@ -4,12 +4,12 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from fdray.core.color import Color
-
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from numpy.typing import NDArray
+
+    from fdray.utils.typing import RGB
 
 
 def raise_import_error(msg: str) -> None:
@@ -17,7 +17,7 @@ def raise_import_error(msg: str) -> None:
     raise ImportError(msg) from None
 
 
-def get_colormap(name: str, num_colors: int = 256) -> list[Color]:
+def get_colormap(name: str, num_colors: int = 256) -> list[RGB]:
     """Get a list of colors from a named colormap.
 
     Args:
@@ -25,7 +25,7 @@ def get_colormap(name: str, num_colors: int = 256) -> list[Color]:
         num_colors (int): Number of colors to include in the colormap
 
     Returns:
-        list[Color]: List of Color objects representing the colormap
+        list[tuple[float, float, float]]: List of RGB tuples representing the colormap
     """
     try:
         import matplotlib.pyplot as plt
@@ -33,7 +33,7 @@ def get_colormap(name: str, num_colors: int = 256) -> list[Color]:
         raise_import_error(f"Colormap '{name}' requires matplotlib.")
 
     cmap = plt.get_cmap(name)
-    return [Color(cmap(i)[:3]) for i in np.linspace(0, 1, num_colors)]
+    return [tuple(cmap(i)[:3]) for i in np.linspace(0, 1, num_colors)]
 
 
 def encode_direction_field(
@@ -88,7 +88,7 @@ def encode_direction_field(
     return hsv_to_rgb(hsv)
 
 
-def encode_direction(vector: Sequence, axis: int = 2) -> Color:
+def encode_direction(vector: Sequence, axis: int = 2) -> RGB:
     """Encode a single direction vector as a color.
 
     This function converts a direction vector to a color based
@@ -101,12 +101,13 @@ def encode_direction(vector: Sequence, axis: int = 2) -> Color:
             Default is 2 (Z-axis).
 
     Returns:
-        A Color object representing the encoded direction.
+        tuple[float, float, float]: A tuple of RGB floats representing
+        the encoded direction.
 
     Requires:
         matplotlib for HSV to RGB conversion.
     """
     norm = np.linalg.norm(vector)
     field = [[x / norm for x in vector]]
-    color = encode_direction_field(field, axis)
-    return Color(color[0])
+    c = encode_direction_field(field, axis)[0]
+    return float(c[0]), float(c[1]), float(c[2])

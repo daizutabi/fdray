@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING, Self
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+    from fdray.utils.typing import RGB
+
 
 class Vector:
     x: float
@@ -211,3 +213,8 @@ class Vector:
         phi = atan2(self.y, self.x)
 
         return phi, theta
+
+    def encode_direction(self) -> RGB:
+        from fdray.data.color import encode_direction
+
+        return encode_direction(list(self))

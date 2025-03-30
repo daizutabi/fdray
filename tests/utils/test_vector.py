@@ -186,3 +186,8 @@ def test_to_spherical(x, y, z):
 
 def test_to_spherical_zero():
     assert Vector(0, 0, 0).to_spherical() == (0, 0)
+
+
+def test_encode_direction():
+    c = Vector(1, 2, 3).encode_direction()
+    np.testing.assert_allclose(c, (0.9699322, 0.99017757, 0.63654272))

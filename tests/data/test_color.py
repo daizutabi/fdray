@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 
 
@@ -6,7 +7,8 @@ def test_colormap():
 
     colormap = get_colormap("viridis")
     assert len(colormap) == 256
-    assert str(colormap[0]) == "rgb <0.267, 0.00487, 0.329>"
+    assert isinstance(colormap[0], tuple)
+    np.testing.assert_allclose(colormap[0], (0.267004, 0.004874, 0.329415))
 
 
 def test_colormap_num_colors():
@@ -60,7 +62,7 @@ def test_encode_direction():
     from fdray.data.color import encode_direction
 
     c = encode_direction([1, 2, 3])
-    assert str(c) == "rgb <0.97, 0.99, 0.637>"
+    np.testing.assert_allclose(c, (0.9699322, 0.99017757, 0.63654272))
 
 
 def test_import_error():
