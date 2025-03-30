@@ -140,24 +140,29 @@ class Material(Transformable):
     """Materials define the appearance of objects in the scene."""
 
 
+def has_attributes(obj: Any) -> bool:
+    """Check if the object has attributes."""
+    if isinstance(obj, Object):
+        return any(not isinstance(attr, Object) for attr in obj.attrs)
+
+    return False
+
+
 class Csg(Object):
-    """Base class for Constructive Solid Geometry (CSG) operations.
+    """Base class for Constructive Solid Geometry (CSG) operations."""
 
-    CSG operations combine shapes using boolean operations.
-
-    Attributes:
-        attrs: List of shapes to combine with the CSG operation.
-    """
-
-    def __add__(self, other: Any) -> Self:
+    def add(self, other: Any) -> Self:
         """Add another shape to this CSG operation.
 
         Args:
-            other: Shape to add to the CSG operation.
+            other: Shape to add to the union.
 
         Returns:
-            New CSG object with the added shape.
+            New CSG operation with the added shape.
         """
+        if has_attributes(self) or has_attributes(other):
+            return self.__class__(self, other)
+
         return self.__class__(*self.attrs, other)
 
 
@@ -166,6 +171,17 @@ class Union(Csg):
 
     A union represents the boolean OR operation on shapes.
     """
+
+    def __add__(self, other: Any) -> Self:
+        """Add another shape to this union using the + operator.
+
+        Args:
+            other: Shape to add to the union.
+
+        Returns:
+            New union with the added shape.
+        """
+        return super().add(other)
 
 
 class Intersection(Csg):
@@ -183,7 +199,7 @@ class Intersection(Csg):
         Returns:
             New intersection with the added shape.
         """
-        return super().__add__(other)
+        return super().add(other)
 
 
 class Difference(Csg):
@@ -201,7 +217,7 @@ class Difference(Csg):
         Returns:
             New difference with the subtracted shape.
         """
-        return super().__add__(other)
+        return super().add(other)
 
 
 class Merge(Csg):
@@ -219,7 +235,7 @@ class Merge(Csg):
         Returns:
             New merge with the added shape.
         """
-        return super().__add__(other)
+        return super().add(other)
 
 
 class Box(Object):

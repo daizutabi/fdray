@@ -77,6 +77,22 @@ def test_union_add_object():
     assert x.attrs[2] is c
 
 
+def test_union_add_object_with_attributes():
+    a = Sphere().pigment("Red")
+    b = Sphere().pigment("Green")
+    c = Sphere().pigment("Blue")
+    x = (a + b) + c
+    assert isinstance(x, Union)
+    assert not x.args
+    assert len(x.attrs) == 2
+    u = x.attrs[0]
+    assert isinstance(u, Union)
+    assert len(x.attrs) == 2
+    assert u.attrs[0] is a
+    assert u.attrs[1] is b
+    assert x.attrs[1] is c
+
+
 def test_intersection_mul_object():
     a, b, c = Sphere((0, 0, 0), 1), Sphere((1, 0, 0), 2), Sphere((0, 1, 0), 3)
     x = a * b * c
