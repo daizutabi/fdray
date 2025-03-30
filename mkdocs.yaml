@@ -38,7 +38,9 @@ theme:
     - navigation.tracking
 plugins:
   - search
-  - mkdocs-jupyter
+  - mkdocs-jupyter:
+      execute: true
+      allow_errors: false
   - mkapi
 markdown_extensions:
   - pymdownx.magiclink
