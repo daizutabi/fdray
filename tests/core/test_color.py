@@ -1,3 +1,5 @@
+import numpy as np
+
 from fdray.core.color import Background, Color, ColorMap
 
 
@@ -80,3 +82,11 @@ def test_background_str():
 def test_color_map_str():
     color_map = ColorMap((0, Color("red")), (1, "Blue"))
     assert str(color_map) == "color_map { [0 rgb <1, 0, 0>] [1 Blue] }"
+
+
+def test_from_direction():
+    c = Color.from_direction([1, 2, 3])
+    np.testing.assert_allclose(
+        (c.red, c.green, c.blue),
+        (0.9699322, 0.99017757, 0.63654272),
+    )

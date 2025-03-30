@@ -20,7 +20,7 @@ def test_colormap_num_colors():
 
 @pytest.fixture(scope="module")
 def color_field():
-    from fdray.data.color import encode_direction_field
+    from fdray.data.color import colorize_direction_field
 
     field = [
         [1, 0, 0],
@@ -34,7 +34,7 @@ def color_field():
         [0, 0, 1],
         [0, 0, -1],
     ]
-    return encode_direction_field(field)
+    return colorize_direction_field(field)
 
 
 @pytest.mark.parametrize(
@@ -52,16 +52,16 @@ def color_field():
         (9, 0, 0, 0),
     ],
 )
-def test_encode_direction_field(color_field, k, r, g, b):
+def test_colorize_direction_field(color_field, k, r, g, b):
     assert color_field[k][0] == r
     assert color_field[k][1] == g
     assert color_field[k][2] == b
 
 
-def test_encode_direction():
-    from fdray.data.color import encode_direction
+def test_colorize_direction():
+    from fdray.data.color import colorize_direction
 
-    c = encode_direction([1, 2, 3])
+    c = colorize_direction([1, 2, 3])
     np.testing.assert_allclose(c, (0.9699322, 0.99017757, 0.63654272))
 
 

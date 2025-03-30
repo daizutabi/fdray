@@ -16,10 +16,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from fdray.data.color import colorize_direction
+
 from .base import Map
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterator, Sequence
+    from typing import Self
 
     from fdray.utils.typing import RGB, ColorLike
 
@@ -144,6 +147,19 @@ class Color:
 
     def __str__(self) -> str:
         return " ".join(self)
+
+    @classmethod
+    def from_direction(cls, direction: Sequence[float], axis: int = 2) -> Self:
+        """Create a color from a direction vector.
+
+        Args:
+            direction (Sequence[float]): The direction vector to colorize.
+            axis (int): The axis to colorize.
+
+        Returns:
+            Color: The color corresponding to the direction vector.
+        """
+        return cls(colorize_direction(direction, axis))
 
 
 class Background(Color):

@@ -36,11 +36,11 @@ def get_colormap(name: str, num_colors: int = 256) -> list[RGB]:
     return [tuple(cmap(i)[:3]) for i in np.linspace(0, 1, num_colors)]
 
 
-def encode_direction_field(
+def colorize_direction_field(
     field: Sequence | NDArray,
     axis: int = 2,
 ) -> NDArray:
-    """Encode a vector field as colors based on vector directions.
+    """Colorize a vector field as colors based on vector directions.
 
     This function maps direction vectors to colors using a spherical
     color mapping:
@@ -50,12 +50,12 @@ def encode_direction_field(
 
     Note:
         Input vectors must be normalized (unit length). No normalization is
-        performed by this function. Use `encode_direction` for automatic
+        performed by this function. Use `colorize_direction` for automatic
         normalization of single vectors.
 
     Args:
         field (Sequence | NDArray): Array of direction vectors to
-            encode as colors. Last dimension should contain vector
+            colorize. Last dimension should contain vector
             components.
         axis (int): Principal axis index (0=X, 1=Y, 2=Z).
             Default is 2 (Z-axis).
@@ -88,26 +88,26 @@ def encode_direction_field(
     return hsv_to_rgb(hsv)
 
 
-def encode_direction(vector: Sequence, axis: int = 2) -> RGB:
-    """Encode a single direction vector as a color.
+def colorize_direction(vector: Sequence, axis: int = 2) -> RGB:
+    """Colorize a single direction vector.
 
     This function converts a direction vector to a color based
     on its orientation. The vector is automatically normalized
     to unit length before encoding.
 
     Args:
-        vector (Sequence | NDArray): Direction vector to encode as a color
+        vector (Sequence | NDArray): Direction vector to colorize.
         axis (int): Principal axis index (0=X, 1=Y, 2=Z).
             Default is 2 (Z-axis).
 
     Returns:
         tuple[float, float, float]: A tuple of RGB floats representing
-        the encoded direction.
+        the colorized direction.
 
     Requires:
         matplotlib for HSV to RGB conversion.
     """
     norm = np.linalg.norm(vector)
     field = [[x / norm for x in vector]]
-    c = encode_direction_field(field, axis)[0]
+    c = colorize_direction_field(field, axis)[0]
     return float(c[0]), float(c[1]), float(c[2])
