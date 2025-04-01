@@ -27,32 +27,17 @@ Requires POV-Ray to be installed:
 ## Quick Start
 
 ```python
-from fdray import Scene, Camera, Sphere, LightSource
+from fdray import Camera, Color, LightSource, Scene, Sphere
 
 # Create a simple scene
 scene = Scene(
-    Camera(30, 30),
-    LightSource(0, "white"),
-    Sphere((0, 0, 0), 1),
+    Camera(longitude=20, latitude=30),
+    LightSource(0, Color("white")),  # 0: at camera location
+    Sphere((0, 0, 0), 1, Color("red")),
 )
 
 # Render the scene
-image = scene.render(width=800, height=600)
-image.save("sphere.png")
-```
-
-## Examples
-
-### Basic Shapes
-
-```python
-scene = Scene(
-    Camera(30, 30),
-    LightSource(0, "white"),
-    Sphere((0, 0, 0), 1),
-    Box((-1, -1, -1), (1, 1, 1)),
-    Cylinder((0, 0, 0), (0, 2, 0), 0.5),
-)
+scene.render(width=800, height=600)
 ```
 
 ## Contributing
