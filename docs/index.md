@@ -10,7 +10,8 @@ making it easy to create and render 3D scenes programmatically.
 - **Pythonic API**: Natural integration with Python's ecosystem
 - **POV-Ray Integration**: Seamless integration with a high-quality
   rendering engine
-- **Jupyter Support**: Interactive scene development in Jupyter notebooks
+- **Jupyter Support**: Interactive scene development in Jupyter
+  notebooks
 
 ## Installation
 
