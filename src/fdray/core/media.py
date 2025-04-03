@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from .base import Descriptor
 
 if TYPE_CHECKING:
-    from fdray.utils.typing import ColorLike
+    from fdray.typing import ColorLike
 
 
 @dataclass

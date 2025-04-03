@@ -8,7 +8,7 @@ from .base import Descriptor, Map, Transformable
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
 
-    from fdray.utils.typing import ColorLike
+    from fdray.typing import ColorLike
 
 
 class Texture(Transformable):

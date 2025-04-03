@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
     from numpy.typing import NDArray
 
-    from fdray.utils.typing import RGB
+    from fdray.typing import RGB
 
 
 def raise_import_error(msg: str) -> None:

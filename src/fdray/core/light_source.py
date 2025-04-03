@@ -8,7 +8,7 @@ from .base import Descriptor
 from .color import Color
 
 if TYPE_CHECKING:
-    from fdray.utils.typing import ColorLike, Point
+    from fdray.typing import ColorLike, Point
 
     from .camera import Camera
 

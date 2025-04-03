@@ -34,7 +34,7 @@ if TYPE_CHECKING:
     import numpy as np
     from numpy.typing import NDArray
 
-    from fdray.utils.typing import Point
+    from fdray.typing import Point
 
 
 class Object(Transformable):

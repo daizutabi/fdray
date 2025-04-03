@@ -3,9 +3,8 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import TypeAlias
 
-from fdray.core.color import Color
-
-from .vector import Vector
+from .core.color import Color
+from .utils.vector import Vector
 
 Point: TypeAlias = float | str | Sequence[float] | Vector
 RGB: TypeAlias = tuple[float, float, float]

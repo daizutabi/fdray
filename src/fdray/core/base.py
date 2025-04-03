@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
     from typing import Any, Self
 
-    from fdray.utils.typing import Point
+    from fdray.typing import Point
 
 
 class Base:

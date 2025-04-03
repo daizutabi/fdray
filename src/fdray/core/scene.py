@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
     from PIL import Image
 
-    from fdray.utils.typing import ColorLike
+    from fdray.typing import ColorLike
 
 
 @dataclass

@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
     from typing import Self
 
-    from fdray.utils.typing import RGB, ColorLike
+    from fdray.typing import RGB, ColorLike
 
 
 class Color:
