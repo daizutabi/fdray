@@ -8,7 +8,7 @@ for the rendering.
 We use a right-handed spherical coordinate system for camera
 positioning.
 
-![Camera positioning](usage/camera.ipynb){#positioning .cell}
+![Camera positioning](tutorial/camera.ipynb){#positioning .cell}
 
 In the above figure, the camera is positioned at:
 

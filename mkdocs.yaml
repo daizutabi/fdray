@@ -58,12 +58,9 @@ markdown_extensions:
 #   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 nav:
   - Home: index.md
-  - Usage:
-      - usage/camera.md
-      - usage/light_source.md
-        # - notebooks/camera/camera.ipynb
-      # - Lighting Types:
-      #     - notebooks/light/light_source.ipynb
+  - Tutorial:
+      - tutorial/camera.md
+      - tutorial/light_source.md
       # - Object:
       #     - notebooks/object/primitives.ipynb
       #     - notebooks/object/transformations.ipynb

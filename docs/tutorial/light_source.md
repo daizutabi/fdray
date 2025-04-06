@@ -115,7 +115,7 @@ light.to_str(camera)  # Returns the POV-Ray string with calculated position
 
 Here's a complete example of a scene with a light source:
 
-![Light source example](usage/light_source.ipynb){#light-source-example .cell}
+![Light source example](tutorial/light_source.ipynb){#light-source-example .cell}
 
 ## Advanced Light Types
 
