@@ -1,3 +1,2 @@
 .devcontainer/* linguist-vendored
-docs/notebooks/* linguist-vendored
-notebooks/* linguist-vendored
+*.ipynb linguist-vendored
