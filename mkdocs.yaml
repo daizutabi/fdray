@@ -1,6 +1,6 @@
 site_name: fdray
 site_url: https://daizutabi.github.io/fdray/
-site_description: Finite difference ray tracing
+site_description: Python Ray Tracing Interface for POV-Ray
 site_author: daizutabi
 repo_url: https://github.com/daizutabi/fdray/
 repo_name: daizutabi/fdray
@@ -28,6 +28,7 @@ theme:
   features:
     - content.tooltips
     - content.code.annotate
+    - content.code.copy
     - navigation.expand
     - navigation.footer
     - navigation.indexes
@@ -38,9 +39,8 @@ theme:
     - navigation.tracking
 plugins:
   - search
-  - mkdocs-jupyter:
-      execute: true
-      allow_errors: false
+  - mkdocs-nbstore:
+      notebook_dir: ../notebooks
   - mkapi
 markdown_extensions:
   - pymdownx.magiclink
@@ -51,28 +51,31 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
+#   - pymdownx.arithmatex:
+#       generic: true
+# extra_javascript:
+#   - javascripts/mathjax.js
+#   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 nav:
   - Home: index.md
   - Usage:
-      - Camera:
-          - notebooks/camera/camera.ipynb
-      - Lighting Types:
-          - notebooks/light/light_source.ipynb
-      - Object:
-          - notebooks/object/primitives.ipynb
-          - notebooks/object/transformations.ipynb
-          - notebooks/object/csg.ipynb
-      - Texture:
-          - notebooks/texture/pigment.ipynb
-          - notebooks/texture/normal.ipynb
-          - notebooks/texture/finish.ipynb
-          - notebooks/texture/pattern.ipynb
-          - notebooks/texture/interior_texture.ipynb
-      - Media:
-          - notebooks/media/interior.ipynb
-      - Data Visualization:
-          - notebooks/data/region.ipynb
-          - notebooks/data/field.ipynb
+      - Camera: camera.md
+        # - notebooks/camera/camera.ipynb
+      # - Lighting Types:
+      #     - notebooks/light/light_source.ipynb
+      # - Object:
+      #     - notebooks/object/primitives.ipynb
+      #     - notebooks/object/transformations.ipynb
+      #     - notebooks/object/csg.ipynb
+      # - Texture:
+      #     - notebooks/texture/pigment.ipynb
+      #     - notebooks/texture/normal.ipynb
+      #     - notebooks/texture/finish.ipynb
+      #     - notebooks/texture/pattern.ipynb
+      #     - notebooks/texture/interior_texture.ipynb
+      # - Media:
+      #     - notebooks/media/interior.ipynb
+      # - Data Visualization:
+      #     - notebooks/data/region.ipynb
+      #     - notebooks/data/field.ipynb
   - Reference: $api/fdray.***
-extra_css:
-  - css/hide-prompt.css

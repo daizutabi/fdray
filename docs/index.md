@@ -1,4 +1,4 @@
-# fdray - Python Ray Tracing Interface for POV-Ray
+# fdray
 
 fdray is a Python library that provides a clean interface to POV-Ray,
 making it easy to create and render 3D scenes programmatically.
@@ -47,7 +47,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ## Acknowledgments
 
