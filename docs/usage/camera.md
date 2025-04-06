@@ -8,7 +8,7 @@ for the rendering.
 We use a right-handed spherical coordinate system for camera
 positioning.
 
-![Camera positioning](camera.ipynb){#positioning .cell}
+![Camera positioning](usage/camera.ipynb){#positioning .cell}
 
 In the above figure, the camera is positioned at:
 
@@ -32,7 +32,7 @@ The camera implementation is based on the following Qiita article:
 
 - Title: Efficient Camera Settings in POV-Ray
 - Author: @Hyrodium (Yuto Horikawa)
-- URL: https://qiita.com/Hyrodium/items/af91b1ddb8ea2c4359c2
+- URL: <https://qiita.com/Hyrodium/items/af91b1ddb8ea2c4359c2>
 - Date: 2017-12-07
 
 This implementation adopts the spherical coordinate system and uses

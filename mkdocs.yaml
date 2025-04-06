@@ -59,7 +59,8 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Usage:
-      - Camera: camera.md
+      - usage/camera.md
+      - usage/light_source.md
         # - notebooks/camera/camera.ipynb
       # - Lighting Types:
       #     - notebooks/light/light_source.ipynb
