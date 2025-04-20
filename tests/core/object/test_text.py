@@ -12,12 +12,6 @@ def test_text_font_file_not_found():
     assert Text.set_font_file("a.otf") is None
 
 
-def test_text_font_file_by_name_search():
-    x = Text.set_font_file("dejavu")
-    assert x is not None
-    assert x.endswith(".ttf")
-
-
 def test_text_font_file_by_name():
     from matplotlib import font_manager
 
@@ -26,5 +20,9 @@ def test_text_font_file_by_name():
     font_spec = font_files[0].stem
 
     x = Text.set_font_file(font_spec)
+    assert x
+    assert Path(x).stem == font_spec
+
+    x = Text.set_font_file(font_spec.upper()[:5])
     assert x
     assert Path(x).stem == font_spec
