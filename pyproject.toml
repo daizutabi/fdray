@@ -35,12 +35,13 @@ dev = [
   "matplotlib>=3.6",
   "mkapi",
   "mkdocs-material",
-  "mkdocs-nbstore",
+  "nbsync",
   "moviepy>=2",
   "pytest-clarity>=1",
   "pytest-cov>=6",
   "pytest-randomly>=3.16",
   "pytest-xdist>=3.6",
+  "ruff>=0.11",
 ]
 
 [tool.pytest.ini_options]

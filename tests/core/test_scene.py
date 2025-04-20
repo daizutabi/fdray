@@ -80,3 +80,12 @@ def test_scene_render():
 
     s = Scene(Object(Declare(Sphere(1, 1))).scale(1))
     assert s.render(100, 100)
+
+
+def test_scene_add():
+    from fdray.core.scene import Scene
+
+    x = Scene("abc", ["def", "ghi"])
+    y = x.add("xyz")
+    assert x.attrs == ["abc", "def", "ghi"]
+    assert y.attrs == ["abc", "def", "ghi", "xyz"]

@@ -12,7 +12,7 @@ from .light_source import LightSource
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-    from typing import Any
+    from typing import Any, Self
 
     from PIL import Image
 
@@ -51,7 +51,9 @@ class Scene:
         self.light_sources = []
         self.global_settings = GlobalSettings()
         self.attrs = []
+        self.set(*attrs)
 
+    def set(self, *attrs: Any) -> Self:
         for attr in attrs:
             if isinstance(attr, Camera):
                 self.camera = attr
@@ -65,6 +67,19 @@ class Scene:
                 self.attrs.extend(attr)
             else:
                 self.attrs.append(attr)
+        return self
+
+    def copy(self) -> Self:
+        scene = self.__class__()
+        scene.camera = self.camera
+        scene.includes = self.includes.copy()
+        scene.light_sources = self.light_sources.copy()
+        scene.global_settings = self.global_settings
+        scene.attrs = self.attrs.copy()
+        return scene
+
+    def add(self, *attrs: Any) -> Self:
+        return self.copy().set(*attrs)
 
     def __iter__(self) -> Iterator[str]:
         Declare.clear()
