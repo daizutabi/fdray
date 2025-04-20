@@ -26,22 +26,26 @@ theme:
         icon: material/weather-night
         name: Switch to light mode
   features:
-    - content.tooltips
     - content.code.annotate
     - content.code.copy
+    - content.tooltips
     - navigation.expand
     - navigation.footer
     - navigation.indexes
-    # - navigation.sections
+    - navigation.sections
     - navigation.tabs
-    - navigation.tabs.sticky
     - navigation.top
     - navigation.tracking
+    - search.highlight
+    - search.suggest
 plugins:
   - search
-  - mkdocs-nbstore:
-      notebook_dir: ../notebooks
-  - mkapi
+  - nbsync:
+      notebook_dir:
+        - ../notebooks
+        - ../scripts
+  - mkapi:
+      debug: true
 markdown_extensions:
   - pymdownx.magiclink
   - pymdownx.highlight:
