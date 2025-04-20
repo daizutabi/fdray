@@ -17,6 +17,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from itertools import repeat
+from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar, Literal, overload
 
 from fdray.utils.string import convert
@@ -604,6 +605,7 @@ class Text(Object):
     """
 
     nargs: ClassVar[int] = 2
+    font_file: ClassVar[str] = "cyrvetic.ttf"
 
     def __init__(
         self,
@@ -616,8 +618,8 @@ class Text(Object):
 
     def __iter__(self) -> Iterator[str]:
         text, thickness = self.args
-        font = "cyrvetic.ttf"
-        yield f'ttf "{font}", "{text}", {thickness}, 0'
+        font_file = self.__class__.font_file
+        yield f'ttf "{font_file}", "{text}", {thickness}, 0'
         attrs = (str(attr) for attr in self.attrs)
         yield from (attr for attr in attrs if attr)
 
@@ -634,3 +636,56 @@ class Text(Object):
             return text
 
         return text.rotate(0, -latitude, longitude)
+
+    @classmethod
+    def set_font_file(cls, font_spec: str | Path) -> str | None:
+        """Set the font file for the text object.
+
+        This method determines how to handle the font specification
+        based on its format:
+
+        - If `font_spec` ends with '.ttf', it's treated as a direct file path.
+        - Otherwise, it's treated as a font name to search in system fonts.
+
+        Args:
+            font_spec (str | Path): Font specification, either a path to a TTF file
+                or a font name. If it's a font name, the method will search for
+                matching fonts in the system fonts directory.
+
+        Returns:
+            str: Path to the font file if found, None otherwise.
+
+        Raises:
+            ImportError: If matplotlib is not installed and a font name search
+                is attempted.
+
+        """
+        font_path = Path(font_spec)
+
+        if font_path.suffix == ".ttf":
+            cls.font_file = font_path.as_posix()
+            return cls.font_file
+
+        try:
+            from matplotlib import font_manager
+        except ImportError:  # no cov
+            msg = "Warning: matplotlib is not installed."
+            msg += " Font search by name is not available."
+            raise ImportError(msg) from None
+
+        search_name = font_path.name.lower()
+
+        font_files = [Path(f) for f in font_manager.findSystemFonts()]
+        font_files = [f for f in font_files if f.suffix == ".ttf"]
+
+        for font_file in font_files:
+            if font_file.stem.lower() == search_name:
+                cls.font_file = font_file.as_posix()
+                return cls.font_file
+
+        for font_file in font_files:
+            if search_name in font_file.stem.lower():
+                cls.font_file = font_file.as_posix()
+                return cls.font_file
+
+        return None
