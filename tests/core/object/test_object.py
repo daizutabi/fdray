@@ -294,7 +294,8 @@ def test_text():
     from fdray.core.object import Text
 
     x = Text("text", 0.1)
-    assert str(x) == 'text { ttf "cyrvetic.ttf", "text", 0.1, 0 }'
+    f = Text.font_file
+    assert str(x) == f'text {{ ttf "{f}", "text", 0.1, 0 }}'
 
 
 def test_text_align():
