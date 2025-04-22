@@ -122,16 +122,19 @@ class Scene:
         self,
         width: int | None = None,
         height: int | None = None,
+        *,
+        trim: bool = False,
     ) -> Image.Image:
         """Render the scene with the given image dimensions.
 
         Args:
             width: The width of the image.
             height: The height of the image.
+            trim: If True, trim the output image to the non-transparent region.
 
         Returns:
             Image.Image: The rendered image.
         """
         from .renderer import Renderer
 
-        return Renderer(width, height).render(self, return_image=True)
+        return Renderer(width, height).render(self, return_image=True, trim=trim)

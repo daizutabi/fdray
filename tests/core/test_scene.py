@@ -82,6 +82,17 @@ def test_scene_render():
     assert s.render(100, 100)
 
 
+def test_scene_render_trim():
+    from fdray.core.camera import Camera
+    from fdray.core.color import Color
+    from fdray.core.object import Sphere
+    from fdray.core.scene import Scene
+
+    s = Scene(Camera(30, 20, view_scale=3), Sphere(0, 1, Color("red")))
+    x = s.render(100, 100, trim=True)
+    assert x.size == (34, 34)
+
+
 def test_scene_add():
     from fdray.core.scene import Scene
 

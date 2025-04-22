@@ -11,6 +11,8 @@ from typing import TYPE_CHECKING, Literal, overload
 import numpy as np
 from PIL import Image
 
+import fdray.utils.image
+
 from .scene import Scene
 
 if TYPE_CHECKING:
@@ -107,13 +109,25 @@ class Renderer:
         return args
 
     @overload
-    def render(self, scene: Any) -> NDArray[np.uint8]: ...
+    def render(self, scene: Any, *, trim: bool = False) -> NDArray[np.uint8]: ...
 
     @overload
-    def render(self, scene: Any, *, return_image: Literal[True]) -> Image.Image: ...
+    def render(
+        self,
+        scene: Any,
+        *,
+        return_image: Literal[True],
+        trim: bool = False,
+    ) -> Image.Image: ...
 
     @overload
-    def render(self, scene: Any, output_file: str | Path) -> None: ...
+    def render(
+        self,
+        scene: Any,
+        output_file: str | Path,
+        *,
+        trim: bool = False,
+    ) -> None: ...
 
     def render(
         self,
@@ -121,6 +135,7 @@ class Renderer:
         output_file: str | Path | None = None,
         *,
         return_image: bool = False,
+        trim: bool = False,
     ) -> NDArray[np.uint8] | Image.Image | None:
         """Render a POV-Ray scene.
 
@@ -129,7 +144,7 @@ class Renderer:
             output_file: Output image file path.
                 If None, returns a numpy array instead of saving to file.
             return_image: If True, returns a PIL image instead of a numpy array.
-
+            trim: If True, trim the output image to the non-transparent region.
         Returns:
             NDArray[np.uint8] | Image.Image | None: RGB(A) image array or PIL
             image if output_file is None
@@ -137,7 +152,7 @@ class Renderer:
         if output_file is None:
             with NamedTemporaryFile(suffix=".png") as file:
                 output_file = Path(file.name)
-                self.render(scene, output_file)
+                self.render(scene, output_file, trim=trim)
                 image = Image.open(output_file)
                 return image if return_image else np.array(image)
 
@@ -153,6 +168,11 @@ class Renderer:
 
         if cp.returncode != 0:
             raise RenderError(self.stderr)
+
+        if trim:
+            image = Image.open(output_file)
+            image = fdray.utils.image.trim(image)
+            image.save(output_file)
 
         return None
 
