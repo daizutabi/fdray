@@ -682,7 +682,7 @@ class Text(Object):
         return text.rotate(0, -latitude, longitude)
 
     @classmethod
-    def set_font_file(cls, font_spec: str | Path) -> str | None:
+    def set_font(cls, font_spec: str | Path) -> str | None:
         """Set the font file for the text object.
 
         This method determines how to handle the font specification
