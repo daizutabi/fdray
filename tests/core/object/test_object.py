@@ -310,3 +310,10 @@ def test_text_align_angle():
 
     x = Text("text", 0.1).align(20, 30)
     assert str(x).endswith("90*x rotate <0, -30, 20> }")
+
+
+def test_torus():
+    from fdray.core.object import Torus
+
+    x = Torus(1, 0.5)
+    assert str(x) == "torus { 1, 0.5 }"

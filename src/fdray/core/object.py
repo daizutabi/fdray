@@ -35,7 +35,7 @@ if TYPE_CHECKING:
     import numpy as np
     from numpy.typing import NDArray
 
-    from fdray.typing import Point
+    from fdray.typing import ColorLike, Point
 
 
 class Object(Transformable):
@@ -124,13 +124,57 @@ class Object(Transformable):
         """Add a normal to the object."""
         return self.add(Normal(*args, **kwargs))
 
-    def finish(self, *args: Any, **kwargs: Any) -> Self:
+    def finish(
+        self,
+        ambient: float | ColorLike | None = None,
+        emission: float | ColorLike | None = None,
+        diffuse: float | None = None,
+        brilliance: float | None = None,
+        phong: float | None = None,
+        phong_size: float | None = None,
+        specular: float | None = None,
+        roughness: float | None = None,
+        metallic: float | None = None,
+        reflection: float | ColorLike | None = None,
+    ) -> Self:
         """Add a finish to the object."""
-        return self.add(Finish(*args, **kwargs))
+        return self.add(
+            Finish(
+                ambient=ambient,
+                emission=emission,
+                diffuse=diffuse,
+                brilliance=brilliance,
+                phong=phong,
+                phong_size=phong_size,
+                specular=specular,
+                roughness=roughness,
+                metallic=metallic,
+                reflection=reflection,
+            ),
+        )
 
-    def interior(self, *args: Any, **kwargs: Any) -> Self:
+    def interior(
+        self,
+        ior: float | None = None,
+        caustics: float | None = None,
+        dispersion: float | None = None,
+        dispersion_samples: int | None = None,
+        fade_distance: float | None = None,
+        fade_power: float | None = None,
+        fade_color: ColorLike | None = None,
+    ) -> Self:
         """Add an interior to the object."""
-        return self.add(Interior(*args, **kwargs))
+        return self.add(
+            Interior(
+                ior=ior,
+                caustics=caustics,
+                dispersion=dispersion,
+                dispersion_samples=dispersion_samples,
+                fade_distance=fade_distance,
+                fade_power=fade_power,
+                fade_color=fade_color,
+            ),
+        )
 
     def material(self, *args: Any, **kwargs: Any) -> Self:
         """Add a material to the object."""
@@ -689,3 +733,25 @@ class Text(Object):
                 return cls.font_file
 
         return None
+
+
+class Torus(Object):
+    """A torus defined by a center point and a radius.
+
+    Args:
+        major_radius: Major radius of the torus.
+        minor_radius: Minor radius of the torus.
+        *attrs: Additional attributes.
+        **kwargs: Additional keyword attributes.
+    """
+
+    nargs: ClassVar[int] = 2
+
+    def __init__(
+        self,
+        major_radius: float,
+        minor_radius: float,
+        *attrs: Any,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(major_radius, minor_radius, *attrs, **kwargs)

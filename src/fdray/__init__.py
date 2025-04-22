@@ -21,6 +21,7 @@ from .core.object import (
     Sphere,
     SphereSweep,
     Text,
+    Torus,
 )
 from .core.renderer import Renderer
 from .core.scene import GlobalSettings, Include, Scene
@@ -75,6 +76,7 @@ __all__ = [
     "Spotlight",
     "Text",
     "Texture",
+    "Torus",
     "Transform",
     "Union",
     "Vector",
