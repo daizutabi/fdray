@@ -35,7 +35,7 @@ dev = [
   "matplotlib>=3.6",
   "mkapi",
   "mkdocs-material",
-  "nbsync",
+  "mkdocs-nbsync",
   "moviepy>=2",
   "pytest-clarity>=1",
   "pytest-cov>=6",
