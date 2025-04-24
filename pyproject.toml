@@ -37,6 +37,7 @@ dev = [
   "mkdocs-material",
   "mkdocs-nbsync",
   "moviepy>=2",
+  "nbconvert>=7",
   "pytest-clarity>=1",
   "pytest-cov>=6",
   "pytest-randomly>=3.16",

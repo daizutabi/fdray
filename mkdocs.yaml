@@ -41,7 +41,7 @@ theme:
 plugins:
   - search
   - mkdocs-nbsync:
-      notebook_dir: ../notebooks
+      src_dir: ../notebooks
   - mkapi:
       debug: true
 markdown_extensions:

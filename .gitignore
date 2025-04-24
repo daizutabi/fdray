@@ -2,5 +2,6 @@
 .venv/
 __pycache__/
 dist/
+site/
 lcov.info
 uv.lock
