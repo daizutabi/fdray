@@ -50,9 +50,9 @@ field of view.
 
 === "Result"
 
-    |     `view_scale=1`     |     `view_scale=2`     |     `view_scale=3`     |
-    |:----------------------:|:----------------------:|:----------------------:|
-    | ![](){`view_scale(1)`} | ![](){`view_scale(2)`} | ![](){`view_scale(3)`} |
+    |        `view_scale=1`        |        `view_scale=2`        |        `view_scale=3`        |
+    |:----------------------------:|:----------------------------:|:----------------------------:|
+    | ![](){`scene_view_scale(1)`} | ![](){`scene_view_scale(2)`} | ![](){`scene_view_scale(3)`} |
 
 === "Source"
 
