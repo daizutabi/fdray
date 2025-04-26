@@ -145,3 +145,26 @@ counter-clockwise (`rotation`):
 |     Rendered image from x axis     |       Top view (y-z plane)       |
 |:----------------------------------:|:--------------------------------:|
 | ![alt](){#orbital-location-source} | ![alt](){#orbital-location-plot} |
+
+## Movies
+
+<video controls autoplay muted loop>
+  <source src="../../assets/camera-longitude.mp4" type="video/mp4">
+</video>
+<video controls autoplay muted loop>
+  <source src="../../assets/camera-latitude.mp4" type="video/mp4">
+</video>
+
+<video controls autoplay muted loop>
+  <source src="../../assets/camera-view-scale.mp4" type="video/mp4">
+</video>
+<video controls autoplay muted loop>
+  <source src="../../assets/camera-distance.mp4" type="video/mp4">
+</video>
+
+<video controls autoplay muted loop>
+  <source src="../../assets/camera-tilt.mp4" type="video/mp4">
+</video>
+<video controls autoplay muted loop>
+  <source src="../../assets/camera-look-at.mp4" type="video/mp4">
+</video>

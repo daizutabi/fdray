@@ -41,7 +41,7 @@ class Renderer:
     height: int = 600
     output_alpha: bool = True
     quality: int = 9
-    antialias: bool = True
+    antialias: bool | float = True
     threads: int | None = None
     display: bool = False
     executable: str = "povray"
@@ -55,7 +55,7 @@ class Renderer:
         height: int | None = None,
         output_alpha: bool | None = None,
         quality: int | None = None,
-        antialias: bool | None = None,
+        antialias: bool | float | None = None,
         threads: int | None = None,
         display: bool | None = None,
     ) -> None:
@@ -97,7 +97,7 @@ class Renderer:
             f"Height={self.height}",
             f"Output_Alpha={to_switch(self.output_alpha)}",
             f"Quality={self.quality}",
-            f"Antialias={to_switch(self.antialias)}",
+            antialias_option(self.antialias),
             f"Display={to_switch(self.display)}",
             f"Input_File_Name={input_file}",
         ]
@@ -192,6 +192,14 @@ class Renderer:
 def to_switch(value: bool) -> str:
     """Convert a boolean value to a string 'on' or 'off'."""
     return "on" if value else "off"
+
+
+def antialias_option(antialias: bool | float) -> str:
+    """Convert a boolean value to a string 'on' or 'off'."""
+    if isinstance(antialias, bool):
+        return f"Antialias={to_switch(antialias)}"
+
+    return f"+A{antialias}"
 
 
 def create_input_file(scene: str) -> Path:

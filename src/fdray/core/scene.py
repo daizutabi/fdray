@@ -122,6 +122,10 @@ class Scene:
         self,
         width: int | None = None,
         height: int | None = None,
+        output_alpha: bool | None = None,
+        quality: int | None = None,
+        antialias: bool | float | None = None,
+        threads: int | None = None,
         *,
         trim: bool = False,
     ) -> Image.Image:
@@ -130,6 +134,10 @@ class Scene:
         Args:
             width: The width of the image.
             height: The height of the image.
+            output_alpha: If True, output an image with an alpha channel.
+            quality: The quality of the image.
+            antialias: The antialiasing level.
+            threads: The number of threads to use.
             trim: If True, trim the output image to the non-transparent region.
 
         Returns:
@@ -137,4 +145,5 @@ class Scene:
         """
         from .renderer import Renderer
 
-        return Renderer(width, height).render(self, return_image=True, trim=trim)
+        renderer = Renderer(width, height, output_alpha, quality, antialias, threads)
+        return renderer.render(self, return_image=True, trim=trim)
