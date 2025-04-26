@@ -72,7 +72,7 @@ nav:
           - CSG: tutorial/object/csg.md
       - Texture:
           - tutorial/texture/pigment.md
-          # - tutorial/texture/normal.md
+          - tutorial/texture/normal.md
           # - tutorial/texture/finish.md
           # - tutorial/texture/pattern.md
           # - tutorial/texture/interior_texture.md
