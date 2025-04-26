@@ -68,7 +68,7 @@ nav:
       - tutorial/light_source.md
       - Object:
           - tutorial/object/primitives.md
-      #     - notebooks/object/transformations.ipynb
+          - tutorial/object/transformations.md
       #     - notebooks/object/csg.ipynb
       # - Texture:
       #     - notebooks/texture/pigment.ipynb
