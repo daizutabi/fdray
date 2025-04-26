@@ -69,7 +69,7 @@ nav:
       - Object:
           - tutorial/object/primitives.md
           - tutorial/object/transformations.md
-      #     - notebooks/object/csg.ipynb
+          - CSG: tutorial/object/csg.md
       # - Texture:
       #     - notebooks/texture/pigment.ipynb
       #     - notebooks/texture/normal.ipynb
