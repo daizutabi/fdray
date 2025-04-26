@@ -1,6 +1,6 @@
 # Constructive Solid Geometry
 
-![](object/csg.ipynb){#.}
+![](object/csg.ipynb){#. exec="1"}
 
 ## Rendering function
 

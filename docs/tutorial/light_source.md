@@ -1,5 +1,7 @@
 # Light Source
 
+![](scene/light_source.ipynb){#. exec="1"}
+
 [`LightSource`][fdray.LightSource] class is used to configure the light
 source settings for the rendering.
 
@@ -7,7 +9,7 @@ source settings for the rendering.
 
 Here's a complete example of a scene with a light source:
 
-![Light source example](scene/light_source.ipynb){#light-source-example source="1"}
+![Light source example](){#light-source-example source="1"}
 
 ## Basic Usage
 

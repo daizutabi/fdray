@@ -70,12 +70,12 @@ nav:
           - tutorial/object/primitives.md
           - tutorial/object/transformations.md
           - CSG: tutorial/object/csg.md
-      # - Texture:
-      #     - notebooks/texture/pigment.ipynb
-      #     - notebooks/texture/normal.ipynb
-      #     - notebooks/texture/finish.ipynb
-      #     - notebooks/texture/pattern.ipynb
-      #     - notebooks/texture/interior_texture.ipynb
+      - Texture:
+          - tutorial/texture/pigment.md
+          # - tutorial/texture/normal.md
+          # - tutorial/texture/finish.md
+          # - tutorial/texture/pattern.md
+          # - tutorial/texture/interior_texture.md
       # - Media:
       #     - notebooks/media/interior.ipynb
       # - Data Visualization:
