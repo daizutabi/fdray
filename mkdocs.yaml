@@ -65,7 +65,7 @@ nav:
   - Home: index.md
   - Tutorial:
       - tutorial/camera.md
-      # - tutorial/light_source.md
+      - tutorial/light_source.md
       # - Object:
       #     - notebooks/object/primitives.ipynb
       #     - notebooks/object/transformations.ipynb

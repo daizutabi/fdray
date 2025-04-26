@@ -3,6 +3,12 @@
 [`LightSource`][fdray.LightSource] class is used to configure the light
 source settings for the rendering.
 
+## Example
+
+Here's a complete example of a scene with a light source:
+
+![Light source example](scene/light_source.ipynb){#light-source-example source="1"}
+
 ## Basic Usage
 
 The `LightSource` class creates a light source in the 3D scene that provides
@@ -110,17 +116,3 @@ light = LightSource(0, "white")
 # Use this instead:
 light.to_str(camera)  # Returns the POV-Ray string with calculated position
 ```
-
-## Example
-
-Here's a complete example of a scene with a light source:
-
-![Light source example](tutorial/light_source.ipynb){#light-source-example .cell}
-
-## Advanced Light Types
-
-The `LightSource` class serves as the base for more specialized light types,
-such as `Spotlight`. Refer to the API documentation for these specialized
-lighting classes.
-
-[fdray.LightSource]: ../api/fdray/core/light_source.md#class-lightsource

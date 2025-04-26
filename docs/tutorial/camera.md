@@ -1,6 +1,6 @@
 # Camera
 
-![](tutorial/camera.ipynb){#. exec="1"}
+![](scene/camera.ipynb){#. exec="1"}
 
 [`Camera`][fdray.Camera] class is used to configure the camera settings
 for the rendering.
@@ -80,22 +80,11 @@ The `distance` parameter controls the camera's perspective effect.
 This parameter significantly affects how the 3D scene is rendered,
 particularly the perspective distortion.
 
-```python .md#distance
-from fdray import *
-def scene(distance: float):
-    return Scene(
-        Camera(15, 10, view_scale=2, distance=distance),
-        LightSource((1, 20, 40), Color("white")),
-        Box(-1, 1, Color("green", 0.8)),
-        Background(Color("gray", 0.2)),
-    ).render(width=200, height=200)
-```
-
 === "Result"
 
-    |   `distance=3`    |   `distance=10`    |   `distance=30`    |
-    |:-----------------:|:------------------:|:------------------:|
-    | ![](){`scene(3)`} | ![](){`scene(10)`} | ![](){`scene(30)`} |
+    |       `distance = 3`       |       `distance = 10`       |       `distance = 30`       |
+    |:--------------------------:|:--------------------------:|:--------------------------:|
+    | ![](){`scene_distance(3)`} | ![](){`scene_distance(10)`} | ![](){`scene_distance(30)`} |
 
 === "Source"
 
@@ -151,7 +140,7 @@ counter-clockwise (`rotation`):
 - Finally, rotate counter-clockwise from up by `rotation` degrees
   (0: up, 90: left, 180: down, 270: right)
 
-![alt](tutorial/camera.ipynb){#orbital-location-source source="only"}
+![alt](){#orbital-location-source source="only"}
 
 |     Rendered image from x axis     |       Top view (y-z plane)       |
 |:----------------------------------:|:--------------------------------:|
