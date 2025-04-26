@@ -75,7 +75,7 @@ nav:
           - tutorial/texture/normal.md
           - tutorial/texture/finish.md
           - tutorial/texture/pattern.md
-          # - tutorial/texture/interior_texture.md
+          - tutorial/texture/interior-texture.md
       # - Media:
       #     - notebooks/media/interior.ipynb
       # - Data Visualization:
