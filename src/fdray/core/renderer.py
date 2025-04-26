@@ -4,6 +4,7 @@ import atexit
 import re
 import shutil
 import subprocess
+import time
 from pathlib import Path
 from tempfile import NamedTemporaryFile, mkdtemp
 from typing import TYPE_CHECKING, Literal, overload
@@ -162,11 +163,22 @@ class Renderer:
             self.scene = str(scene)
 
         command = self.build(self.scene, output_file)
-        cp = subprocess.run(command, check=False, capture_output=True, text=True)
-        self.stdout = cp.stdout
-        self.stderr = remove_progress(cp.stderr)
 
-        if cp.returncode != 0:
+        trial = 0
+        while True:
+            trial += 1
+            cp = subprocess.run(command, check=False, capture_output=True, text=True)
+            self.stdout = cp.stdout
+            self.stderr = remove_progress(cp.stderr)
+
+            if cp.returncode == 0:
+                break
+
+            time_out = "Timed out waiting for worker thread startup"
+            if time_out in self.stderr and trial < 6:
+                time.sleep(0.1)
+                continue
+
             raise RenderError(self.stderr)
 
         if trim:
