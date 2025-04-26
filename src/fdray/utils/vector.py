@@ -197,7 +197,9 @@ class Vector:
         """Convert vector to spherical coordinates.
 
         Returns:
-            tuple[float, float]: A tuple of (phi, theta) where
+            tuple[float, float]: A tuple of (phi, theta)
+            where
+
             - phi: azimuthal angle in radians (-π to π),
               0 on x-axis, π/2 on y-axis
             - theta: polar angle in radians (-π/2 to π/2),

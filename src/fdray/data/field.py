@@ -81,7 +81,9 @@ class Union(BaseUnion):
                 (or None to skip)
             spacing (float | tuple[float, ...]): Distance between objects
                 (scalar or per-dimension)
-            ndim (int): Number of dimensions to treat as field components:
+            ndim (int): Number of dimensions to treat as field
+                components:
+
                 - ndim=0: Scalar field (all dimensions used for positioning)
                 - ndim=1: Vector field (last dimension contains vector components)
                 - ndim=2: Tensor field (last two dimensions contain tensor components)

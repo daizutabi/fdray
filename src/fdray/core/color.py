@@ -37,7 +37,9 @@ class Color:
     and transmit values.
 
     Args:
-        color: Color specification. Can be:
+        color: Color specification.
+            Can be:
+
             - A Color object
             - String name (e.g., "red")
             - Hex code (e.g., "#00FF00" or "#00FF00FF" with alpha)
