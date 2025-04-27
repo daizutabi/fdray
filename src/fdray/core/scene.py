@@ -127,7 +127,7 @@ class Scene:
         antialias: bool | float | None = None,
         threads: int | None = None,
         *,
-        trim: bool = False,
+        trim: bool | int = False,
     ) -> Image.Image:
         """Render the scene with the given image dimensions.
 
@@ -139,6 +139,8 @@ class Scene:
             antialias: The antialiasing level.
             threads: The number of threads to use.
             trim: If True, trim the output image to the non-transparent region.
+                If an integer, trim the output image to the non-transparent region
+                by the given margin.
 
         Returns:
             Image.Image: The rendered image.
