@@ -33,17 +33,14 @@ Issues = "https://github.com/daizutabi/fdray/issues"
 dev = [
   "ipykernel>=6",
   "matplotlib>=3.6",
-  "mkapi",
-  "mkdocs-material",
-  "mkdocs-nbsync",
   "moviepy>=2",
-  "nbconvert>=7",
   "pytest-clarity>=1",
   "pytest-cov>=6",
   "pytest-randomly>=3.16",
   "pytest-xdist>=3.6",
   "ruff>=0.11",
 ]
+docs = ["mkapi", "mkdocs-material", "mkdocs-nbsync", "nbconvert>=7"]
 
 [tool.pytest.ini_options]
 addopts = ["--cov=fdray", "--cov-report=lcov:lcov.info", "--doctest-modules"]

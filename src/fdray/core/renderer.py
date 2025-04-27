@@ -110,7 +110,7 @@ class Renderer:
         return args
 
     @overload
-    def render(self, scene: Any, *, trim: bool = False) -> NDArray[np.uint8]: ...
+    def render(self, scene: Any, *, trim: bool | int = False) -> NDArray[np.uint8]: ...
 
     @overload
     def render(
@@ -118,7 +118,7 @@ class Renderer:
         scene: Any,
         *,
         return_image: Literal[True],
-        trim: bool = False,
+        trim: bool | int = False,
     ) -> Image.Image: ...
 
     @overload
@@ -127,7 +127,7 @@ class Renderer:
         scene: Any,
         output_file: str | Path,
         *,
-        trim: bool = False,
+        trim: bool | int = False,
     ) -> None: ...
 
     def render(
@@ -136,7 +136,7 @@ class Renderer:
         output_file: str | Path | None = None,
         *,
         return_image: bool = False,
-        trim: bool = False,
+        trim: bool | int = False,
     ) -> NDArray[np.uint8] | Image.Image | None:
         """Render a POV-Ray scene.
 
@@ -182,8 +182,9 @@ class Renderer:
             raise RenderError(self.stderr)
 
         if trim:
+            margin = 0 if trim is True else trim
             image = Image.open(output_file)
-            image = fdray.utils.image.trim(image)
+            image = fdray.utils.image.trim(image, margin)
             image.save(output_file)
 
         return None
