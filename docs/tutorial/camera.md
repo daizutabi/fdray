@@ -148,6 +148,8 @@ counter-clockwise (`rotation`):
 
 ## Movies
 
+### Camera
+
 <video controls autoplay muted loop>
   <source src="../../assets/camera-longitude.mp4" type="video/mp4">
 </video>
@@ -167,4 +169,16 @@ counter-clockwise (`rotation`):
 </video>
 <video controls autoplay muted loop>
   <source src="../../assets/camera-look-at.mp4" type="video/mp4">
+</video>
+
+### Orbital Location
+
+<video controls autoplay muted loop>
+  <source src="../../assets/camera-orbital-forward.mp4" type="video/mp4">
+</video>
+<video controls autoplay muted loop>
+  <source src="../../assets/camera-orbital-angle.mp4" type="video/mp4">
+</video>
+<video controls autoplay muted loop>
+  <source src="../../assets/camera-orbital-rotation.mp4" type="video/mp4">
 </video>
