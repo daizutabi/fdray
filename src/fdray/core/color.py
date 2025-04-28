@@ -72,13 +72,15 @@ class Color:
         include_color (bool): Whether to include "color" keyword in output
 
     Examples:
-        >>> Color("red") # doctest: +SKIP
-        >>> Color((1.0, 0.0, 0.0)) # doctest: +SKIP
-        >>> Color((1.0, 0.0, 0.0, 0.5))  # RGBA with alpha=0.5 # doctest: +SKIP
-        >>> Color("blue", alpha=0.5) # doctest: +SKIP
-        >>> Color("#00FF00", filter=0.3) # doctest: +SKIP
-        >>> Color("#00FF00FF")  # Hex color with alpha # doctest: +SKIP
-        >>> Color(existing_color, transmit=0.7) # doctest: +SKIP
+        ```python
+        Color("red")
+        Color((1.0, 0.0, 0.0))
+        Color((1.0, 0.0, 0.0, 0.5))  # RGBA with alpha=0.5
+        Color("blue", alpha=0.5)
+        Color("#00FF00", filter=0.3)
+        Color("#00FF00FF")  # Hex color with alpha
+        Color(existing_color, transmit=0.7)
+        ```
     """
 
     red: float
