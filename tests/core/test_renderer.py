@@ -70,7 +70,7 @@ def test_render_scene():
         LightSource(camera.location, "white", shadowless=True),
         Sphere((0, 0, 0), 1, Color("white")),
     )
-    renderer = Renderer(120, 240)
+    renderer = Renderer(120, 240, antialias=0.01)
     array = renderer.render(scene)
     assert isinstance(array, np.ndarray)
     assert array.shape == (240, 120, 4)

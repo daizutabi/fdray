@@ -175,7 +175,7 @@ class Renderer:
                 break
 
             time_out = "Timed out waiting for worker thread startup"
-            if time_out in self.stderr and trial < 6:
+            if time_out in self.stderr and trial < 6:  # no cov
                 time.sleep(0.1)
                 continue
 
