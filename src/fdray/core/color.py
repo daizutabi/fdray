@@ -14,7 +14,6 @@ common web color standards.
 
 from __future__ import annotations
 
-from enum import StrEnum
 from typing import TYPE_CHECKING
 
 from fdray.data.color import colorize_direction
@@ -109,7 +108,10 @@ class Color:
 
             color = rgb(color)
 
-            if isinstance(color, str):
+            if isinstance(color, Color):
+                self.name = color.name
+                self.red, self.green, self.blue = color.red, color.green, color.blue
+            elif isinstance(color, str):
                 self.name = color
                 self.red, self.green, self.blue = 0, 0, 0
             else:
@@ -174,7 +176,7 @@ class ColorMap(Map):
     cls = Color
 
 
-def rgb(color: str) -> RGB | str:
+def rgb(color: str) -> str | RGB | Color:
     """Return the RGB color as a tuple of floats.
 
     Converts a color name or hex code to an RGB tuple with values
@@ -188,12 +190,18 @@ def rgb(color: str) -> RGB | str:
             (e.g., "#00FF00" or "#00FF00FF")
 
     Returns:
-        A tuple of three floats (red, green, blue) or the original string
-        if not recognized as a valid color.
+        str | tuple[float, float, float] | Color: A tuple of three floats
+        (red, green, blue) or the original string if not recognized as a
+        valid color.
 
     Examples:
-        >>> rgb("red")
-        (1.0, 0.0, 0.0)
+        >>> color = rgb("red")
+        >>> color.red
+        1.0
+        >>> color.green
+        0.0
+        >>> color.blue
+        0.0
 
         >>> rgb("#00FF00")
         (0.0, 1.0, 0.0)
@@ -201,8 +209,8 @@ def rgb(color: str) -> RGB | str:
         >>> rgb("#00FF00FF")  # Alpha component is ignored
         (0.0, 1.0, 0.0)
     """
-    if color.islower():
-        color = getattr(ColorName, color.upper(), color)
+    if color.islower() and hasattr(ColorName, color.upper()):
+        return getattr(ColorName, color.upper())
 
     if not isinstance(color, str) or not color.startswith("#") or len(color) < 7:
         return color
@@ -211,157 +219,157 @@ def rgb(color: str) -> RGB | str:
     return int(r, 16) / 255, int(g, 16) / 255, int(b, 16) / 255
 
 
-class ColorName(StrEnum):
+class ColorName:
     """Color name enumeration with hex values."""
 
-    ALICEBLUE = "#F0F8FF"
-    ANTIQUEWHITE = "#FAEBD7"
-    AQUA = "#00FFFF"
-    AQUAMARINE = "#7FFFD4"
-    AZURE = "#F0FFFF"
-    BEIGE = "#F5F5DC"
-    BISQUE = "#FFEBCD"
-    BLACK = "#000000"
-    BLANCHEDALMOND = "#FFEBCD"
-    BLUE = "#0000FF"
-    BLUEVIOLET = "#8A2BE2"
-    BROWN = "#A52A2A"
-    BURLYWOOD = "#DEB887"
-    CADETBLUE = "#5F9EA0"
-    CHARTREUSE = "#7FFF00"
-    CHOCOLATE = "#D2691E"
-    CORAL = "#FF7F50"
-    CORNFLOWERBLUE = "#6495ED"
-    CORNSILK = "#FFF8DC"
-    CRIMSON = "#DC143C"
-    CYAN = "#00FFFF"
-    DARKBLUE = "#00008B"
-    DARKCYAN = "#008B8B"
-    DARKGOLDENROD = "#B8860B"
-    DARKGRAY = "#A9A9A9"
-    DARKGREEN = "#006400"
-    DARKGREY = "#A9A9A9"
-    DARKKHAKI = "#BDB76B"
-    DARKMAGENTA = "#8B008B"
-    DARKOLIVEGREEN = "#556B2F"
-    DARKORANGE = "#FF8C00"
-    DARKORCHID = "#9932CC"
-    DARKRED = "#8B0000"
-    DARKSALMON = "#E9967A"
-    DARKSEAGREEN = "#8FBC8F"
-    DARKSLATEBLUE = "#483D8B"
-    DARKSLATEGRAY = "#2F4F4F"
-    DARKSLATEGREY = "#2F4F4F"
-    DARKTURQUOISE = "#00CED1"
-    DARKVIOLET = "#9400D3"
-    DEEPPINK = "#FF1493"
-    DEEPSKYBLUE = "#00BFFF"
-    DIMGRAY = "#696969"
-    DIMGREY = "#696969"
-    DODGERBLUE = "#1E90FF"
-    FIREBRICK = "#B22222"
-    FLORALWHITE = "#FFFAF0"
-    FORESTGREEN = "#228B22"
-    FUCHSIA = "#FF00FF"
-    GAINSBORO = "#DCDCDC"
-    GHOSTWHITE = "#F8F8FF"
-    GOLD = "#FFD700"
-    GOLDENROD = "#DAA520"
-    GRAY = "#808080"
-    GREEN = "#008000"
-    GREENYELLOW = "#ADFF2F"
-    GREY = "#808080"
-    HONEYDEW = "#F0FFF0"
-    HOTPINK = "#FF69B4"
-    INDIANRED = "#CD5C5C"
-    INDIGO = "#4B0082"
-    IVORY = "#FFFFF0"
-    KHAKI = "#F0E68C"
-    LAVENDER = "#E6E6FA"
-    LAVENDERBLUSH = "#FFF0F5"
-    LAWNGREEN = "#7CFC00"
-    LEMONCHIFFON = "#FFFACD"
-    LIGHTBLUE = "#ADD8E6"
-    LIGHTCORAL = "#F08080"
-    LIGHTCYAN = "#E0FFFF"
-    LIGHTGOLDENRODYELLOW = "#FAFAD2"
-    LIGHTGRAY = "#D3D3D3"
-    LIGHTGREEN = "#90EE90"
-    LIGHTGREY = "#D3D3D3"
-    LIGHTPINK = "#FFB6C1"
-    LIGHTSALMON = "#FFA07A"
-    LIGHTSEAGREEN = "#20B2AA"
-    LIGHTSKYBLUE = "#87CEFA"
-    LIGHTSLATEGRAY = "#778899"
-    LIGHTSLATEGREY = "#778899"
-    LIGHTSTEELBLUE = "#B0C4DE"
-    LIGHTYELLOW = "#FFFFE0"
-    LIME = "#00FF00"
-    LIMEGREEN = "#32CD32"
-    LINEN = "#FAF0E6"
-    MAGENTA = "#FF00FF"
-    MAROON = "#800000"
-    MEDIUMAQUAMARINE = "#66CDAA"
-    MEDIUMBLUE = "#0000CD"
-    MEDIUMORCHID = "#BA55D3"
-    MEDIUMPURPLE = "#9370DB"
-    MEDIUMSEAGREEN = "#3CB371"
-    MEDIUMSLATEBLUE = "#7B68EE"
-    MEDIUMSPRINGGREEN = "#00FA9A"
-    MEDIUMTURQUOISE = "#48D1CC"
-    MEDIUMVIOLETRED = "#C71585"
-    MIDNIGHTBLUE = "#191970"
-    MINTCREAM = "#F5FFFA"
-    MISTYROSE = "#FFE4E1"
-    MOCCASIN = "#FFE4B5"
-    NAVAJOWHITE = "#FFDEAD"
-    NAVY = "#000080"
-    OLDLACE = "#FDF5E6"
-    OLIVE = "#808000"
-    OLIVEDRAB = "#6B8E23"
-    ORANGE = "#FFA500"
-    ORANGERED = "#FF4500"
-    ORCHID = "#DA70D6"
-    PALEGOLDENROD = "#EEE8AA"
-    PALEGREEN = "#98FB98"
-    PALETURQUOISE = "#AFEEEE"
-    PALEVIOLETRED = "#DB7093"
-    PAPAYAWHIP = "#FFEFD5"
-    PEACHPUFF = "#FFDAB9"
-    PERU = "#CD853F"
-    PINK = "#FFC0CB"
-    PLUM = "#DDA0DD"
-    POWDERBLUE = "#B0E0E6"
-    PURPLE = "#800080"
-    REBECCAPURPLE = "#663399"
-    RED = "#FF0000"
-    ROSYBROWN = "#BC8F8F"
-    ROYALBLUE = "#4169E1"
-    SADDLEBROWN = "#8B4513"
-    SALMON = "#FA8072"
-    SANDYBROWN = "#F4A460"
-    SEAGREEN = "#2E8B57"
-    SEASHELL = "#FFF5EE"
-    SIENNA = "#A0522D"
-    SILVER = "#C0C0C0"
-    SKYBLUE = "#87CEEB"
-    SLATEBLUE = "#6A5ACD"
-    SLATEGRAY = "#708090"
-    SLATEGREY = "#708090"
-    SNOW = "#FFFAFA"
-    SPRINGGREEN = "#00FF7F"
-    STEELBLUE = "#4682B4"
-    TAN = "#D2B48C"
-    TEAL = "#008080"
-    THISTLE = "#D8BFD8"
-    TOMATO = "#FF6347"
-    TURQUOISE = "#40E0D0"
-    VIOLET = "#EE82EE"
-    WHEAT = "#F5DEB3"
-    WHITE = "#FFFFFF"
-    WHITESMOKE = "#F5F5F5"
-    YELLOW = "#FFFF00"
-    YELLOWGREEN = "#9ACD32"
+    ALICEBLUE = Color("#F0F8FF")
+    ANTIQUEWHITE = Color("#FAEBD7")
+    AQUA = Color("#00FFFF")
+    AQUAMARINE = Color("#7FFFD4")
+    AZURE = Color("#F0FFFF")
+    BEIGE = Color("#F5F5DC")
+    BISQUE = Color("#FFEBCD")
+    BLACK = Color("#000000")
+    BLANCHEDALMOND = Color("#FFEBCD")
+    BLUE = Color("#0000FF")
+    BLUEVIOLET = Color("#8A2BE2")
+    BROWN = Color("#A52A2A")
+    BURLYWOOD = Color("#DEB887")
+    CADETBLUE = Color("#5F9EA0")
+    CHARTREUSE = Color("#7FFF00")
+    CHOCOLATE = Color("#D2691E")
+    CORAL = Color("#FF7F50")
+    CORNFLOWERBLUE = Color("#6495ED")
+    CORNSILK = Color("#FFF8DC")
+    CRIMSON = Color("#DC143C")
+    CYAN = Color("#00FFFF")
+    DARKBLUE = Color("#00008B")
+    DARKCYAN = Color("#008B8B")
+    DARKGOLDENROD = Color("#B8860B")
+    DARKGRAY = Color("#A9A9A9")
+    DARKGREEN = Color("#006400")
+    DARKGREY = Color("#A9A9A9")
+    DARKKHAKI = Color("#BDB76B")
+    DARKMAGENTA = Color("#8B008B")
+    DARKOLIVEGREEN = Color("#556B2F")
+    DARKORANGE = Color("#FF8C00")
+    DARKORCHID = Color("#9932CC")
+    DARKRED = Color("#8B0000")
+    DARKSALMON = Color("#E9967A")
+    DARKSEAGREEN = Color("#8FBC8F")
+    DARKSLATEBLUE = Color("#483D8B")
+    DARKSLATEGRAY = Color("#2F4F4F")
+    DARKSLATEGREY = Color("#2F4F4F")
+    DARKTURQUOISE = Color("#00CED1")
+    DARKVIOLET = Color("#9400D3")
+    DEEPPINK = Color("#FF1493")
+    DEEPSKYBLUE = Color("#00BFFF")
+    DIMGRAY = Color("#696969")
+    DIMGREY = Color("#696969")
+    DODGERBLUE = Color("#1E90FF")
+    FIREBRICK = Color("#B22222")
+    FLORALWHITE = Color("#FFFAF0")
+    FORESTGREEN = Color("#228B22")
+    FUCHSIA = Color("#FF00FF")
+    GAINSBORO = Color("#DCDCDC")
+    GHOSTWHITE = Color("#F8F8FF")
+    GOLD = Color("#FFD700")
+    GOLDENROD = Color("#DAA520")
+    GRAY = Color("#808080")
+    GREEN = Color("#008000")
+    GREENYELLOW = Color("#ADFF2F")
+    GREY = Color("#808080")
+    HONEYDEW = Color("#F0FFF0")
+    HOTPINK = Color("#FF69B4")
+    INDIANRED = Color("#CD5C5C")
+    INDIGO = Color("#4B0082")
+    IVORY = Color("#FFFFF0")
+    KHAKI = Color("#F0E68C")
+    LAVENDER = Color("#E6E6FA")
+    LAVENDERBLUSH = Color("#FFF0F5")
+    LAWNGREEN = Color("#7CFC00")
+    LEMONCHIFFON = Color("#FFFACD")
+    LIGHTBLUE = Color("#ADD8E6")
+    LIGHTCORAL = Color("#F08080")
+    LIGHTCYAN = Color("#E0FFFF")
+    LIGHTGOLDENRODYELLOW = Color("#FAFAD2")
+    LIGHTGRAY = Color("#D3D3D3")
+    LIGHTGREEN = Color("#90EE90")
+    LIGHTGREY = Color("#D3D3D3")
+    LIGHTPINK = Color("#FFB6C1")
+    LIGHTSALMON = Color("#FFA07A")
+    LIGHTSEAGREEN = Color("#20B2AA")
+    LIGHTSKYBLUE = Color("#87CEFA")
+    LIGHTSLATEGRAY = Color("#778899")
+    LIGHTSLATEGREY = Color("#778899")
+    LIGHTSTEELBLUE = Color("#B0C4DE")
+    LIGHTYELLOW = Color("#FFFFE0")
+    LIME = Color("#00FF00")
+    LIMEGREEN = Color("#32CD32")
+    LINEN = Color("#FAF0E6")
+    MAGENTA = Color("#FF00FF")
+    MAROON = Color("#800000")
+    MEDIUMAQUAMARINE = Color("#66CDAA")
+    MEDIUMBLUE = Color("#0000CD")
+    MEDIUMORCHID = Color("#BA55D3")
+    MEDIUMPURPLE = Color("#9370DB")
+    MEDIUMSEAGREEN = Color("#3CB371")
+    MEDIUMSLATEBLUE = Color("#7B68EE")
+    MEDIUMSPRINGGREEN = Color("#00FA9A")
+    MEDIUMTURQUOISE = Color("#48D1CC")
+    MEDIUMVIOLETRED = Color("#C71585")
+    MIDNIGHTBLUE = Color("#191970")
+    MINTCREAM = Color("#F5FFFA")
+    MISTYROSE = Color("#FFE4E1")
+    MOCCASIN = Color("#FFE4B5")
+    NAVAJOWHITE = Color("#FFDEAD")
+    NAVY = Color("#000080")
+    OLDLACE = Color("#FDF5E6")
+    OLIVE = Color("#808000")
+    OLIVEDRAB = Color("#6B8E23")
+    ORANGE = Color("#FFA500")
+    ORANGERED = Color("#FF4500")
+    ORCHID = Color("#DA70D6")
+    PALEGOLDENROD = Color("#EEE8AA")
+    PALEGREEN = Color("#98FB98")
+    PALETURQUOISE = Color("#AFEEEE")
+    PALEVIOLETRED = Color("#DB7093")
+    PAPAYAWHIP = Color("#FFEFD5")
+    PEACHPUFF = Color("#FFDAB9")
+    PERU = Color("#CD853F")
+    PINK = Color("#FFC0CB")
+    PLUM = Color("#DDA0DD")
+    POWDERBLUE = Color("#B0E0E6")
+    PURPLE = Color("#800080")
+    REBECCAPURPLE = Color("#663399")
+    RED = Color("#FF0000")
+    ROSYBROWN = Color("#BC8F8F")
+    ROYALBLUE = Color("#4169E1")
+    SADDLEBROWN = Color("#8B4513")
+    SALMON = Color("#FA8072")
+    SANDYBROWN = Color("#F4A460")
+    SEAGREEN = Color("#2E8B57")
+    SEASHELL = Color("#FFF5EE")
+    SIENNA = Color("#A0522D")
+    SILVER = Color("#C0C0C0")
+    SKYBLUE = Color("#87CEEB")
+    SLATEBLUE = Color("#6A5ACD")
+    SLATEGRAY = Color("#708090")
+    SLATEGREY = Color("#708090")
+    SNOW = Color("#FFFAFA")
+    SPRINGGREEN = Color("#00FF7F")
+    STEELBLUE = Color("#4682B4")
+    TAN = Color("#D2B48C")
+    TEAL = Color("#008080")
+    THISTLE = Color("#D8BFD8")
+    TOMATO = Color("#FF6347")
+    TURQUOISE = Color("#40E0D0")
+    VIOLET = Color("#EE82EE")
+    WHEAT = Color("#F5DEB3")
+    WHITE = Color("#FFFFFF")
+    WHITESMOKE = Color("#F5F5F5")
+    YELLOW = Color("#FFFF00")
+    YELLOWGREEN = Color("#9ACD32")
 
 
 COLOR_PALETTE = [
