@@ -3,12 +3,19 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+import numpy as np
+from PIL import Image
+from pathlib import Path
+
 from .base import Descriptor, Map, Transformable
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
 
+    from numpy.typing import NDArray
+
     from fdray.typing import ColorLike
+    from typing import Self
 
 
 class Texture(Transformable):
@@ -24,6 +31,8 @@ class TextureMap(Map):
 
 
 class Pigment(Transformable):
+    @classmethod
+    def uv_mapping(cls, data: str|Path|NDArray|Image.Image, interpolate:int=2) -> Self
     pass
 
 
