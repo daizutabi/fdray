@@ -37,12 +37,32 @@ class Pigment(Transformable):
         data: str | Path | NDArray | Image,
         interpolate: int = 2,
     ) -> Self:
+        """Create a UV mapping pigment from image data.
+
+        Args:
+            data (str | Path | NDArray | Image): The image data. Can be a file path,
+                NumPy array, or PIL Image.
+            interpolate (int, optional): The interpolation method. Defaults to 2.
+                0: none, 1: linear, 2: bilinear, 3: trilinear, 4: bicubic.
+
+        Returns:
+            Self: A Pigment instance with UV mapping.
+
+        Raises:
+            FileNotFoundError: If the image file does not exist.
+            ValueError: If the interpolation value is invalid.
+        """
+        if not 2 <= interpolate <= 4:
+            msg = "interpolate must be between 2 and 4"
+            raise ValueError(msg)
+
         if isinstance(data, str | Path):
             path = Path(data).as_posix()
         else:
             path = fdray.utils.image.save(data).as_posix()
 
-        return cls(f'uv_mapping image_map {{ png "{path}" interpolate {interpolate} }}')
+        attr = f'uv_mapping image_map {{ png "{path}" interpolate {interpolate} }}'
+        return cls(attr)
 
 
 class PigmentMap(Map):
