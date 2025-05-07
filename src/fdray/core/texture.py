@@ -1,21 +1,21 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import TYPE_CHECKING
 
-import numpy as np
-from PIL import Image
-from pathlib import Path
+import fdray.utils.image
 
 from .base import Descriptor, Map, Transformable
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
+    from typing import Self
 
     from numpy.typing import NDArray
+    from PIL.Image import Image
 
     from fdray.typing import ColorLike
-    from typing import Self
 
 
 class Texture(Transformable):
@@ -32,8 +32,17 @@ class TextureMap(Map):
 
 class Pigment(Transformable):
     @classmethod
-    def uv_mapping(cls, data: str|Path|NDArray|Image.Image, interpolate:int=2) -> Self
-    pass
+    def uv_mapping(
+        cls,
+        data: str | Path | NDArray | Image,
+        interpolate: int = 2,
+    ) -> Self:
+        if isinstance(data, str | Path):
+            path = Path(data).as_posix()
+        else:
+            path = fdray.utils.image.save(data).as_posix()
+
+        return cls(f'uv_mapping image_map {{ png "{path}" interpolate {interpolate} }}')
 
 
 class PigmentMap(Map):
