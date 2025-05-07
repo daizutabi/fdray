@@ -10,7 +10,43 @@ if TYPE_CHECKING:
     from polars import DataFrame
 
 
-def with_angles(df: DataFrame, x: str = "x", y: str = "y", z: str = "z") -> DataFrame:
+def to_spherical_coordinates(
+    df: DataFrame,
+    x: str = "x",
+    y: str = "y",
+    z: str = "z",
+) -> DataFrame:
+    """Convert Cartesian coordinates to spherical coordinates.
+
+    This function converts Cartesian coordinates (x, y, z) to spherical coordinates
+    (theta, phi) and handles special cases:
+
+    - Normalizes phi to [0, 360] degrees
+    - Duplicates data at poles (theta = 0, 180) for all phi values
+    - Adds data at phi = 360 for continuity
+
+    The coordinate transformation follows these equations:
+        # Cartesian to spherical
+        theta = arccos(x)  # polar angle [0, 180] degrees
+        phi = arctan2(z, y)  # azimuthal angle [0, 360] degrees
+
+        # Spherical to Cartesian
+        x = cos(theta)
+        y = sin(theta) * cos(phi)
+        z = sin(theta) * sin(phi)
+
+    Args:
+        df (DataFrame): Input DataFrame containing Cartesian coordinates.
+        x (str, optional): Column name for x-coordinate. Defaults to "x".
+        y (str, optional): Column name for y-coordinate. Defaults to "y".
+        z (str, optional): Column name for z-coordinate. Defaults to "z".
+
+    Returns:
+        DataFrame: DataFrame with added theta and phi columns.
+
+    Raises:
+        ValueError: If required columns are missing.
+    """
     import polars as pl
 
     df = df.with_columns(
@@ -22,6 +58,7 @@ def with_angles(df: DataFrame, x: str = "x", y: str = "y", z: str = "z") -> Data
         .otherwise(pl.col("phi")),
     )
 
+    # Handle poles (theta = 0, 180)
     df_pole = (
         df.filter(pl.col("theta").is_in([0, 180]))
         .with_columns(phi=df["phi"].unique().to_list())
@@ -29,6 +66,7 @@ def with_angles(df: DataFrame, x: str = "x", y: str = "y", z: str = "z") -> Data
     )
     df = pl.concat([df_pole, df]).unique(["theta", "phi"])
 
+    # Add data at phi = 360 for continuity
     df_meridian = df.filter(pl.col("phi") == 0).with_columns(
         phi=pl.lit(360).cast(pl.Int64),
     )
