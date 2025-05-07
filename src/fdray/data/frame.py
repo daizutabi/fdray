@@ -35,7 +35,7 @@ def with_angles(df: DataFrame, x: str = "x", y: str = "y", z: str = "z") -> Data
     return pl.concat([df, df_meridian]).sort("theta", "phi")
 
 
-def to_spherical_image(
+def visualize_spherical_data(
     df: DataFrame,
     value: str,
     phi: str = "phi",
@@ -45,6 +45,27 @@ def to_spherical_image(
     vmax: float | None = None,
     cmap_name: str = "jet",
 ) -> Image.Image:
+    """Visualize spherical coordinate data as an image.
+
+    Args:
+        df (DataFrame): Input DataFrame containing spherical coordinate data.
+        value (str): Column name for the values to be visualized.
+        phi (str, optional): Column name for azimuthal angle. Defaults to "phi".
+        theta (str, optional): Column name for polar angle. Defaults to "theta".
+        scale (float, optional): Scale factor for the output image. Defaults to 1.
+        vmin (float | None, optional): Minimum value for normalization.
+            Defaults to None.
+        vmax (float | None, optional): Maximum value for normalization.
+            Defaults to None.
+        cmap_name (str, optional): Name of the colormap to use. Defaults to "jet".
+
+    Returns:
+        Image.Image: The generated spherical image.
+
+    Raises:
+        ValueError: If required columns are missing or if scale is invalid.
+        KeyError: If the specified colormap does not exist.
+    """
     import matplotlib as mpl
 
     df = df.sort(theta, phi)
