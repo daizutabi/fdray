@@ -1,12 +1,19 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import TYPE_CHECKING
+
+import fdray.utils.image
 
 from .base import Descriptor, Map, Transformable
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
+    from typing import Self
+
+    from numpy.typing import NDArray
+    from PIL.Image import Image
 
     from fdray.typing import ColorLike
 
@@ -24,7 +31,38 @@ class TextureMap(Map):
 
 
 class Pigment(Transformable):
-    pass
+    @classmethod
+    def uv_mapping(
+        cls,
+        data: str | Path | NDArray | Image,
+        interpolate: int = 2,
+    ) -> Self:
+        """Create a UV mapping pigment from image data.
+
+        Args:
+            data (str | Path | NDArray | Image): The image data. Can be a file path,
+                NumPy array, or PIL Image.
+            interpolate (int, optional): The interpolation method. Defaults to 2.
+                0: none, 1: linear, 2: bilinear, 3: trilinear, 4: bicubic.
+
+        Returns:
+            Self: A Pigment instance with UV mapping.
+
+        Raises:
+            FileNotFoundError: If the image file does not exist.
+            ValueError: If the interpolation value is invalid.
+        """
+        if not 2 <= interpolate <= 4:
+            msg = "interpolate must be between 2 and 4"
+            raise ValueError(msg)
+
+        if isinstance(data, str | Path):
+            path = Path(data).as_posix()
+        else:
+            path = fdray.utils.image.save(data).as_posix()
+
+        attr = f'uv_mapping image_map {{ png "{path}" interpolate {interpolate} }}'
+        return cls(attr)
 
 
 class PigmentMap(Map):
