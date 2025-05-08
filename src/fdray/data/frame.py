@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from itertools import product
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -8,6 +9,30 @@ from PIL.Image import Resampling
 
 if TYPE_CHECKING:
     from polars import DataFrame
+
+
+def from_spherical_coordinates(
+    step_phi: int = 3,
+    step_theta: int = 2,
+) -> DataFrame:
+    import polars as pl
+    from polars import DataFrame
+
+    angles = product(range(0, 360, step_phi), range(0, 180 + step_theta, step_theta))
+    return (
+        DataFrame(angles, schema=["phi", "theta"])
+        .with_columns(
+            phi=pl.col("phi").radians(),
+            theta=pl.col("theta").radians(),
+        )
+        .with_columns(
+            x=pl.col("theta").sin() * pl.col("phi").cos(),
+            y=pl.col("theta").cos(),
+            z=pl.col("theta").sin() * pl.col("phi").sin(),
+        )
+        .select("x", "y", "z")
+        .unique()
+    )
 
 
 def to_spherical_coordinates(
@@ -26,14 +51,26 @@ def to_spherical_coordinates(
     - Adds data at phi = 360 for continuity
 
     The coordinate transformation follows these equations:
-        # Cartesian to spherical
-        theta = arccos(x)  # polar angle [0, 180] degrees
-        phi = arctan2(z, y)  # azimuthal angle [0, 360] degrees
 
-        # Spherical to Cartesian
-        x = cos(theta)
-        y = sin(theta) * cos(phi)
-        z = sin(theta) * sin(phi)
+    ```python
+    # Cartesian to spherical
+    theta = arccos(y)  # polar angle [0, 180] degrees
+    phi = arctan2(z, x)  # azimuthal angle [0, 360] degrees
+
+    # Spherical to Cartesian
+    x = sin(theta) * cos(phi)
+    y = cos(theta)
+    z = sin(theta) * sin(phi)
+    ```
+
+    The coordinates correspond to POV-Ray's uv_mapping as follows:
+
+        - North pole (theta = 0°) is at y = 1
+        - South pole (theta = 180°) is at y = -1
+        - phi = 0° is along the positive x-axis
+        - The image's top edge (v = 0) maps to y = 1
+        - The image's bottom edge (v = 1) maps to y = -1
+        - The image's left and right edges connect at x-axis
 
     Args:
         df (DataFrame): Input DataFrame containing Cartesian coordinates.
@@ -50,8 +87,8 @@ def to_spherical_coordinates(
     import polars as pl
 
     df = df.with_columns(
-        theta=pl.col(x).arccos().degrees().round().cast(pl.Int64),
-        phi=pl.arctan2(z, y).degrees().round().cast(pl.Int64),
+        theta=pl.col(y).arccos().degrees().round().cast(pl.Int64),
+        phi=pl.arctan2(z, x).degrees().round().cast(pl.Int64),
     ).with_columns(
         phi=pl.when(pl.col("phi") < 0)
         .then(pl.col("phi") + 360)
@@ -110,7 +147,6 @@ def visualize_spherical_data(
     n_theta = df[theta].n_unique()
     n_phi = df[phi].n_unique()
     array = df[value].to_numpy().reshape((n_theta, n_phi))
-    array = array[:, ::-1]
 
     if vmin is None:
         vmin = np.min(array)
