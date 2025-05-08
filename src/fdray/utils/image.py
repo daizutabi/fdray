@@ -50,7 +50,7 @@ def save(data: NDArray | Image.Image) -> Path:
         image.save(path)
 
     def unlink(path: Path = path) -> None:
-        path.unlink(missing_ok=True)
+        path.unlink(missing_ok=True)  # no cov
 
     atexit.register(unlink)
 
