@@ -12,11 +12,57 @@ if TYPE_CHECKING:
 
 
 def from_spherical_coordinates(
+    x: str = "x",
+    y: str = "y",
+    z: str = "z",
     step_phi: int = 3,
     step_theta: int = 2,
 ) -> DataFrame:
+    """Generate Cartesian coordinates from spherical coordinates.
+
+    This function generates a grid of points on a unit sphere by converting
+    spherical coordinates to Cartesian coordinates. The coordinates are generated
+    with the following ranges:
+
+        - phi: [0, 360) degrees with step_phi
+        - theta: [0, 180] degrees with step_theta
+
+    The coordinates correspond to POV-Ray's uv_mapping as follows:
+
+        - North pole (theta = 0°) is at y = 1
+        - South pole (theta = 180°) is at y = -1
+        - phi = 0° is along the positive x-axis
+        - The image's top edge (v = 0) maps to y = 1
+        - The image's bottom edge (v = 1) maps to y = -1
+        - The image's left and right edges connect at x-axis
+
+    Args:
+        x (str, optional): Column name for x-coordinate. Defaults to "x".
+        y (str, optional): Column name for y-coordinate. Defaults to "y".
+        z (str, optional): Column name for z-coordinate. Defaults to "z".
+        step_phi (int, optional): Step size for azimuthal angle in degrees.
+            Must be a divisor of 360. Defaults to 3.
+        step_theta (int, optional): Step size for polar angle in degrees.
+            Must be a divisor of 180. Defaults to 2.
+
+    Returns:
+        DataFrame: DataFrame containing Cartesian coordinates (x, y, z) of points
+            on a unit sphere.
+
+    Raises:
+        ValueError: If step_phi is not a divisor of 360 or step_theta is not a
+            divisor of 180.
+    """
     import polars as pl
     from polars import DataFrame
+
+    if 360 % step_phi != 0:
+        msg = f"step_phi ({step_phi}) must be a divisor of 360"
+        raise ValueError(msg)
+
+    if 180 % step_theta != 0:
+        msg = f"step_theta ({step_theta}) must be a divisor of 180"
+        raise ValueError(msg)
 
     angles = product(range(0, 360, step_phi), range(0, 180 + step_theta, step_theta))
     return (
@@ -26,11 +72,11 @@ def from_spherical_coordinates(
             theta=pl.col("theta").radians(),
         )
         .with_columns(
-            x=pl.col("theta").sin() * pl.col("phi").cos(),
-            y=pl.col("theta").cos(),
-            z=pl.col("theta").sin() * pl.col("phi").sin(),
+            (pl.col("theta").sin() * pl.col("phi").cos()).alias(x),
+            pl.col("theta").cos().alias(y),
+            (pl.col("theta").sin() * pl.col("phi").sin()).alias(z),
         )
-        .select("x", "y", "z")
+        .select(x, y, z)
         .unique()
     )
 
