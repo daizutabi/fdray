@@ -41,7 +41,7 @@ dev = [
   "pytest-xdist>=3.6",
   "ruff>=0.11",
 ]
-docs = ["mkapi", "mkdocs-material", "mkdocs-nbsync", "nbconvert>=7"]
+docs = ["mkapi>=4.4", "mkdocs-material", "mkdocs-nbsync", "nbconvert>=7"]
 
 [tool.pytest.ini_options]
 addopts = ["--cov=fdray", "--cov-report=lcov:lcov.info", "--doctest-modules"]
