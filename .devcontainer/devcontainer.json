@@ -1,7 +1,7 @@
 {
   "build": { "dockerfile": "Dockerfile" },
   "features": {
-    "ghcr.io/devcontainers-contrib/features/starship:1": {}
+    "ghcr.io/devcontainers-extra/features/starship:1": {}
   },
   "customizations": {
     "vscode": {
