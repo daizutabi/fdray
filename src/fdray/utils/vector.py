@@ -45,6 +45,9 @@ class Vector:
                 return self.x == o[0] and self.y == o[1] and self.z == o[2]
         return False
 
+    def __hash__(self) -> int:
+        return hash((self.x, self.y, self.z))
+
     def __iter__(self) -> Iterator[float]:
         yield self.x
         yield self.y
