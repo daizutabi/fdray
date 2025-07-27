@@ -32,7 +32,7 @@ def get_colormap(name: str, num_colors: int = 256) -> list[RGB]:
     except ImportError:  # no cov
         raise_import_error(f"Colormap '{name}' requires matplotlib.")
 
-    cmap = plt.get_cmap(name)
+    cmap = plt.get_cmap(name)  # pyright: ignore[reportPossiblyUnboundVariable]
     return [tuple(cmap(i)[:3]) for i in np.linspace(0, 1, num_colors)]
 
 
@@ -85,7 +85,7 @@ def colorize_direction_field(
     hsv[..., 1] = np.where(geom, 1 - z**2, 0)
     hsv[..., 2] = 1 - (1 - z) ** 2 / 4
 
-    return hsv_to_rgb(hsv)
+    return hsv_to_rgb(hsv)  # pyright: ignore[reportPossiblyUnboundVariable]
 
 
 def colorize_direction(vector: Sequence, axis: int = 2) -> RGB:

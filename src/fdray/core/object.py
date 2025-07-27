@@ -196,7 +196,7 @@ def has_attributes(obj: Any) -> bool:
 class Csg(Object):
     """Base class for Constructive Solid Geometry (CSG) operations."""
 
-    def __add__(self, other: Any) -> Self:
+    def __add__(self, other: Any) -> Self:  # pyright: ignore[reportIncompatibleMethodOverride]
         """Add another shape to this CSG operation.
 
         Args:
