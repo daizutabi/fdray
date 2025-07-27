@@ -80,6 +80,8 @@ ignore = [
 
 [tool.pyright]
 include = ["src", "tests"]
+reportIncompatibleMethodOverride = false
+reportIncompatibleVariableOverride = false
 strictDictionaryInference = true
 strictListInference = true
 strictSetInference = true
