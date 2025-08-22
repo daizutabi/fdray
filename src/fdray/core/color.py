@@ -14,7 +14,7 @@ common web color standards.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, final
 
 from fdray.data.color import colorize_direction
 
@@ -173,7 +173,7 @@ class Background(Color):
 
 
 class ColorMap(Map):
-    cls = Color
+    cls: type = Color
 
 
 def rgb(color: str) -> str | RGB | Color:
@@ -212,13 +212,14 @@ def rgb(color: str) -> str | RGB | Color:
     if color.islower() and hasattr(ColorName, color.upper()):
         return getattr(ColorName, color.upper())
 
-    if not isinstance(color, str) or not color.startswith("#") or len(color) < 7:
+    if not isinstance(color, str) or not color.startswith("#") or len(color) < 7:  # pyright: ignore[reportUnnecessaryIsInstance]
         return color
 
     r, g, b = color[1:3], color[3:5], color[5:7]
     return int(r, 16) / 255, int(g, 16) / 255, int(b, 16) / 255
 
 
+@final
 class ColorName:
     """Color name enumeration with hex values."""
 

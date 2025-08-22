@@ -32,10 +32,8 @@ class LightSource(Descriptor):
 
     def __str__(self) -> str:
         if self.from_camera:
-            msg = (
-                "Cannot convert camera-relative light source to string directly. "
-                "Use Scene.to_str() or LightSource.to_str(camera) instead.",
-            )
+            msg = "Cannot convert camera-relative light source to string directly. "
+            msg += "Use Scene.to_str() or LightSource.to_str(camera) instead."
             raise ValueError(msg)
 
         return super().__str__()

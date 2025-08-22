@@ -72,7 +72,7 @@ class Element(Base):
 
         for other in args:
             if isinstance(other, list | tuple):
-                attrs.extend(other)
+                attrs.extend(other)  # pyright: ignore[reportUnknownArgumentType]
             else:
                 attrs.append(other)
 
@@ -94,7 +94,7 @@ class Map(Base):
         self.args = []
         for arg in args:
             if isinstance(arg, dict):
-                self.args.extend(arg.items())
+                self.args.extend(arg.items())  # pyright: ignore[reportUnknownArgumentType]
             else:
                 self.args.append(tuple(arg))
 

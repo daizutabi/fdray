@@ -77,10 +77,12 @@ ignore = [
 "tests/*" = ["ANN", "FBT", "S101"]
 "*.ipynb" = ["ANN", "F403", "F405", "T201"]
 
-[tool.pyright]
-include = ["src", "tests"]
-reportIncompatibleMethodOverride = false
+[tool.basedpyright]
+include = ["src"]
+exclude = ["notebooks", "tests"]
+reportAny = false
+reportExplicitAny = false
+reportImplicitOverride = false
+reportImportCycles = false
 reportIncompatibleVariableOverride = false
-strictDictionaryInference = true
-strictListInference = true
-strictSetInference = true
+reportUnusedCallResult = false

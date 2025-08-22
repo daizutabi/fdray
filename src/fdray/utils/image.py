@@ -11,6 +11,11 @@ from PIL import Image
 if TYPE_CHECKING:
     from numpy.typing import NDArray
 
+# pyright: reportMissingTypeArgument=false
+# pyright: reportUnknownArgumentType=false
+# pyright: reportUnknownParameterType=false
+# pyright: reportUnknownVariableType=false
+
 
 def trim(image: Image.Image, margin: int = 0) -> Image.Image:
     """Trim the output image to the non-transparent region.
@@ -28,7 +33,7 @@ def trim(image: Image.Image, margin: int = 0) -> Image.Image:
     top, bottom = np.min(y), np.max(y)
     left, right = np.min(x), np.max(x)
     return image.crop(
-        (left - margin, top - margin, right + margin + 1, bottom + margin + 1),  # type: ignore
+        (left - margin, top - margin, right + margin + 1, bottom + margin + 1),  # pyright: ignore[reportArgumentType]
     )
 
 

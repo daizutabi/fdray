@@ -199,10 +199,10 @@ def visualize_spherical_data(
     if vmax is None:
         vmax = np.max(array)
     if vmin != vmax:
-        array = (array - vmin) / (vmax - vmin)  # type: ignore
+        array = (array - vmin) / (vmax - vmin)  # pyright: ignore[reportOperatorIssue, reportUnknownVariableType]
 
     cmap = mpl.colormaps[cmap_name]
-    array = (255 * cmap(array)).astype(np.uint8)
+    array = (255 * cmap(array)).astype(np.uint8)  # pyright: ignore[reportUnknownArgumentType]
     image = Image.fromarray(array)
 
     if scale == 1:

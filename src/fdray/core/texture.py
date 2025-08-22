@@ -27,14 +27,14 @@ class InteriorTexture(Transformable):
 
 
 class TextureMap(Map):
-    cls = Texture
+    cls: type = Texture
 
 
 class Pigment(Transformable):
     @classmethod
     def uv_mapping(
         cls,
-        data: str | Path | NDArray | Image,
+        data: str | Path | NDArray | Image,  # pyright: ignore[reportMissingTypeArgument, reportUnknownParameterType]
         interpolate: int = 2,
     ) -> Self:
         """Create a UV mapping pigment from image data.
@@ -59,14 +59,14 @@ class Pigment(Transformable):
         if isinstance(data, str | Path):
             path = Path(data).as_posix()
         else:
-            path = fdray.utils.image.save(data).as_posix()
+            path = fdray.utils.image.save(data).as_posix()  # pyright: ignore[reportUnknownMemberType]
 
         attr = f'uv_mapping image_map {{ png "{path}" interpolate {interpolate} }}'
         return cls(attr)
 
 
 class PigmentMap(Map):
-    cls = Pigment
+    cls: type = Pigment
 
 
 class Normal(Transformable):
@@ -74,12 +74,12 @@ class Normal(Transformable):
 
 
 class NormalMap(Map):
-    cls = Normal
+    cls: type = Normal
 
 
 class SlopeMap(Map):
-    def __init__(self, *args: tuple[float, Sequence[float]]) -> None:
-        self.args = list(args)
+    def __init__(self, *args: tuple[float, Sequence[float]]) -> None:  # pyright: ignore[reportMissingSuperCall]
+        self.args = list(args)  # pyright: ignore[reportUnannotatedClassAttribute]
 
     def __iter__(self) -> Iterator[str]:
         for k, arg in self.args:

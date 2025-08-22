@@ -196,7 +196,7 @@ def has_attributes(obj: Any) -> bool:
 class Csg(Object):
     """Base class for Constructive Solid Geometry (CSG) operations."""
 
-    def __add__(self, other: Any) -> Self:
+    def __add__(self, other: Any) -> Self:  # pyright: ignore[reportIncompatibleMethodOverride]
         """Add another shape to this CSG operation.
 
         Args:
@@ -337,10 +337,10 @@ class Cuboid(Object):
             center = (center,) * 3
         if not isinstance(size, Sequence):
             size = (size,) * 3
-        half_x, half_y, half_z = size[0] / 2, size[1] / 2, size[2] / 2
-        corner1 = (center[0] - half_x, center[1] - half_y, center[2] - half_z)
-        corner2 = (center[0] + half_x, center[1] + half_y, center[2] + half_z)
-        return str(Box(corner1, corner2, *self.attrs))
+        half_x, half_y, half_z = size[0] / 2, size[1] / 2, size[2] / 2  # pyright: ignore[reportOperatorIssue, reportUnknownVariableType]
+        corner1 = (center[0] - half_x, center[1] - half_y, center[2] - half_z)  # pyright: ignore[reportUnknownVariableType]
+        corner2 = (center[0] + half_x, center[1] + half_y, center[2] + half_z)  # pyright: ignore[reportUnknownVariableType]
+        return str(Box(corner1, corner2, *self.attrs))  # pyright: ignore[reportUnknownArgumentType]
 
 
 class Cube(Object):
@@ -527,7 +527,7 @@ class SphereSweep(Object):
 
         if len(centers) == 1:
             radius = radius[0] if isinstance(radius, Sequence) else radius
-            return str(Sphere(centers[0], radius, *self.attrs))
+            return str(Sphere(centers[0], radius, *self.attrs))  # pyright: ignore[reportArgumentType]
 
         if kind in ["b_spline", "cubic_spline"] and len(centers) < 4:
             return str(SphereSweep("linear_spline", centers, radius, *self.attrs))
@@ -635,7 +635,7 @@ class Curve(Polyline):
         if isinstance(radius, Sequence):
             radius = [radius[0], *radius, radius[-1]]
 
-        return str(SphereSweep(self.kind, centers, radius, *self.attrs))
+        return str(SphereSweep(self.kind, centers, radius, *self.attrs))  # pyright: ignore[reportArgumentType]
 
 
 class Text(Object):
@@ -667,7 +667,7 @@ class Text(Object):
         attrs = (str(attr) for attr in self.attrs)
         yield from (attr for attr in attrs if attr)
 
-    def align(self, longitude: float = 0, latitude: float = 0) -> Self:
+    def align(self, longitude: float = 0, latitude: float = 0) -> Self:  # pyright: ignore[reportIncompatibleMethodOverride]
         """Align the text with the given longitude and latitude.
 
         Args:
@@ -719,7 +719,7 @@ class Text(Object):
 
         search_name = font_path.name.lower()
 
-        font_files = [Path(f) for f in font_manager.findSystemFonts()]
+        font_files = [Path(f) for f in font_manager.findSystemFonts()]  # pyright: ignore[reportUnknownMemberType]
         font_files = [f for f in font_files if f.suffix == ".ttf"]
 
         for font_file in font_files:

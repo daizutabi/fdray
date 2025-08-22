@@ -5,6 +5,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+# pyright: reportUnknownArgumentType=false
+# pyright: reportUnknownVariableType=false
+
 
 def format_code(text: str) -> str:
     return "\n".join(iter_codes(text.rstrip()))

@@ -31,10 +31,10 @@ def to_str(arg: Any) -> str:
 
 def convert(arg: Any) -> str:
     if isinstance(arg, list | tuple | np.ndarray):
-        if len(arg) == 2:
+        if len(arg) == 2:  # pyright: ignore[reportUnknownArgumentType]
             return f"{to_str(arg[0])} {to_str(arg[1])}"
 
-        arg = ", ".join(to_str(x) for x in arg)
+        arg = ", ".join(to_str(x) for x in arg)  # pyright: ignore[reportUnknownVariableType]
         return f"<{arg}>"
 
     return str(arg)
