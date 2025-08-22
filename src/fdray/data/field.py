@@ -17,6 +17,13 @@ if TYPE_CHECKING:
     from numpy.typing import NDArray
 
 
+# pyright: reportMissingTypeArgument=false
+# pyright: reportUnknownArgumentType=false
+# pyright: reportUnknownMemberType=false
+# pyright: reportUnknownParameterType=false
+# pyright: reportUnknownVariableType=false
+
+
 class Union(BaseUnion):
     @overload
     @classmethod

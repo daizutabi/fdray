@@ -6,6 +6,7 @@ import numpy as np
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from typing import Any
 
     from numpy.typing import NDArray
 
@@ -33,13 +34,13 @@ def get_colormap(name: str, num_colors: int = 256) -> list[RGB]:
         raise_import_error(f"Colormap '{name}' requires matplotlib.")
 
     cmap = plt.get_cmap(name)  # pyright: ignore[reportPossiblyUnboundVariable]
-    return [tuple(cmap(i)[:3]) for i in np.linspace(0, 1, num_colors)]
+    return [tuple(cmap(i)[:3]) for i in np.linspace(0, 1, num_colors)]  # pyright: ignore[reportUnknownArgumentType]
 
 
 def colorize_direction_field(
-    field: Sequence | NDArray,
+    field: Sequence[Any] | NDArray[np.number],
     axis: int = 2,
-) -> NDArray:
+) -> NDArray[np.float64]:
     """Colorize a vector field as colors based on vector directions.
 
     This function maps direction vectors to colors using a spherical
@@ -88,7 +89,7 @@ def colorize_direction_field(
     return hsv_to_rgb(hsv)  # pyright: ignore[reportPossiblyUnboundVariable]
 
 
-def colorize_direction(vector: Sequence, axis: int = 2) -> RGB:
+def colorize_direction(vector: Sequence[float], axis: int = 2) -> RGB:
     """Colorize a single direction vector.
 
     This function converts a direction vector to a color based

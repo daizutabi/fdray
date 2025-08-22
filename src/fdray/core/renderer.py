@@ -26,7 +26,7 @@ class RenderError(Exception):
     """Rendering error"""
 
     def __init__(self, stderr: str) -> None:
-        lines = []
+        lines: list[str] = []
         for line in stderr.splitlines():
             if "[Parsing" in line:
                 lines.clear()
