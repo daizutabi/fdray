@@ -183,7 +183,7 @@ class Union(BaseUnion):
             obj = Cube((0, 0, 0), 0.85)
 
         mapping = mapping or get_default_mapping(region)
-        objects = {k: obj.add(v) for k, v in mapping.items()}
+        objects = {k: obj.add(v) for k, v in mapping.items()}  # ty: ignore[possibly-unbound-attribute]
         it = iter_objects_from_dict(objects, region, spacing)
 
         return cls(*it) if as_union else list(it)
