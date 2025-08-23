@@ -46,7 +46,7 @@ jobs:
       - name: Ruff check
         run: uvx ruff check
       - name: Type check (ty)
-        run: uvx typ check
+        run: uvx ty check
       - name: Type check (basedpyright)
         run: uvx basedpyright
       - name: Run tests
