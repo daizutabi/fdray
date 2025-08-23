@@ -86,3 +86,6 @@ reportImplicitOverride = false
 reportImportCycles = false
 reportIncompatibleVariableOverride = false
 reportUnusedCallResult = false
+
+[tool.ty.rules]
+unresolved-import = "ignore"
