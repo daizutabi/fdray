@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from itertools import cycle
-from typing import TYPE_CHECKING, Literal, overload
+from typing import TYPE_CHECKING, Any, Literal, Self, overload
 
 import numpy as np
 
@@ -12,7 +12,6 @@ from fdray.core.object import Union as BaseUnion
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator, Mapping, Sequence
-    from typing import Any, Self
 
     from numpy.typing import NDArray
 

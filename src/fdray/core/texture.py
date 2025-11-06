@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Self
 
 import fdray.utils.image
 
@@ -10,7 +10,6 @@ from .base import Descriptor, Map, Transformable
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
-    from typing import Self
 
     from numpy.typing import NDArray
     from PIL.Image import Image
