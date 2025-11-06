@@ -4,7 +4,7 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import MISSING, dataclass, fields
 from math import degrees
-from typing import TYPE_CHECKING, Any, ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar, Self
 
 from fdray.utils.format import format_code, to_html
 from fdray.utils.string import convert, to_snake_case
@@ -12,7 +12,6 @@ from fdray.utils.vector import Vector
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
-    from typing import Any, Self
 
     from fdray.typing import Point
 

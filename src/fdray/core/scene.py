@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Self
 
 from fdray.utils.format import format_code, to_html
 
@@ -12,7 +12,6 @@ from .light_source import LightSource
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-    from typing import Any, Self
 
     from PIL import Image
 
