@@ -18,7 +18,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from itertools import repeat
 from pathlib import Path
-from typing import TYPE_CHECKING, ClassVar, Literal, overload
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, Self, overload
 
 from fdray.utils.string import convert
 from fdray.utils.vector import Vector
@@ -30,7 +30,6 @@ from .texture import Finish, Normal, Pigment, Texture
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-    from typing import Any, Self
 
     import numpy as np
     from numpy.typing import NDArray

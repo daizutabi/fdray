@@ -14,7 +14,7 @@ common web color standards.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, final
+from typing import TYPE_CHECKING, Self, final
 
 from fdray.data.color import colorize_direction
 
@@ -22,7 +22,6 @@ from .base import Map
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
-    from typing import Self
 
     from fdray.typing import RGB, ColorLike
 

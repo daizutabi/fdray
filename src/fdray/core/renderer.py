@@ -7,7 +7,7 @@ import subprocess
 import time
 from pathlib import Path
 from tempfile import NamedTemporaryFile, mkdtemp
-from typing import TYPE_CHECKING, Literal, overload
+from typing import TYPE_CHECKING, Any, Literal, overload
 
 import numpy as np
 from PIL import Image
@@ -17,8 +17,6 @@ import fdray.utils.image
 from .scene import Scene
 
 if TYPE_CHECKING:
-    from typing import Any
-
     from numpy.typing import NDArray
 
 
