@@ -32,14 +32,17 @@ Issues = "https://github.com/daizutabi/fdray/issues"
 
 [dependency-groups]
 dev = [
+  "basedpyright>=1.32.1",
   "ipykernel>=6",
   "matplotlib>=3.6",
   "moviepy>=2",
   "polars>=1",
+  "prek>=0.2.13",
   "pytest-clarity>=1",
   "pytest-cov>=6",
   "pytest-randomly>=3.16",
   "pytest-xdist>=3.6",
+  "ruff>=0.14.3",
 ]
 docs = ["mkapi>=4.4", "mkdocs-material", "mkdocs-nbsync", "nbconvert>=7"]
 
