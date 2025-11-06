@@ -21,12 +21,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y povray povray-includes
-      - name: Set up Python 3.13
-        uses: actions/setup-python@v5
+      - name: Install uv and set up Python
+        uses: astral-sh/setup-uv@v7
         with:
-          python-version: 3.13
-      - name: Install uv
-        run: pip install uv
+          python-version: 3.14
+          activate-environment: true
       - name: Install the project
         run: uv sync --group docs
       - name: Deploy documentation
