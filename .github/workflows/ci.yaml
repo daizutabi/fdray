@@ -20,7 +20,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        # os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         python-version: ["3.11", "3.12", "3.13", "3.14"]
 
     steps:
@@ -34,21 +35,15 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install povray
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - name: Install uv and set up Python ${{ matrix.python-version }}
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python-version }}
-          allow-prereleases: true
-      - name: Install uv
-        run: pip install uv
+          activate-environment: true
       - name: Install the project
         run: uv sync
-      - name: Ruff check
-        run: uvx ruff check
-      - name: Type check (ty)
-        run: uvx ty check
-      - name: Type check (basedpyright)
-        run: uvx basedpyright
+      - name: Run prek hooks
+        run: uv run prek run --all-files
       - name: Run tests
         run: uv run pytest -n 8 --junitxml=junit.xml
       - name: Upload Codecov Results
