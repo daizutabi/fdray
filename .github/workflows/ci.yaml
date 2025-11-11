@@ -25,7 +25,7 @@ jobs:
         python-version: ["3.11", "3.12", "3.13", "3.14"]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install POV-Ray (Ubuntu)
         if: runner.os == 'Linux'
         run: |
@@ -48,7 +48,7 @@ jobs:
         run: uv run pytest -n 8 --junitxml=junit.xml
       - name: Upload Codecov Results
         if: success()
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: lcov.info
