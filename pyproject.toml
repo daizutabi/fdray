@@ -38,6 +38,7 @@ dev = [
   "moviepy>=2",
   "polars>=1",
   "prek>=0.2.13",
+  "pytest>=9.0.0",
   "pytest-clarity>=1",
   "pytest-cov>=6",
   "pytest-randomly>=3.16",
@@ -46,8 +47,12 @@ dev = [
 ]
 docs = ["mkapi>=4.4", "mkdocs-material", "mkdocs-nbsync", "nbconvert>=7"]
 
-[tool.pytest.ini_options]
+[tool.pytest]
 addopts = ["--cov=fdray", "--cov-report=lcov:lcov.info", "--doctest-modules"]
+strict_config = true
+strict_markers = true
+strict_parametrization_ids = true
+strict_xfail = true
 
 [tool.coverage.report]
 exclude_lines = ["no cov", "raise NotImplementedError", "if TYPE_CHECKING:"]
