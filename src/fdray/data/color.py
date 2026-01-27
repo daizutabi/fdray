@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Never
 
 import numpy as np
 
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from fdray.typing import RGB
 
 
-def raise_import_error(msg: str) -> None:
+def raise_import_error(msg: str) -> Never:
     msg = f"{msg} Install with: pip install matplotlib."
     raise ImportError(msg) from None
 
@@ -32,7 +32,7 @@ def get_colormap(name: str, num_colors: int = 256) -> list[RGB]:
     except ImportError:  # no cov
         raise_import_error(f"Colormap '{name}' requires matplotlib.")
 
-    cmap = plt.get_cmap(name)  # pyright: ignore[reportPossiblyUnboundVariable]
+    cmap = plt.get_cmap(name)
     return [tuple(cmap(i)[:3]) for i in np.linspace(0, 1, num_colors)]  # pyright: ignore[reportUnknownArgumentType]
 
 
@@ -85,7 +85,7 @@ def colorize_direction_field(
     hsv[..., 1] = np.where(geom, 1 - z**2, 0)
     hsv[..., 2] = 1 - (1 - z) ** 2 / 4
 
-    return hsv_to_rgb(hsv)  # pyright: ignore[reportPossiblyUnboundVariable]
+    return hsv_to_rgb(hsv)
 
 
 def colorize_direction(vector: Sequence[float], axis: int = 2) -> RGB:
