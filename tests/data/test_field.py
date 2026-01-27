@@ -6,12 +6,12 @@ from fdray.data.field import Union
 
 @pytest.fixture(scope="module")
 def field_scalar():
-    region = [0.2, 0.3, 0.4]
+    region = [2, 3, 4]
     return Union.from_region(region, lambda x: Sphere(0, x))
 
 
-@pytest.mark.parametrize(("r", "p"), [(0.2, -1), (0.3, 0), (0.4, 1)])
-def test_field_scalar(field_scalar: Union, r, p):
+@pytest.mark.parametrize(("r", "p"), [(2, -1), (3, 0), (4, 1)])
+def test_field_scalar(field_scalar: Union, r: int, p: int):
     x = str(field_scalar)
     assert f"{r} translate <{p}, 0, 0>" in x
 
@@ -42,7 +42,7 @@ def field_vector():
         (35.264, -45, 3),
     ],
 )
-def test_field_vector(field_vector: Union, ry, rz, p):
+def test_field_vector(field_vector: Union, ry: float, rz: float, p: int):
     x = str(field_vector)
     assert f"rotate <0, {ry}, {rz}> }} translate <{p}, 0, 0>" in x
 

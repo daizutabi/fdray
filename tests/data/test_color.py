@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+from numpy.typing import NDArray
 
 
 def test_colormap():
@@ -52,7 +53,13 @@ def color_field():
         (9, 0, 0, 0),
     ],
 )
-def test_colorize_direction_field(color_field, k, r, g, b):
+def test_colorize_direction_field(
+    color_field: NDArray[np.float64],
+    k: int,
+    r: float,
+    g: float,
+    b: float,
+):
     assert color_field[k][0] == r
     assert color_field[k][1] == g
     assert color_field[k][2] == b
