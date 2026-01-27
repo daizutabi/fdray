@@ -97,7 +97,7 @@ class Union(BaseUnion):
     @classmethod
     def from_region(
         cls,
-        region: Sequence[int] | NDArray[np.integer],
+        region: Sequence[Any] | NDArray[Any],
         obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
         spacing: float | tuple[float, ...] = 1,
         mapping: Mapping[Any, Any] | None = None,
@@ -109,7 +109,7 @@ class Union(BaseUnion):
     @classmethod
     def from_region(
         cls,
-        region: Sequence[int] | NDArray[np.integer],
+        region: Sequence[Any] | NDArray[Any],
         obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
         spacing: float | tuple[float, ...] = 1,
         mapping: Mapping[Any, Any] | None = None,
@@ -121,7 +121,7 @@ class Union(BaseUnion):
     @classmethod
     def from_region(
         cls,
-        region: Sequence[int] | NDArray[np.integer],
+        region: Sequence[Any] | NDArray[Any],
         obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
         spacing: float | tuple[float, ...] = 1,
         mapping: Mapping[Any, Any] | None = None,
@@ -132,7 +132,7 @@ class Union(BaseUnion):
     @classmethod
     def from_region(
         cls,
-        region: Sequence[int] | NDArray[np.integer],
+        region: Sequence[Any] | NDArray[Any],
         obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
         spacing: float | tuple[float, ...] = 1,
         mapping: Mapping[Any, Any] | None = None,
@@ -175,7 +175,7 @@ class Union(BaseUnion):
             obj = Cube((0, 0, 0), 0.85)
 
         mapping = mapping or get_default_mapping(region)
-        objects = {k: obj.add(v) for k, v in mapping.items()}  # ty: ignore[possibly-unbound-attribute]
+        objects = {k: obj.add(v) for k, v in mapping.items()}
         it = iter_objects_from_dict(objects, region, spacing)
 
         return cls(*it) if as_union else list(it)
@@ -209,7 +209,7 @@ def iter_objects_from_callable(
 
 def iter_objects_from_dict(
     objects: dict[Any, Object],
-    region: Sequence[int] | NDArray[np.integer],
+    region: Sequence[Any] | NDArray[Any],
     spacing: float | tuple[float, ...] = 1,
 ) -> Iterator[Object]:
     indices = get_indices(region)
@@ -221,7 +221,7 @@ def iter_objects_from_dict(
 
 
 def get_indices(
-    region: Sequence[int] | NDArray[np.integer],
+    region: Sequence[Any] | NDArray[Any],
 ) -> dict[Any, list[tuple[int, ...]]]:
     if not isinstance(region, np.ndarray):
         region = np.array(region)
@@ -235,7 +235,7 @@ def get_indices(
     return indices
 
 
-def get_default_mapping(region: Sequence[int] | NDArray[np.integer]) -> dict[Any, Any]:
+def get_default_mapping(region: Sequence[Any] | NDArray[Any]) -> dict[Any, Any]:
     colors = [Color(c) for c in COLOR_PALETTE]
     return dict(zip(np.unique(region), cycle(colors), strict=False))
 
