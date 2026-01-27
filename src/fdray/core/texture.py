@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING, Any, Self
 
 import fdray.utils.image
 
@@ -33,7 +33,7 @@ class Pigment(Transformable):
     @classmethod
     def uv_mapping(
         cls,
-        data: str | Path | NDArray | Image,  # pyright: ignore[reportMissingTypeArgument, reportUnknownParameterType]
+        data: str | Path | NDArray[Any] | Image,
         interpolate: int = 2,
     ) -> Self:
         """Create a UV mapping pigment from image data.
