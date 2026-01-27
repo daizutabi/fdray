@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "fdray"
-version = "0.1.16"
+version = "0.1.17"
 description = "A Python interface for POV-Ray (Persistence of Vision Raytracer)"
 readme = "README.md"
 license = { file = "LICENSE" }
