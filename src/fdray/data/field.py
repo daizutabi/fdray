@@ -16,23 +16,16 @@ if TYPE_CHECKING:
     from numpy.typing import NDArray
 
 
-# pyright: reportMissingTypeArgument=false
-# pyright: reportUnknownArgumentType=false
-# pyright: reportUnknownMemberType=false
-# pyright: reportUnknownParameterType=false
-# pyright: reportUnknownVariableType=false
-
-
 class Union(BaseUnion):
     @overload
     @classmethod
     def from_field(
         cls,
-        field: Sequence | NDArray,
+        field: Sequence[Any] | NDArray[Any],
         obj: Callable[[Any], Object | Iterable[Object] | None],
         spacing: float | tuple[float, ...] = 1,
         ndim: int = 1,
-        mask: Sequence | NDArray | None = None,
+        mask: Sequence[Any] | NDArray[Any] | None = None,
         *,
         as_union: Literal[True] = True,
     ) -> Self: ...
@@ -41,11 +34,11 @@ class Union(BaseUnion):
     @classmethod
     def from_field(
         cls,
-        field: Sequence | NDArray,
+        field: Sequence[Any] | NDArray[Any],
         obj: Callable[[Any], Object | Iterable[Object] | None],
         spacing: float | tuple[float, ...] = 1,
         ndim: int = 1,
-        mask: Sequence | NDArray | None = None,
+        mask: Sequence[Any] | NDArray[Any] | None = None,
         *,
         as_union: Literal[False],
     ) -> list[Object]: ...
@@ -54,11 +47,11 @@ class Union(BaseUnion):
     @classmethod
     def from_field(
         cls,
-        field: Sequence | NDArray,
+        field: Sequence[Any] | NDArray[Any],
         obj: Callable[[Any], Object | Iterable[Object] | None],
         spacing: float | tuple[float, ...] = 1,
         ndim: int = 1,
-        mask: Sequence | NDArray | None = None,
+        mask: Sequence[Any] | NDArray[Any] | None = None,
         *,
         as_union: bool,
     ) -> Self | list[Object]: ...
@@ -66,11 +59,11 @@ class Union(BaseUnion):
     @classmethod
     def from_field(
         cls,
-        field: Sequence | NDArray,
+        field: Sequence[Any] | NDArray[Any],
         obj: Callable[[Any], Object | Iterable[Object] | None],
         spacing: float | tuple[float, ...] = 1,
         ndim: int = 1,
-        mask: Sequence | NDArray | None = None,
+        mask: Sequence[Any] | NDArray[Any] | None = None,
         *,
         as_union: bool = True,
     ) -> Self | list[Object]:
@@ -104,7 +97,7 @@ class Union(BaseUnion):
     @classmethod
     def from_region(
         cls,
-        region: Sequence | NDArray,
+        region: Sequence[int] | NDArray[np.integer],
         obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
         spacing: float | tuple[float, ...] = 1,
         mapping: Mapping[Any, Any] | None = None,
@@ -116,7 +109,7 @@ class Union(BaseUnion):
     @classmethod
     def from_region(
         cls,
-        region: Sequence | NDArray,
+        region: Sequence[int] | NDArray[np.integer],
         obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
         spacing: float | tuple[float, ...] = 1,
         mapping: Mapping[Any, Any] | None = None,
@@ -128,7 +121,7 @@ class Union(BaseUnion):
     @classmethod
     def from_region(
         cls,
-        region: Sequence | NDArray,
+        region: Sequence[int] | NDArray[np.integer],
         obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
         spacing: float | tuple[float, ...] = 1,
         mapping: Mapping[Any, Any] | None = None,
@@ -139,7 +132,7 @@ class Union(BaseUnion):
     @classmethod
     def from_region(
         cls,
-        region: Sequence | NDArray,
+        region: Sequence[int] | NDArray[np.integer],
         obj: Object | Callable[[Any], Object | Iterable[Object] | None] | None = None,
         spacing: float | tuple[float, ...] = 1,
         mapping: Mapping[Any, Any] | None = None,
@@ -190,10 +183,10 @@ class Union(BaseUnion):
 
 def iter_objects_from_callable(
     obj: Callable[[Any], Object | Iterable[Object] | None],
-    field: Sequence | NDArray,
+    field: Sequence[Any] | NDArray[Any],
     spacing: float | tuple[float, ...] = 1,
     ndim: int = 1,
-    mask: Sequence | NDArray | None = None,
+    mask: Sequence[Any] | NDArray[Any] | None = None,
 ) -> Iterator[Object]:
     if not isinstance(field, np.ndarray):
         field = np.array(field)
@@ -216,7 +209,7 @@ def iter_objects_from_callable(
 
 def iter_objects_from_dict(
     objects: dict[Any, Object],
-    region: Sequence | NDArray,
+    region: Sequence[int] | NDArray[np.integer],
     spacing: float | tuple[float, ...] = 1,
 ) -> Iterator[Object]:
     indices = get_indices(region)
@@ -227,7 +220,9 @@ def iter_objects_from_dict(
             yield from translate(obj, indices[index], spacing, offset)
 
 
-def get_indices(region: Sequence | NDArray) -> dict[Any, list[tuple[int, ...]]]:
+def get_indices(
+    region: Sequence[int] | NDArray[np.integer],
+) -> dict[Any, list[tuple[int, ...]]]:
     if not isinstance(region, np.ndarray):
         region = np.array(region)
 
@@ -240,7 +235,7 @@ def get_indices(region: Sequence | NDArray) -> dict[Any, list[tuple[int, ...]]]:
     return indices
 
 
-def get_default_mapping(region: Sequence | NDArray) -> dict[Any, Any]:
+def get_default_mapping(region: Sequence[int] | NDArray[np.integer]) -> dict[Any, Any]:
     colors = [Color(c) for c in COLOR_PALETTE]
     return dict(zip(np.unique(region), cycle(colors), strict=False))
 
